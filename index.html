@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie Command Center</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --accent-1: #FF6B6B;
+  --accent-2: #FF8E53;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 24px; display: flex; justify-content: center; }
+.container { max-width: 1360px; width: 100%; }
+
+/* Header */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 28px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 44px; height: 44px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff; }
+.brand-text { font-size: 1.5rem; font-weight: 800; }
+.brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-stats { display: flex; gap: 28px; }
+.stat-item { text-align: center; }
+.stat-value { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); }
+.stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-secure { padding: 6px 14px; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 20px; color: var(--green); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+/* Section title */
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.section-title { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.section-badge { font-size: 0.75rem; padding: 4px 10px; background: var(--bg-card); border-radius: 20px; color: var(--text-secondary); font-weight: 600; }
+
+/* Partner Grid */
+.partner-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+.partner-tile { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden; }
+.partner-tile::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); opacity: 0; transition: opacity 0.25s; }
+.partner-tile:hover { background: var(--bg-hover); border-color: rgba(255, 107, 107, 0.3); transform: translateY(-2px); }
+.partner-tile:hover::before { opacity: 1; }
+.partner-icon { font-size: 2rem; margin-bottom: 10px; }
+.partner-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+.partner-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px; }
+.partner-stages { display: flex; gap: 4px; flex-wrap: wrap; }
+.stage-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.stage-dot.active { background: var(--accent-1); }
+.partner-tag { font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; background: rgba(255,107,107,0.1); color: var(--accent-1); font-weight: 600; display: inline-block; margin-bottom: 8px; }
+
+/* Bottom Panel */
+.bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+/* Security Vault */
+.vault-display { display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+.vault-token { display: flex; align-items: center; gap: 14px; }
+.token-ring { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; position: relative; }
+.token-ring.active { border-color: var(--green); }
+.token-ring.expired { border-color: var(--red); }
+.token-info { }
+.token-label { font-size: 0.75rem; color: var(--text-secondary); }
+.token-value { font-family: monospace; font-size: 1.3rem; font-weight: 800; }
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.status-badge.secure { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+.status-badge.expired { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+.vault-actions { display: flex; gap: 10px; }
+.btn { padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background: var(--gradient); color: #fff; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg-hover); }
+
+/* Terminal */
+.terminal { background: #0A0C12; border-radius: 10px; padding: 16px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; min-height: 140px; max-height: 200px; overflow-y: auto; line-height: 1.6; color: #48BB78; }
+.terminal::-webkit-scrollbar { width: 4px; }
+.terminal::-webkit-scrollbar-track { background: transparent; }
+.terminal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.terminal .ts { color: var(--text-muted); }
+.terminal .event { color: #48BB78; }
+.terminal .warn { color: var(--yellow); }
+.terminal .error { color: var(--red); }
+
+/* Footer */
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
+
+/* Tooltip */
+.tooltip { position: relative; cursor: help; }
+
+/* Responsive */
+@media (max-width: 1024px) { .partner-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .partner-grid { grid-template-columns: repeat(2, 1fr); } .bottom-panels { grid-template-columns: 1fr; } .header-stats { display: none; } }
+@media (max-width: 480px) { .partner-grid { grid-template-columns: 1fr; } body { padding: 12px; } }
+
+/* Glow pulse for live session */
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse-dot 1.5s infinite; margin-right: 6px; }
+
+/* Alert toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); opacity: 0; transform: translateY(20px); transition: all 0.3s; z-index: 1000; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-icon { font-size: 1.2rem; }
+.toast-text { font-size: 0.85rem; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-icon">V</div>
+      <div class="brand-text"><span>Vestie</span> Command Center</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div class="header-stats">
+        <div class="stat-item"><div class="stat-value" id="sessionCount">12</div><div class="stat-label">Partner Roles</div></div>
+        <div class="stat-item"><div class="stat-value" id="verifyCount">0</div><div class="stat-label">Verifications</div></div>
+        <div class="stat-item"><div class="stat-value" id="activeToken">0</div><div class="stat-label">Active Tokens</div></div>
+      </div>
+      <div class="badge-secure"><span class="live-dot"></span> Secure Session</div>
+    </div>
+  </div>
+
+  <!-- Partner Grid -->
+  <div class="section-header">
+    <span class="section-title"> Partner Fleet <span style="font-size:0.8rem;color:var(--text-muted);font-weight:400;">— Click any tile to launch its live Magic Link demo</span></span>
+    <span class="section-badge">1 Template — 12 Roles</span>
+  </div>
+
+  <div class="partner-grid" id="partnerGrid">
+    <!-- Tiles injected by JS -->
+  </div>
+
+  <!-- Bottom Panels -->
+  <div class="bottom-panels">
+    <!-- Security Vault -->
+    <div class="panel-card">
+      <div class="panel-title"> Secure File Vault Simulator</div>
+      <div class="vault-display">
+        <div class="vault-token">
+          <div class="token-ring" id="tokenRing">05</div>
+          <div class="token-info">
+            <div class="token-label">Secure Token Countdown</div>
+            <div class="token-value" id="timerDisplay">05:00</div>
+          </div>
+        </div>
+        <span class="status-badge secure" id="vaultStatus"> Secure Session</span>
+      </div>
+      <div class="vault-actions">
+        <button class="btn btn-primary" onclick="triggerVaultAccess()"> Trigger File Access</button>
+        <button class="btn btn-secondary" onclick="resetVault()"> Reset</button>
+      </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="panel-card">
+      <div class="panel-title"> Real-Time Strapi Audit Log</div>
+      <div class="terminal" id="terminalLog">
+        <div><span class="ts">[SYSTEM]</span> <span class="event">Command Center v2.2 initialized</span></div>
+        <div><span class="ts">[SYSTEM]</span> <span class="event">12 partner profiles loaded from Strapi core</span></div>
+        <div><span class="ts">[READY]</span> <span class="event">Awaiting interaction payloads...</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Vestie Operations  &middot;  Magic Link Architecture v2.2  &middot;  Strapi Backend Core
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon">&#x1F517;</span>
+  <span class="toast-text" id="toastText">Launching demo...</span>
+</div>
+
+<script>
+// ─── PARTNER DATA ───
+const partners = [
+  { id: 'broker',     icon: '\u{1F3E6}', name: 'Mortgage Broker',         tag: 'Finance',        desc: 'Verify loan pre-approval, approval & funding stages',            stages: ['Pre-Approval Submitted', 'Loan Approved', 'Funded'],         color: '#FF6B6B' },
+  { id: 'lawyer',     icon: '\u{2696}\u{FE0F}', name: 'Property Lawyer',          tag: 'Legal',          desc: 'Verify contract review, exchange & settlement completion',       stages: ['Contract Under Review', 'Exchanged & Signed', 'Settlement'], color: '#8B5CF6' },
+  { id: 'inspector',  icon: '\u{1F50D}', name: 'Building Inspector',      tag: 'Due Diligence',  desc: 'Confirm inspection scheduling, report generation & sign-off',    stages: ['Inspection Scheduled', 'Report Generated', 'Issues Resolved'],color: '#3B82F6' },
+  { id: 'tax',        icon: '\u{1F4CA}', name: 'Tax Specialist',          tag: 'Finance',        desc: 'Manage depreciation setup, ledger finalization & ATO submission', stages: ['Depreciation Setup', 'Ledger Finalized', 'Submitted to ATO'], color: '#F59E0B' },
+  { id: 'agent',      icon: '\u{1F3E0}', name: 'Real Estate Agent',       tag: 'Sales',          desc: 'Track listing, offer acceptance & contract execution',           stages: ['Listing Active', 'Offer Accepted', 'Under Contract'],        color: '#EC4899' },
+  { id: 'valuer',     icon: '\u{1F4D0}', name: 'Property Valuer',         tag: 'Due Diligence',  desc: 'Coordinate valuation order, site visit & report delivery',       stages: ['Valuation Ordered', 'Site Visit Done', 'Report Complete'],   color: '#14B8A6' },
+  { id: 'surveyor',   icon: '\u{1F4CF}', name: 'Land Surveyor',           tag: 'Due Diligence',  desc: 'Oversee survey order, boundary marking & plan lodgement',        stages: ['Survey Ordered', 'Boundary Marked', 'Plan Lodged'],          color: '#6366F1' },
+  { id: 'strata',     icon: '\u{1F3E2}', name: 'Strata Manager',          tag: 'Legal',          desc: 'Process records requests, certificates & clearance issuance',    stages: ['Records Requested', 'Certificate Issued', 'Clearance'],      color: '#A855F7' },
+  { id: 'finplanner', icon: '\u{1F4B0}', name: 'Financial Planner',       tag: 'Finance',        desc: 'Draft strategy, obtain approval & implement financial plan',     stages: ['Strategy Drafted', 'Approved', 'Implemented'],               color: '#10B981' },
+  { id: 'insurance',  icon: '\u{1F6E1}\u{FE0F}', name: 'Insurance Broker',        tag: 'Risk',           desc: 'Manage quote requests, policy issuance & binding',               stages: ['Quote Requested', 'Policy Issued', 'Bound'],                 color: '#F97316' },
+  { id: 'settlement', icon: '\u{1F91D}', name: 'Settlement Agent',        tag: 'Legal',          desc: 'Handle file opening, document preparation & settlement',          stages: ['File Opened', 'Documents Prepared', 'Settled'],              color: '#06B6D4' },
+  { id: 'conveyancer',icon: '\u{1F4DD}', name: 'Licensed Conveyancer',    tag: 'Legal',          desc: 'Complete search, section 32 review & exchange readiness',        stages: ['Search Complete', 'Section 32 Reviewed', 'Ready to Exchange'],color: '#D946EF' }
+];
+
+const stageLabels = ['Stage 1', 'Stage 2', 'Stage 3'];
+
+// ─── RENDER GRID ───
+const grid = document.getElementById('partnerGrid');
+partners.forEach((p, i) => {
+  const tile = document.createElement('div');
+  tile.className = 'partner-tile';
+  tile.setAttribute('data-index', i);
+  tile.innerHTML = `
+    <div class="partner-tag" style="background:${p.color}15;color:${p.color};">${p.tag}</div>
+    <div class="partner-icon">${p.icon}</div>
+    <div class="partner-name">${p.name}</div>
+    <div class="partner-desc">${p.desc}</div>
+    <div class="partner-stages">${p.stages.map((s, j) => `<div class="stage-dot active" title="${s}"></div>`).join('')}</div>
+  `;
+  tile.addEventListener('click', () => launchDemo(i));
+  grid.appendChild(tile);
+});
+
+function launchDemo(index) {
+  const p = partners[index];
+  const stage = 1; // default to stage 1
+  const url = `demo.html?role=${p.id}&stage=${stage}`;
+  showToast(`Launching ${p.name} demo...`);
+  logTerminal(`LAUNCH: User activated Magic Link simulation for <span class="event">${p.name}</span> (${p.id})`);
+  setTimeout(() => window.open(url, '_blank'), 600);
+}
+
+// ─── VAULT SIMULATION ───
+let vaultInterval = null;
+let vaultTime = 300;
+let vaultActive = false;
+
+function triggerVaultAccess() {
+  if (vaultActive) return;
+  vaultActive = true;
+  vaultTime = 300;
+  document.getElementById('vaultStatus').className = 'status-badge secure';
+  document.getElementById('vaultStatus').innerHTML = ' Secure Session Active';
+  document.getElementById('tokenRing').className = 'token-ring active';
+  document.getElementById('tokenRing').textContent = '05';
+  updateTimerDisplay();
+  logTerminal('VAULT: Pre-signed cryptographic token generated. Access window opened.');
+  clearInterval(vaultInterval);
+  vaultInterval = setInterval(() => {
+    vaultTime--;
+    updateTimerDisplay();
+    if (vaultTime <= 0) {
+      clearInterval(vaultInterval);
+      vaultActive = false;
+      document.getElementById('vaultStatus').className = 'status-badge expired';
+      document.getElementById('vaultStatus').innerHTML = ' Token Expired';
+      document.getElementById('tokenRing').className = 'token-ring expired';
+      document.getElementById('tokenRing').textContent = '!';
+      logTerminal('<span class="error">SECURITY: Token expired. HTTP 403 — Access blocked.</span>');
+    }
+  }, 1000);
+}
+
+function resetVault() {
+  clearInterval(vaultInterval);
+  vaultActive = false;
+  vaultTime = 300;
+  document.getElementById('vaultStatus').className = 'status-badge secure';
+  document.getElementById('vaultStatus').innerHTML = ' Idle';
+  document.getElementById('tokenRing').className = 'token-ring';
+  document.getElementById('tokenRing').textContent = '05';
+  document.getElementById('timerDisplay').textContent = '05:00';
+  document.getElementById('verifyCount').textContent = '0';
+  logTerminal('VAULT: Token session manually reset.');
+}
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(vaultTime / 60)).padStart(2, '0');
+  const s = String(vaultTime % 60).padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+}
+
+// ─── TERMINAL ───
+function logTerminal(msg) {
+  const t = document.getElementById('terminalLog');
+  const time = new Date().toLocaleTimeString();
+  t.innerHTML += `<div><span class="ts">[${time}]</span> ${msg}</div>`;
+  t.scrollTop = t.scrollHeight;
+}
+
+// ─── TOAST ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+logTerminal('INDEX: Command Center UI ready. <span class="event">12 partner tiles rendered.</span>');
+</script>
+</body>
+</html>

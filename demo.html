@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie Magic Link — Partner Demo</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --accent-1: #FF6B6B;
+  --accent-2: #FF8E53;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --phone-bg: #F8F9FA;
+  --phone-text: #2D3748;
+  --phone-muted: #718096;
+  --phone-border: #E2E8F0;
+  --success: #2ECC71;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
+.container { display: grid; grid-template-columns: 380px 1fr; gap: 32px; max-width: 1200px; width: 100%; align-items: start; }
+
+/* ─── PHONE ─── */
+.phone-wrapper { background: #1A1A1A; border-radius: 44px; padding: 12px; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.5); border: 3px solid #2D2D2D; position: relative; }
+.phone-speaker { width: 56px; height: 5px; background: #2D2D2D; border-radius: 10px; position: absolute; top: 5px; left: 50%; transform: translateX(-50%); z-index: 2; }
+.phone-screen { background: var(--phone-bg); border-radius: 34px; width: 100%; height: 740px; overflow-y: auto; display: flex; flex-direction: column; position: relative; border: 1px solid #000; color: var(--phone-text); }
+.phone-screen::-webkit-scrollbar { width: 3px; }
+.phone-screen::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 10px; }
+
+.phone-header { background: #fff; padding: 28px 20px 14px; border-bottom: 1px solid var(--phone-border); text-align: center; }
+.brand-logo { font-size: 1.3rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+.phone-role-tag { font-size: 0.7rem; color: var(--phone-muted); font-weight: 600; margin-top: 2px; letter-spacing: 0.03em; }
+
+.phone-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.phone-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--phone-border); margin-bottom: 16px; }
+.form-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.form-subtitle { font-size: 0.82rem; color: var(--phone-muted); margin-bottom: 18px; line-height: 1.45; }
+.form-subtitle strong { color: var(--phone-text); }
+
+.input-group { margin-bottom: 16px; }
+.input-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--phone-muted); margin-bottom: 8px; display: block; }
+
+.pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { background: #EDF2F7; padding: 10px 16px; border-radius: 20px; font-size: 0.82rem; cursor: pointer; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; }
+.pill.active { background: #FFF5F5; border-color: var(--accent-1); color: var(--accent-1); }
+.pill:hover:not(.active) { background: #E2E8F0; }
+
+.upload-zone { border: 2px dashed #CBD5E0; border-radius: 14px; padding: 22px; text-align: center; cursor: pointer; background: #F7FAFC; transition: all 0.2s; }
+.upload-zone:hover { background: #EDF2F7; border-color: #A0AEC0; }
+.upload-icon { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+.upload-text { font-size: 0.82rem; font-weight: 600; color: var(--phone-text); }
+.upload-sub { font-size: 0.72rem; color: var(--phone-muted); margin-top: 2px; }
+.upload-zone.uploaded { border-color: var(--success); background: #F0FFF4; }
+
+.btn-submit { background: var(--gradient); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 14px rgba(255,107,107,0.3); transition: opacity 0.2s; margin-top: auto; }
+.btn-submit:hover { opacity: 0.92; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.phone-footer { background: #fff; padding: 14px; text-align: center; border-top: 1px solid var(--phone-border); font-size: 0.7rem; color: var(--phone-muted); font-weight: 600; }
+
+/* Success overlay */
+.success-overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 24px; text-align: center; flex: 1; }
+.success-icon { font-size: 3.6rem; margin-bottom: 16px; }
+.success-title { font-size: 1.3rem; font-weight: 800; color: var(--success); margin-bottom: 8px; }
+.success-desc { font-size: 0.85rem; color: var(--phone-muted); line-height: 1.5; margin-bottom: 24px; }
+.btn-reset { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+.btn-reset:hover { background: var(--bg-hover); }
+
+/* ─── CONTROL PANEL ─── */
+.control-panel { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; gap: 22px; }
+.panel-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.panel-header h1 { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.panel-header p { font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; }
+
+.control-section { }
+.control-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.role-btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.role-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 10px 8px; border-radius: 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--text-secondary); }
+.role-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.role-btn.active { background: rgba(255,107,107,0.12); border-color: var(--accent-1); color: var(--accent-1); }
+
+.stage-control { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.stage-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.stage-btn:hover { background: var(--bg-hover); }
+.stage-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.stage-indicator { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); min-width: 100px; text-align: center; }
+.stage-dots { display: flex; gap: 6px; }
+.stage-dot2 { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+.stage-dot2.active { background: var(--accent-1); box-shadow: 0 0 8px rgba(255,107,107,0.4); }
+
+/* Vault mini */
+.vault-mini { background: var(--bg-card); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
+.vault-mini-info { display: flex; align-items: center; gap: 12px; }
+.vault-mini-timer { font-family: monospace; font-size: 1.2rem; font-weight: 800; }
+.vault-mini-label { font-size: 0.72rem; color: var(--text-muted); }
+
+/* Terminal mini */
+.terminal-mini { background: #0A0C12; border-radius: 10px; padding: 14px; font-family: 'Courier New', Courier, monospace; font-size: 0.78rem; max-height: 160px; overflow-y: auto; line-height: 1.65; color: #48BB78; }
+.terminal-mini::-webkit-scrollbar { width: 4px; }
+.terminal-mini::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.terminal-mini .ts { color: var(--text-muted); }
+.terminal-mini .ev { color: #48BB78; }
+.terminal-mini .warn { color: var(--yellow); }
+.terminal-mini .err { color: var(--red); }
+
+/* URL bar */
+.url-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: monospace; font-size: 0.78rem; color: var(--text-secondary); word-break: break-all; }
+
+/* Responsive */
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; max-width: 420px; } .phone-wrapper { max-width: 380px; margin: 0 auto; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- PHONE VIEWPORT -->
+  <div class="phone-wrapper">
+    <div class="phone-speaker"></div>
+    <div class="phone-screen" id="phoneScreen">
+      <div class="phone-header">
+        <div class="brand-logo">Vestie</div>
+        <div class="phone-role-tag" id="phoneRoleTag">Secure Partner Access</div>
+      </div>
+      <div class="phone-content" id="phoneContent">
+        <!-- Injected by JS -->
+      </div>
+      <div class="phone-footer">
+        <span id="phoneFooter"> Verified Secure by Vestie Encrypted Cloud</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROL PANEL -->
+  <div class="control-panel">
+    <div class="panel-header">
+      <h1> Demo Controller</h1>
+      <p>Toggle roles and stages to see the single template adapt in real time. No duplicate screens needed.</p>
+    </div>
+
+    <div class="control-section">
+      <span class="control-label"> Partner Role</span>
+      <div class="role-btn-grid" id="roleBtnGrid">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+
+    <div class="control-section">
+      <span class="control-label"> Property Path Stage</span>
+      <div class="stage-control">
+        <button class="stage-btn" id="stagePrev" onclick="changeStage(-1)">&#x25C0;</button>
+        <div class="stage-indicator" id="stageIndicator">Stage 1 of 3</div>
+        <button class="stage-btn" id="stageNext" onclick="changeStage(1)">&#x25B6;</button>
+        <div class="stage-dots" id="stageDots">
+          <div class="stage-dot2 active"></div>
+          <div class="stage-dot2"></div>
+          <div class="stage-dot2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <span class="control-label"> Magic Link URL (simulated)</span>
+      <div class="url-bar" id="urlBar">demo.html?role=broker&amp;stage=1</div>
+    </div>
+
+    <div class="control-section">
+      <span class="control-label"> Secure Token Vault</span>
+      <div class="vault-mini">
+        <div class="vault-mini-info">
+          <span style="font-size:1.2rem;" id="vaultIcon">&#x1F510;</span>
+          <div>
+            <div class="vault-mini-label">Countdown</div>
+            <div class="vault-mini-timer" id="vaultTimer">05:00</div>
+          </div>
+        </div>
+        <span class="status-badge secure" id="vaultBadge" style="font-size:0.7rem;padding:3px 10px;border-radius:12px;font-weight:700;"> Idle</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn btn-primary" onclick="startVault()" style="flex:1;padding:8px;font-size:0.8rem;">Trigger Access</button>
+        <button class="btn btn-secondary" onclick="resetVault()" style="padding:8px 14px;font-size:0.8rem;">Reset</button>
+      </div>
+    </div>
+
+    <div class="control-section" style="flex:1;">
+      <span class="control-label"> Strapi Audit Log</span>
+      <div class="terminal-mini" id="termLog">
+        <div><span class="ts">[DEMO]</span> <span class="ev">Ready. Awaiting role selection...</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Re-def for scope */
+.status-badge.secure { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); display:inline-block; }
+.status-badge.expired { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); display:inline-block; }
+.btn-primary { background: var(--gradient); border: none; color: #fff; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-secondary:hover { background: var(--bg-hover); }
+</style>
+
+<script>
+// ─── COMPLETE PARTNER DATA (12 Roles) ───
+const PARTNERS = [
+  {
+    id: 'broker', icon: '\u{1F3E6}', name: 'Mortgage Broker',
+    title: 'Verify Loan Status',
+    selectLabel: 'Current Finance Milestone',
+    uploadLabel: 'Attach Pre-Approval Letter',
+    stages: ['Pre-Approval Submitted', 'Loan Approved', 'Funded'],
+    fileHints: ['Pre-Approval Letter (PDF)', 'Approval Certificate (PDF)', 'Funding Confirmation (PDF)'],
+    log: 'Strapi: role_type==MortgageBroker — finance pipeline loaded.'
+  },
+  {
+    id: 'lawyer', icon: '\u{2696}\u{FE0F}', name: 'Property Lawyer',
+    title: 'Verify Contract Review',
+    selectLabel: 'Current Conveyancing Status',
+    uploadLabel: 'Attach Signed Contract Copy',
+    stages: ['Contract Under Review', 'Exchanged & Signed', 'Settlement Completed'],
+    fileHints: ['Draft Contract (PDF)', 'Signed Contract (PDF)', 'Settlement Statement (PDF)'],
+    log: 'Strapi: role_type==PropertyLawyer — legal pipeline loaded.'
+  },
+  {
+    id: 'inspector', icon: '\u{1F50D}', name: 'Building Inspector',
+    title: 'Verify Asset Condition',
+    selectLabel: 'Current Due Diligence Status',
+    uploadLabel: 'Attach Inspection Report',
+    stages: ['Inspection Scheduled', 'Report Generated', 'Issues Resolved'],
+    fileHints: ['Booking Confirmation (PDF)', 'Inspection Report (PDF)', 'Clearance Certificate (PDF)'],
+    log: 'Strapi: role_type==BuildingInspector — due diligence pipeline loaded.'
+  },
+  {
+    id: 'tax', icon: '\u{1F4CA}', name: 'Tax Specialist',
+    title: 'Verify Depreciation Setup',
+    selectLabel: 'Current Tax Status',
+    uploadLabel: 'Attach Depreciation Ledger',
+    stages: ['Depreciation Setup', 'Ledger Finalized', 'Submitted to ATO'],
+    fileHints: ['Initial Schedule (PDF)', 'Final Ledger (PDF)', 'ATO Receipt (PDF)'],
+    log: 'Strapi: role_type==TaxSpecialist — depreciation pipeline loaded.'
+  },
+  {
+    id: 'agent', icon: '\u{1F3E0}', name: 'Real Estate Agent',
+    title: 'Verify Property Listing',
+    selectLabel: 'Current Sales Status',
+    uploadLabel: 'Attach Signed Agency Agreement',
+    stages: ['Listing Active', 'Offer Accepted', 'Under Contract'],
+    fileHints: ['Agency Agreement (PDF)', 'Offer Acceptance (PDF)', 'Signed Contract (PDF)'],
+    log: 'Strapi: role_type==RealEstateAgent — sales pipeline loaded.'
+  },
+  {
+    id: 'valuer', icon: '\u{1F4D0}', name: 'Property Valuer',
+    title: 'Verify Valuation Report',
+    selectLabel: 'Current Valuation Status',
+    uploadLabel: 'Attach Valuation Certificate',
+    stages: ['Valuation Ordered', 'Site Visit Done', 'Report Complete'],
+    fileHints: ['Valuation Order (PDF)', 'Site Visit Notes (PDF)', 'Valuation Report (PDF)'],
+    log: 'Strapi: role_type==PropertyValuer — valuation pipeline loaded.'
+  },
+  {
+    id: 'surveyor', icon: '\u{1F4CF}', name: 'Land Surveyor',
+    title: 'Verify Survey Completion',
+    selectLabel: 'Current Survey Status',
+    uploadLabel: 'Attach Survey Plan',
+    stages: ['Survey Ordered', 'Boundary Marked', 'Plan Lodged'],
+    fileHints: ['Survey Order (PDF)', 'Boundary Diagram (PDF)', 'Lodged Plan (PDF)'],
+    log: 'Strapi: role_type==LandSurveyor — survey pipeline loaded.'
+  },
+  {
+    id: 'strata', icon: '\u{1F3E2}', name: 'Strata Manager',
+    title: 'Verify Strata Clearance',
+    selectLabel: 'Current Strata Status',
+    uploadLabel: 'Attach Strata Certificate',
+    stages: ['Records Requested', 'Certificate Issued', 'Clearance Given'],
+    fileHints: ['Records Request (PDF)', 'Strata Certificate (PDF)', 'Clearance Notice (PDF)'],
+    log: 'Strapi: role_type==StrataManager — strata pipeline loaded.'
+  },
+  {
+    id: 'finplanner', icon: '\u{1F4B0}', name: 'Financial Planner',
+    title: 'Verify Financial Strategy',
+    selectLabel: 'Current Planning Status',
+    uploadLabel: 'Attach Signed Strategy Doc',
+    stages: ['Strategy Drafted', 'Approved by Client', 'Implemented'],
+    fileHints: ['Strategy Draft (PDF)', 'Signed Approval (PDF)', 'Implementation Report (PDF)'],
+    log: 'Strapi: role_type==FinancialPlanner — planning pipeline loaded.'
+  },
+  {
+    id: 'insurance', icon: '\u{1F6E1}\u{FE0F}', name: 'Insurance Broker',
+    title: 'Verify Insurance Cover',
+    selectLabel: 'Current Insurance Status',
+    uploadLabel: 'Attach Policy Document',
+    stages: ['Quote Requested', 'Policy Issued', 'Policy Bound'],
+    fileHints: ['Quote Summary (PDF)', 'Policy Document (PDF)', 'Binding Confirmation (PDF)'],
+    log: 'Strapi: role_type==InsuranceBroker — insurance pipeline loaded.'
+  },
+  {
+    id: 'settlement', icon: '\u{1F91D}', name: 'Settlement Agent',
+    title: 'Verify Settlement Progress',
+    selectLabel: 'Current Settlement Status',
+    uploadLabel: 'Attach Settlement Statement',
+    stages: ['File Opened', 'Documents Prepared', 'Settled'],
+    fileHints: ['File Opening Conf (PDF)', 'Prepared Documents (PDF)', 'Final Settlement (PDF)'],
+    log: 'Strapi: role_type==SettlementAgent — settlement pipeline loaded.'
+  },
+  {
+    id: 'conveyancer', icon: '\u{1F4DD}', name: 'Licensed Conveyancer',
+    title: 'Verify Conveyancing Progress',
+    selectLabel: 'Current Conveyancing Status',
+    uploadLabel: 'Attach Section 32 Statement',
+    stages: ['Search Complete', 'Section 32 Reviewed', 'Ready to Exchange'],
+    fileHints: ['Property Search (PDF)', 'Section 32 (PDF)', 'Exchange Ready (PDF)'],
+    log: 'Strapi: role_type==Conveyancer — conveyancing pipeline loaded.'
+  }
+];
+
+// ─── STATE ───
+let currentRoleIdx = 0;
+let currentStage = 0;
+let fileUploaded = false;
+let vaultInterval = null;
+let vaultTime = 300;
+let vaultActive = false;
+
+// ─── INIT ───
+function init() {
+  // Parse URL
+  const params = new URLSearchParams(window.location.search);
+  const roleParam = params.get('role');
+  const stageParam = params.get('stage');
+
+  if (roleParam) {
+    const idx = PARTNERS.findIndex(p => p.id === roleParam);
+    if (idx >= 0) currentRoleIdx = idx;
+  }
+  if (stageParam) {
+    const s = parseInt(stageParam);
+    if (s >= 1 && s <= 3) currentStage = s - 1;
+  }
+
+  // Build role buttons
+  const grid = document.getElementById('roleBtnGrid');
+  PARTNERS.forEach((p, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'role-btn' + (i === currentRoleIdx ? ' active' : '');
+    btn.textContent = `${p.icon} ${p.name}`;
+    btn.onclick = () => selectRole(i);
+    grid.appendChild(btn);
+  });
+
+  renderPhone();
+  updateStageDots();
+  updateURL();
+  log('DEMO: Magic Link simulation initialized with <span class="ev">' + PARTNERS[currentRoleIdx].name + '</span>');
+}
+
+function selectRole(idx) {
+  currentRoleIdx = idx;
+  currentStage = 0;
+  fileUploaded = false;
+
+  document.querySelectorAll('.role-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+
+  renderPhone();
+  updateStageDots();
+  updateURL();
+  log(PARTNERS[idx].log);
+}
+
+function changeStage(delta) {
+  const p = PARTNERS[currentRoleIdx];
+  const newStage = currentStage + delta;
+  if (newStage < 0 || newStage >= p.stages.length) return;
+  currentStage = newStage;
+  fileUploaded = false;
+  renderPhone();
+  updateStageDots();
+  updateURL();
+  log('STAGE: Advanced to <span class="ev">' + p.stages[currentStage] + '</span> (' + (currentStage + 1) + ' of ' + p.stages.length + ')');
+}
+
+function renderPhone() {
+  const p = PARTNERS[currentRoleIdx];
+  const stage = p.stages[currentStage];
+  const fileHint = p.fileHints[currentStage];
+
+  document.getElementById('phoneRoleTag').textContent = p.icon + ' ' + p.name + ' — Magic Link Session';
+  document.getElementById('phoneFooter').textContent = ' Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
+
+  const container = document.getElementById('phoneContent');
+  container.innerHTML = `
+    <div class="phone-card">
+      <div class="form-title">${p.title}</div>
+      <div class="form-subtitle">Secure partner checklist for file <strong>Pair-493</strong>. Role: <strong>${p.name}</strong> — Stage: <strong>${stage}</strong></div>
+
+      <div class="input-group">
+        <label class="input-label">${p.selectLabel}</label>
+        <div class="pill-group" id="pillGroup">
+          ${p.stages.map((s, i) => `<div class="pill${i === currentStage ? ' active' : ''}" onclick="selectPill(${i})">${s}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">${p.uploadLabel}</label>
+        <div class="upload-zone${fileUploaded ? ' uploaded' : ''}" id="uploadZone" onclick="triggerUpload()">
+          <span class="upload-icon">${fileUploaded ? '\u2705' : '\uD83D\uDCC1'}</span>
+          <span class="upload-text" id="uploadText">${fileUploaded ? 'document_' + p.id + '_' + (currentStage + 1) + '.pdf attached' : 'Tap to upload ' + fileHint}</span>
+          <span class="upload-sub">Supports PDF format  |  Max 10MB</span>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="submitBtn" ${fileUploaded ? '' : 'disabled'} onclick="submitForm()">Submit Verification</button>
+    </div>
+  `;
+
+  document.getElementById('stagePrev').disabled = currentStage === 0;
+  document.getElementById('stageNext').disabled = currentStage >= p.stages.length - 1;
+}
+
+function selectPill(idx) {
+  currentStage = idx;
+  fileUploaded = false;
+  renderPhone();
+  updateStageDots();
+  updateURL();
+}
+
+function triggerUpload() {
+  fileUploaded = true;
+  const p = PARTNERS[currentRoleIdx];
+  document.getElementById('uploadText').textContent = '✅ document_' + p.id + '_' + (currentStage + 1) + '.pdf attached';
+  document.getElementById('uploadZone').classList.add('uploaded');
+  document.getElementById('submitBtn').disabled = false;
+  log('FILE: Document staging complete — <span class="ev">document_' + p.id + '_' + (currentStage + 1) + '.pdf</span> ready for transmission.');
+}
+
+function submitForm() {
+  if (!fileUploaded) return;
+  const p = PARTNERS[currentRoleIdx];
+  const stage = p.stages[currentStage];
+  log('API: <span class="ev">POST /api/verifications</span> — user_pair=Pair-493, role=' + p.id + ', stage=' + (currentStage + 1) + ', status=completed');
+
+  const container = document.getElementById('phoneContent');
+  container.innerHTML = `
+    <div class="success-overlay">
+      <div class="success-icon">&#x1F389;</div>
+      <div class="success-title">Verification Complete!</div>
+      <div class="success-desc">
+        <strong>${p.name}</strong> — ${stage}<br>
+        Milestone data pushed to Strapi database.<br>
+        Property Path advanced for Pair-493.
+      </div>
+      <button class="btn-reset" onclick="resetForm()">Simulate New Transaction</button>
+    </div>
+  `;
+  document.getElementById('phoneFooter').textContent = ' Verification Recorded  |  Strapi Sync OK';
+  log('SUCCESS: Property Path advanced for Pair-493. Dashboard updated.');
+  document.getElementById('submitBtn').disabled = true;
+}
+
+function resetForm() {
+  fileUploaded = false;
+  renderPhone();
+  updateStageDots();
+  document.getElementById('phoneFooter').textContent = ' Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
+  log('RESET: Form cleared. Ready for new verification transaction.');
+}
+
+function updateStageDots() {
+  const p = PARTNERS[currentRoleIdx];
+  const dots = document.getElementById('stageDots');
+  dots.innerHTML = '';
+  p.stages.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'stage-dot2' + (i === currentStage ? ' active' : '');
+    dots.appendChild(dot);
+  });
+  document.getElementById('stageIndicator').textContent = 'Stage ' + (currentStage + 1) + ' of ' + p.stages.length;
+  document.getElementById('stagePrev').disabled = currentStage === 0;
+  document.getElementById('stageNext').disabled = currentStage >= p.stages.length - 1;
+}
+
+function updateURL() {
+  const p = PARTNERS[currentRoleIdx];
+  const url = 'demo.html?role=' + p.id + '&stage=' + (currentStage + 1);
+  document.getElementById('urlBar').textContent = url;
+}
+
+// ─── VAULT ───
+function startVault() {
+  if (vaultActive) return;
+  vaultActive = true;
+  vaultTime = 300;
+  document.getElementById('vaultBadge').className = 'status-badge secure';
+  document.getElementById('vaultBadge').textContent = ' Active';
+  document.getElementById('vaultIcon').textContent = '\u{1F510}';
+  updateVaultTimer();
+  log('VAULT: Pre-signed token generated. 5:00 window opened.');
+  clearInterval(vaultInterval);
+  vaultInterval = setInterval(() => {
+    vaultTime--;
+    updateVaultTimer();
+    if (vaultTime <= 0) {
+      clearInterval(vaultInterval);
+      vaultActive = false;
+      document.getElementById('vaultBadge').className = 'status-badge expired';
+      document.getElementById('vaultBadge').textContent = ' Expired';
+      document.getElementById('vaultIcon').textContent = '\u{26D4}';
+      log('<span class="err">SECURITY: Token expired. HTTP 403 — Access blocked.</span>');
+    }
+  }, 1000);
+}
+
+function resetVault() {
+  clearInterval(vaultInterval);
+  vaultActive = false;
+  vaultTime = 300;
+  document.getElementById('vaultBadge').className = 'status-badge secure';
+  document.getElementById('vaultBadge').textContent = ' Idle';
+  document.getElementById('vaultIcon').textContent = '\u{1F510}';
+  document.getElementById('vaultTimer').textContent = '05:00';
+  log('VAULT: Session manually reset.');
+}
+
+function updateVaultTimer() {
+  const m = String(Math.floor(vaultTime / 60)).padStart(2, '0');
+  const s = String(vaultTime % 60).padStart(2, '0');
+  document.getElementById('vaultTimer').textContent = m + ':' + s;
+}
+
+// ─── TERMINAL ───
+function log(msg) {
+  const t = document.getElementById('termLog');
+  const time = new Date().toLocaleTimeString();
+  t.innerHTML += '<div><span class="ts">[' + time + ']</span> ' + msg + '</div>';
+  t.scrollTop = t.scrollHeight;
+}
+
+// ─── BOOT ───
+init();
+</script>
+</body>
+</html>
