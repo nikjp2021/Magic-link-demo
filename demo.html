@@ -39,7 +39,7 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .phone-screen::-webkit-scrollbar { width: 3px; }
 .phone-screen::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 10px; }
 
-.phone-header { background: #fff; padding: 28px 20px 14px; border-bottom: 1px solid var(--phone-border); text-align: center; }
+.phone-header { background: #fff; padding: 28px 20px 14px; border-bottom: 1px solid var(--phone-border); text-align: center; position: sticky; top: 0; z-index: 3; }
 .brand-logo { font-size: 1.3rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
 .phone-role-tag { font-size: 0.7rem; color: var(--phone-muted); font-weight: 600; margin-top: 2px; letter-spacing: 0.03em; }
 
@@ -50,64 +50,109 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .form-subtitle strong { color: var(--phone-text); }
 
 .input-group { margin-bottom: 16px; }
-.input-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--phone-muted); margin-bottom: 8px; display: block; }
+.input-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--phone-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.input-label .required-star { color: var(--red); font-size: 0.9rem; }
 
 .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
 .pill { background: #EDF2F7; padding: 10px 16px; border-radius: 20px; font-size: 0.82rem; cursor: pointer; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; }
 .pill.active { background: #FFF5F5; border-color: var(--accent-1); color: var(--accent-1); }
 .pill:hover:not(.active) { background: #E2E8F0; }
 
-.upload-zone { border: 2px dashed #CBD5E0; border-radius: 14px; padding: 22px; text-align: center; cursor: pointer; background: #F7FAFC; transition: all 0.2s; }
+/* Field Styles */
+.fld { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--phone-border); font-size: 0.9rem; background: #fff; transition: border-color 0.2s; color: var(--phone-text); font-family: inherit; }
+.fld:focus { outline: none; border-color: var(--accent-1); box-shadow: 0 0 0 3px rgba(255,107,107,0.1); }
+.fld.error { border-color: var(--red); }
+.fld::placeholder { color: #A0AEC0; }
+textarea.fld { resize: vertical; min-height: 80px; }
+select.fld { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+
+.input-with-prefix { display: flex; align-items: center; }
+.input-prefix { padding: 12px 0 12px 14px; border: 1.5px solid var(--phone-border); border-right: none; border-radius: 12px 0 0 12px; background: #F7FAFC; color: var(--phone-muted); font-weight: 700; font-size: 0.9rem; }
+.input-with-prefix .fld { border-radius: 0 12px 12px 0; border-left: none; }
+.input-with-prefix .fld:focus { box-shadow: none; border-color: var(--accent-1); }
+
+/* Yes/No pills */
+.yn-group { display: flex; gap: 10px; }
+.yn-pill { flex: 1; padding: 12px; border-radius: 12px; border: 1.5px solid var(--phone-border); background: #fff; text-align: center; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; }
+.yn-pill.yes { color: var(--green); }
+.yn-pill.no { color: var(--red); }
+.yn-pill.active-yes { background: #F0FFF4; border-color: var(--green); color: var(--green); }
+.yn-pill.active-no { background: #FFF5F5; border-color: var(--red); color: var(--red); }
+
+/* Radio group */
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--phone-border); cursor: pointer; transition: all 0.2s; background: #fff; }
+.radio-option:hover { border-color: #A0AEC0; }
+.radio-option.active { border-color: var(--accent-1); background: #FFF5F5; }
+.radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #CBD5E0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.radio-option.active .radio-dot { border-color: var(--accent-1); }
+.radio-dot-inner { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-1); display: none; }
+.radio-option.active .radio-dot-inner { display: block; }
+.radio-label { font-size: 0.88rem; font-weight: 500; }
+
+/* Checkbox group */
+.cb-group { display: flex; flex-direction: column; gap: 8px; }
+.cb-option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--phone-border); cursor: pointer; transition: all 0.2s; background: #fff; }
+.cb-option:hover { border-color: #A0AEC0; }
+.cb-option.active { border-color: var(--accent-1); background: #FFF5F5; }
+.cb-box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid #CBD5E0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #fff; }
+.cb-option.active .cb-box { border-color: var(--accent-1); background: var(--accent-1); }
+.cb-label { font-size: 0.88rem; font-weight: 500; }
+
+/* File upload */
+.upload-zone { border: 2px dashed #CBD5E0; border-radius: 14px; padding: 18px; text-align: center; cursor: pointer; background: #F7FAFC; transition: all 0.2s; }
 .upload-zone:hover { background: #EDF2F7; border-color: #A0AEC0; }
-.upload-icon { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+.upload-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
 .upload-text { font-size: 0.82rem; font-weight: 600; color: var(--phone-text); }
 .upload-sub { font-size: 0.72rem; color: var(--phone-muted); margin-top: 2px; }
 .upload-zone.uploaded { border-color: var(--success); background: #F0FFF4; }
 
-.btn-submit { background: var(--gradient); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 14px rgba(255,107,107,0.3); transition: opacity 0.2s; margin-top: auto; }
+.err-msg { font-size: 0.75rem; color: var(--red); font-weight: 600; margin-top: 4px; display: none; }
+.err-msg.show { display: block; }
+
+.btn-submit { background: var(--gradient); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 14px rgba(255,107,107,0.3); transition: opacity 0.2s; margin-top: 6px; }
 .btn-submit:hover { opacity: 0.92; }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
 .phone-footer { background: #fff; padding: 14px; text-align: center; border-top: 1px solid var(--phone-border); font-size: 0.7rem; color: var(--phone-muted); font-weight: 600; }
 
 /* Success overlay */
-.success-overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 24px; text-align: center; flex: 1; }
-.success-icon { font-size: 3.6rem; margin-bottom: 16px; }
-.success-title { font-size: 1.3rem; font-weight: 800; color: var(--success); margin-bottom: 8px; }
-.success-desc { font-size: 0.85rem; color: var(--phone-muted); line-height: 1.5; margin-bottom: 24px; }
+.success-overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; flex: 1; }
+.success-icon { font-size: 3rem; margin-bottom: 12px; }
+.success-title { font-size: 1.25rem; font-weight: 800; color: var(--success); margin-bottom: 6px; }
+.success-desc { font-size: 0.85rem; color: var(--phone-muted); line-height: 1.5; margin-bottom: 20px; }
+.success-data { background: #F7FAFC; border-radius: 10px; padding: 14px; text-align: left; width: 100%; font-size: 0.72rem; font-family: monospace; color: var(--phone-muted); white-space: pre-wrap; line-height: 1.6; border: 1px solid var(--phone-border); margin-bottom: 16px; max-height: 200px; overflow-y: auto; }
 .btn-reset { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
 .btn-reset:hover { background: var(--bg-hover); }
 
 /* ─── CONTROL PANEL ─── */
-.control-panel { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; gap: 22px; }
-.panel-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
-.panel-header h1 { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-.panel-header p { font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; }
+.control-panel { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; gap: 18px; max-height: calc(100vh - 40px); overflow-y: auto; }
+.panel-header { border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+.panel-header h1 { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.panel-header p { font-size: 0.8rem; color: var(--text-secondary); margin-top: 3px; }
 
 .control-section { }
-.control-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.role-btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.role-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 10px 8px; border-radius: 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--text-secondary); }
+.control-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.role-btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.role-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 8px 6px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--text-secondary); line-height: 1.3; }
 .role-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 .role-btn.active { background: rgba(255,107,107,0.12); border-color: var(--accent-1); color: var(--accent-1); }
 
-.stage-control { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
-.stage-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.stage-control { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.stage-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
 .stage-btn:hover { background: var(--bg-hover); }
 .stage-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.stage-indicator { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); min-width: 100px; text-align: center; }
-.stage-dots { display: flex; gap: 6px; }
-.stage-dot2 { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+.stage-indicator { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); min-width: 90px; text-align: center; }
+.stage-dots { display: flex; gap: 5px; }
+.stage-dot2 { width: 9px; height: 9px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
 .stage-dot2.active { background: var(--accent-1); box-shadow: 0 0 8px rgba(255,107,107,0.4); }
 
-/* Vault mini */
-.vault-mini { background: var(--bg-card); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
-.vault-mini-info { display: flex; align-items: center; gap: 12px; }
-.vault-mini-timer { font-family: monospace; font-size: 1.2rem; font-weight: 800; }
-.vault-mini-label { font-size: 0.72rem; color: var(--text-muted); }
+.vault-mini { background: var(--bg-card); border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
+.vault-mini-info { display: flex; align-items: center; gap: 10px; }
+.vault-mini-timer { font-family: monospace; font-size: 1.1rem; font-weight: 800; }
+.vault-mini-label { font-size: 0.7rem; color: var(--text-muted); }
 
-/* Terminal mini */
-.terminal-mini { background: #0A0C12; border-radius: 10px; padding: 14px; font-family: 'Courier New', Courier, monospace; font-size: 0.78rem; max-height: 160px; overflow-y: auto; line-height: 1.65; color: #48BB78; }
+.terminal-mini { background: #0A0C12; border-radius: 8px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.72rem; max-height: 140px; overflow-y: auto; line-height: 1.6; color: #48BB78; }
 .terminal-mini::-webkit-scrollbar { width: 4px; }
 .terminal-mini::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 .terminal-mini .ts { color: var(--text-muted); }
@@ -115,17 +160,14 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .terminal-mini .warn { color: var(--yellow); }
 .terminal-mini .err { color: var(--red); }
 
-/* URL bar */
-.url-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: monospace; font-size: 0.78rem; color: var(--text-secondary); word-break: break-all; }
+.url-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: monospace; font-size: 0.72rem; color: var(--text-secondary); word-break: break-all; }
+.field-count { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
-/* Responsive */
-@media (max-width: 900px) { .container { grid-template-columns: 1fr; max-width: 420px; } .phone-wrapper { max-width: 380px; margin: 0 auto; } }
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; max-width: 420px; } .phone-wrapper { max-width: 380px; margin: 0 auto; } .control-panel { max-height: none; } }
 </style>
 </head>
 <body>
 <div class="container">
-
-  <!-- PHONE VIEWPORT -->
   <div class="phone-wrapper">
     <div class="phone-speaker"></div>
     <div class="phone-screen" id="phoneScreen">
@@ -133,68 +175,53 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
         <div class="brand-logo">Vestie</div>
         <div class="phone-role-tag" id="phoneRoleTag">Secure Partner Access</div>
       </div>
-      <div class="phone-content" id="phoneContent">
-        <!-- Injected by JS -->
-      </div>
-      <div class="phone-footer">
-        <span id="phoneFooter"> Verified Secure by Vestie Encrypted Cloud</span>
-      </div>
+      <div class="phone-content" id="phoneContent"></div>
+      <div class="phone-footer"><span id="phoneFooter">Verified Secure by Vestie Encrypted Cloud</span></div>
     </div>
   </div>
 
-  <!-- CONTROL PANEL -->
   <div class="control-panel">
     <div class="panel-header">
-      <h1> Demo Controller</h1>
-      <p>Toggle roles and stages to see the single template adapt in real time. No duplicate screens needed.</p>
+      <h1>Demo Controller</h1>
+      <p>Switch roles and stages — the form template adapts dynamically with role-specific fields.</p>
     </div>
-
     <div class="control-section">
-      <span class="control-label"> Partner Role</span>
-      <div class="role-btn-grid" id="roleBtnGrid">
-        <!-- Injected by JS -->
-      </div>
+      <span class="control-label">Partner Role</span>
+      <div class="role-btn-grid" id="roleBtnGrid"></div>
     </div>
-
     <div class="control-section">
-      <span class="control-label"> Property Path Stage</span>
+      <span class="control-label">Property Path Stage</span>
       <div class="stage-control">
         <button class="stage-btn" id="stagePrev" onclick="changeStage(-1)">&#x25C0;</button>
         <div class="stage-indicator" id="stageIndicator">Stage 1 of 3</div>
         <button class="stage-btn" id="stageNext" onclick="changeStage(1)">&#x25B6;</button>
-        <div class="stage-dots" id="stageDots">
-          <div class="stage-dot2 active"></div>
-          <div class="stage-dot2"></div>
-          <div class="stage-dot2"></div>
-        </div>
+        <div class="stage-dots" id="stageDots"></div>
       </div>
+      <div class="field-count" id="fieldCount"></div>
     </div>
-
     <div class="control-section">
-      <span class="control-label"> Magic Link URL (simulated)</span>
+      <span class="control-label">Magic Link URL</span>
       <div class="url-bar" id="urlBar">demo.html?role=broker&amp;stage=1</div>
     </div>
-
     <div class="control-section">
-      <span class="control-label"> Secure Token Vault</span>
+      <span class="control-label">Secure Token Vault</span>
       <div class="vault-mini">
         <div class="vault-mini-info">
-          <span style="font-size:1.2rem;" id="vaultIcon">&#x1F510;</span>
+          <span style="font-size:1.1rem;" id="vaultIcon">&#x1F510;</span>
           <div>
             <div class="vault-mini-label">Countdown</div>
             <div class="vault-mini-timer" id="vaultTimer">05:00</div>
           </div>
         </div>
-        <span class="status-badge secure" id="vaultBadge" style="font-size:0.7rem;padding:3px 10px;border-radius:12px;font-weight:700;"> Idle</span>
+        <span class="status-badge secure" id="vaultBadge" style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;">Idle</span>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="btn btn-primary" onclick="startVault()" style="flex:1;padding:8px;font-size:0.8rem;">Trigger Access</button>
-        <button class="btn btn-secondary" onclick="resetVault()" style="padding:8px 14px;font-size:0.8rem;">Reset</button>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn btn-primary" onclick="startVault()" style="flex:1;padding:7px;font-size:0.75rem;">Trigger Access</button>
+        <button class="btn btn-secondary" onclick="resetVault()" style="padding:7px 12px;font-size:0.75rem;">Reset</button>
       </div>
     </div>
-
     <div class="control-section" style="flex:1;">
-      <span class="control-label"> Strapi Audit Log</span>
+      <span class="control-label">Strapi Audit Log</span>
       <div class="terminal-mini" id="termLog">
         <div><span class="ts">[DEMO]</span> <span class="ev">Ready. Awaiting role selection...</span></div>
       </div>
@@ -203,7 +230,6 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 </div>
 
 <style>
-/* Re-def for scope */
 .status-badge.secure { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); display:inline-block; }
 .status-badge.expired { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); display:inline-block; }
 .btn-primary { background: var(--gradient); border: none; color: #fff; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -213,246 +239,449 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 </style>
 
 <script>
-// ─── COMPLETE PARTNER DATA (12 Roles) ───
 const PARTNERS = [
   {
-    id: 'broker', icon: '\u{1F3E6}', name: 'Mortgage Broker',
-    title: 'Verify Loan Status',
-    selectLabel: 'Current Finance Milestone',
-    uploadLabel: 'Attach Pre-Approval Letter',
-    stages: ['Pre-Approval Submitted', 'Loan Approved', 'Funded'],
-    fileHints: ['Pre-Approval Letter (PDF)', 'Approval Certificate (PDF)', 'Funding Confirmation (PDF)'],
-    log: 'Strapi: role_type==MortgageBroker — finance pipeline loaded.'
+    id:'broker', icon:'\u{1F3E6}', name:'Mortgage Broker', title:'Verify Loan Status', log:'Strapi: role_type==MortgageBroker — finance pipeline loaded.',
+    stages:['Pre-Approval Submitted','Loan Approved','Funded'],
+    fileHints:['Attach Pre-Approval Letter (PDF)','Attach Approval Certificate (PDF)','Attach Funding Confirmation (PDF)'],
+    stageFields:[[
+      {type:'yesno',label:'Pre-approval received from lender?',key:'preApproved',required:true},
+      {type:'text',label:'Loan reference number',key:'loanRef',placeholder:'e.g. LON-2026-0042',required:true},
+      {type:'number',label:'Estimated property value',key:'estValue',prefix:'$',required:true},
+      {type:'date',label:'Pre-approval expiry date',key:'expiryDate',required:true}
+    ],[
+      {type:'yesno',label:'Full approval granted?',key:'fullApproval',required:true},
+      {type:'text',label:'Approval certificate ID',key:'certId',placeholder:'e.g. CERT-2026-0091',required:true},
+      {type:'checkbox',label:'Conditions satisfied',key:'conditions',options:['Valuation met','Income verified','Title clear','LVR compliant'],required:true}
+    ],[
+      {type:'number',label:'Final funded amount',key:'fundedAmount',prefix:'$',required:true},
+      {type:'date',label:'Settlement date',key:'settlementDate',required:true},
+      {type:'yesno',label:'Funds disbursed to solicitor?',key:'disbursed',required:true},
+      {type:'textarea',label:'Settlement notes',key:'notes',placeholder:'Optional notes...',required:false}
+    ]]
   },
   {
-    id: 'lawyer', icon: '\u{2696}\u{FE0F}', name: 'Property Lawyer',
-    title: 'Verify Contract Review',
-    selectLabel: 'Current Conveyancing Status',
-    uploadLabel: 'Attach Signed Contract Copy',
-    stages: ['Contract Under Review', 'Exchanged & Signed', 'Settlement Completed'],
-    fileHints: ['Draft Contract (PDF)', 'Signed Contract (PDF)', 'Settlement Statement (PDF)'],
-    log: 'Strapi: role_type==PropertyLawyer — legal pipeline loaded.'
+    id:'lawyer', icon:'\u{2696}\u{FE0F}', name:'Property Lawyer', title:'Verify Contract Review', log:'Strapi: role_type==PropertyLawyer — legal pipeline loaded.',
+    stages:['Contract Under Review','Exchanged & Signed','Settlement Completed'],
+    fileHints:['Attach Draft Contract (PDF)','Attach Signed Contract (PDF)','Attach Settlement Statement (PDF)'],
+    stageFields:[[
+      {type:'yesno',label:'Contract received from vendor solicitor?',key:'contractReceived',required:true},
+      {type:'text',label:'Matter reference number',key:'matterRef',placeholder:'e.g. MAT-2026-0188',required:true},
+      {type:'date',label:'Contract received date',key:'receivedDate',required:true}
+    ],[
+      {type:'yesno',label:'Contracts exchanged between parties?',key:'exchanged',required:true},
+      {type:'date',label:'Exchange date',key:'exchangeDate',required:true},
+      {type:'textarea',label:'Special conditions summary',key:'conditionsSummary',placeholder:'List any special conditions...',required:true}
+    ],[
+      {type:'yesno',label:'Settlement completed successfully?',key:'settled',required:true},
+      {type:'date',label:'Settlement date',key:'settleDate',required:true},
+      {type:'number',label:'Final settlement amount',key:'settleAmount',prefix:'$',required:true},
+      {type:'text',label:'Settlement callback reference',key:'callbackRef',placeholder:'e.g. CALL-0042',required:true}
+    ]]
   },
   {
-    id: 'inspector', icon: '\u{1F50D}', name: 'Building Inspector',
-    title: 'Verify Asset Condition',
-    selectLabel: 'Current Due Diligence Status',
-    uploadLabel: 'Attach Inspection Report',
-    stages: ['Inspection Scheduled', 'Report Generated', 'Issues Resolved'],
-    fileHints: ['Booking Confirmation (PDF)', 'Inspection Report (PDF)', 'Clearance Certificate (PDF)'],
-    log: 'Strapi: role_type==BuildingInspector — due diligence pipeline loaded.'
+    id:'inspector', icon:'\u{1F50D}', name:'Building Inspector', title:'Verify Asset Condition', log:'Strapi: role_type==BuildingInspector — due diligence loaded.',
+    stages:['Inspection Scheduled','Report Generated','Issues Resolved'],
+    fileHints:['Attach Booking Confirmation (PDF)','Attach Inspection Report (PDF)','Attach Clearance Certificate (PDF)'],
+    stageFields:[[
+      {type:'date',label:'Inspection date',key:'inspectionDate',required:true},
+      {type:'select',label:'Inspection type',key:'inspectionType',options:['Building only','Pest only','Building + Pest','Pre-purchase overall'],required:true},
+      {type:'text',label:'Booking reference',key:'bookingRef',placeholder:'e.g. BKG-0093',required:true}
+    ],[
+      {type:'radio',label:'Overall inspection outcome',key:'outcome',options:['Clear — no issues','Minor issues found','Major issues found','Property uninsurable'],required:true},
+      {type:'checkbox',label:'Issues identified',key:'issues',options:['Structural','Plumbing','Electrical','Pest / Termite','Roof','Mould / Damp'],required:true},
+      {type:'textarea',label:'Inspection report summary',key:'reportSummary',placeholder:'Key findings...',required:true}
+    ],[
+      {type:'yesno',label:'Have all identified issues been resolved?',key:'issuesResolved',required:true},
+      {type:'date',label:'Final clearance date',key:'clearanceDate',required:true},
+      {type:'text',label:'Certificate reference number',key:'certRef',placeholder:'e.g. CLR-2026-0012',required:true}
+    ]]
   },
   {
-    id: 'tax', icon: '\u{1F4CA}', name: 'Tax Specialist',
-    title: 'Verify Depreciation Setup',
-    selectLabel: 'Current Tax Status',
-    uploadLabel: 'Attach Depreciation Ledger',
-    stages: ['Depreciation Setup', 'Ledger Finalized', 'Submitted to ATO'],
-    fileHints: ['Initial Schedule (PDF)', 'Final Ledger (PDF)', 'ATO Receipt (PDF)'],
-    log: 'Strapi: role_type==TaxSpecialist — depreciation pipeline loaded.'
+    id:'tax', icon:'\u{1F4CA}', name:'Tax Specialist', title:'Verify Depreciation Setup', log:'Strapi: role_type==TaxSpecialist — depreciation loaded.',
+    stages:['Depreciation Setup','Ledger Finalized','Submitted to ATO'],
+    fileHints:['Attach Initial Schedule (PDF)','Attach Final Ledger (PDF)','Attach ATO Receipt (PDF)'],
+    stageFields:[[
+      {type:'yesno',label:'Depreciation schedule prepared?',key:'schedulePrepared',required:true},
+      {type:'text',label:'Financial year',key:'finYear',placeholder:'e.g. 2025-2026',required:true},
+      {type:'number',label:'Estimated first-year claim',key:'estClaim',prefix:'$',required:true}
+    ],[
+      {type:'yesno',label:'Depreciation ledger finalized?',key:'ledgerFinalized',required:true},
+      {type:'number',label:'Total depreciation amount',key:'totalDepreciation',prefix:'$',required:true},
+      {type:'textarea',label:'Assets included',key:'assetSummary',placeholder:'Brief asset summary...',required:true}
+    ],[
+      {type:'yesno',label:'Submitted to ATO?',key:'atoSubmitted',required:true},
+      {type:'date',label:'ATO submission date',key:'submissionDate',required:true},
+      {type:'text',label:'ATO acknowledgment reference',key:'atoRef',placeholder:'e.g. ATO-ACK-3829',required:true},
+      {type:'checkbox',label:'Documents included',key:'atoDocs',options:['Depreciation schedule','Asset register','Tax invoice','Cover letter'],required:true}
+    ]]
   },
   {
-    id: 'agent', icon: '\u{1F3E0}', name: 'Real Estate Agent',
-    title: 'Verify Property Listing',
-    selectLabel: 'Current Sales Status',
-    uploadLabel: 'Attach Signed Agency Agreement',
-    stages: ['Listing Active', 'Offer Accepted', 'Under Contract'],
-    fileHints: ['Agency Agreement (PDF)', 'Offer Acceptance (PDF)', 'Signed Contract (PDF)'],
-    log: 'Strapi: role_type==RealEstateAgent — sales pipeline loaded.'
+    id:'agent', icon:'\u{1F3E0}', name:'Real Estate Agent', title:'Verify Property Listing', log:'Strapi: role_type==RealEstateAgent — sales loaded.',
+    stages:['Listing Active','Offer Accepted','Under Contract'],
+    fileHints:['Attach Agency Agreement (PDF)','Attach Offer Acceptance (PDF)','Attach Signed Contract (PDF)'],
+    stageFields:[[
+      {type:'text',label:'Property address',key:'propAddress',placeholder:'Full property address',required:true},
+      {type:'select',label:'Listing type',key:'listingType',options:['Exclusive','Open listing','Auction','Private sale','Tender'],required:true},
+      {type:'date',label:'Listing commencement date',key:'listingDate',required:true}
+    ],[
+      {type:'yesno',label:'Offer received and accepted?',key:'offerAccepted',required:true},
+      {type:'text',label:'Buyer full name',key:'buyerName',placeholder:'Full name as per contract',required:true},
+      {type:'number',label:'Accepted offer amount',key:'offerAmount',prefix:'$',required:true},
+      {type:'select',label:'Offer status',key:'offerStatus',options:['Unconditional','Subject to finance','Subject to building inspection','Subject to sale of property'],required:true}
+    ],[
+      {type:'yesno',label:'Deposit received?',key:'depositReceived',required:true},
+      {type:'date',label:'Contract date',key:'contractDate',required:true},
+      {type:'number',label:'Deposit amount',key:'depositAmount',prefix:'$',required:true},
+      {type:'textarea',label:'Agent notes',key:'agentNotes',placeholder:'Additional notes...',required:false}
+    ]]
   },
   {
-    id: 'valuer', icon: '\u{1F4D0}', name: 'Property Valuer',
-    title: 'Verify Valuation Report',
-    selectLabel: 'Current Valuation Status',
-    uploadLabel: 'Attach Valuation Certificate',
-    stages: ['Valuation Ordered', 'Site Visit Done', 'Report Complete'],
-    fileHints: ['Valuation Order (PDF)', 'Site Visit Notes (PDF)', 'Valuation Report (PDF)'],
-    log: 'Strapi: role_type==PropertyValuer — valuation pipeline loaded.'
+    id:'valuer', icon:'\u{1F4D0}', name:'Property Valuer', title:'Verify Valuation Report', log:'Strapi: role_type==PropertyValuer — valuation loaded.',
+    stages:['Valuation Ordered','Site Visit Done','Report Complete'],
+    fileHints:['Attach Valuation Order (PDF)','Attach Site Visit Notes (PDF)','Attach Valuation Report (PDF)'],
+    stageFields:[[
+      {type:'select',label:'Valuation purpose',key:'valPurpose',options:['Mortgage security','Pre-purchase','Insurance','Family law','Stamp duty','Self-managed super fund'],required:true},
+      {type:'date',label:'Order date',key:'orderDate',required:true},
+      {type:'text',label:'Order reference number',key:'orderRef',placeholder:'e.g. VAL-ORD-0044',required:true}
+    ],[
+      {type:'date',label:'Site visit date',key:'siteVisitDate',required:true},
+      {type:'textarea',label:'Property observations',key:'siteNotes',placeholder:'Condition, improvements, neighborhood...',required:true},
+      {type:'yesno',label:'Full internal access gained?',key:'internalAccess',required:true}
+    ],[
+      {type:'number',label:'Market valuation amount',key:'valuationAmount',prefix:'$',required:true},
+      {type:'date',label:'Report issue date',key:'reportDate',required:true},
+      {type:'text',label:'Report reference number',key:'reportRef',placeholder:'e.g. VAL-RPT-0092',required:true},
+      {type:'yesno',label:'Report delivered to client?',key:'reportDelivered',required:true}
+    ]]
   },
   {
-    id: 'surveyor', icon: '\u{1F4CF}', name: 'Land Surveyor',
-    title: 'Verify Survey Completion',
-    selectLabel: 'Current Survey Status',
-    uploadLabel: 'Attach Survey Plan',
-    stages: ['Survey Ordered', 'Boundary Marked', 'Plan Lodged'],
-    fileHints: ['Survey Order (PDF)', 'Boundary Diagram (PDF)', 'Lodged Plan (PDF)'],
-    log: 'Strapi: role_type==LandSurveyor — survey pipeline loaded.'
+    id:'surveyor', icon:'\u{1F4CF}', name:'Land Surveyor', title:'Verify Survey Completion', log:'Strapi: role_type==LandSurveyor — survey loaded.',
+    stages:['Survey Ordered','Boundary Marked','Plan Lodged'],
+    fileHints:['Attach Survey Order (PDF)','Attach Boundary Diagram (PDF)','Attach Lodged Plan (PDF)'],
+    stageFields:[[
+      {type:'select',label:'Survey type',key:'surveyType',options:['Boundary','Topographical','Strata','Identification','Contour','Feature'],required:true},
+      {type:'text',label:'Instruction reference',key:'instrRef',placeholder:'e.g. SUR-INST-0012',required:true},
+      {type:'date',label:'Order date',key:'survOrderDate',required:true}
+    ],[
+      {type:'yesno',label:'Boundaries marked on site?',key:'boundaryMarked',required:true},
+      {type:'date',label:'Site marking date',key:'markingDate',required:true},
+      {type:'number',label:'Number of lots identified',key:'lotCount',required:true}
+    ],[
+      {type:'yesno',label:'Survey plan lodged with council?',key:'planLodged',required:true},
+      {type:'date',label:'Lodgement date',key:'lodgementDate',required:true},
+      {type:'text',label:'Plan lodgement reference',key:'lodgementRef',placeholder:'e.g. PLAN-LDG-0041',required:true}
+    ]]
   },
   {
-    id: 'strata', icon: '\u{1F3E2}', name: 'Strata Manager',
-    title: 'Verify Strata Clearance',
-    selectLabel: 'Current Strata Status',
-    uploadLabel: 'Attach Strata Certificate',
-    stages: ['Records Requested', 'Certificate Issued', 'Clearance Given'],
-    fileHints: ['Records Request (PDF)', 'Strata Certificate (PDF)', 'Clearance Notice (PDF)'],
-    log: 'Strapi: role_type==StrataManager — strata pipeline loaded.'
+    id:'strata', icon:'\u{1F3E2}', name:'Strata Manager', title:'Verify Strata Clearance', log:'Strapi: role_type==StrataManager — strata loaded.',
+    stages:['Records Requested','Certificate Issued','Clearance Given'],
+    fileHints:['Attach Records Request (PDF)','Attach Strata Certificate (PDF)','Attach Clearance Notice (PDF)'],
+    stageFields:[[
+      {type:'checkbox',label:'Documents requested',key:'strataDocs',options:['Strata roll','By-laws','AGM minutes','Sinking fund report','Insurance certificate','Financial statements'],required:true},
+      {type:'date',label:'Request date',key:'requestDate',required:true},
+      {type:'text',label:'Request reference number',key:'strataReqRef',placeholder:'e.g. STR-REQ-0034',required:true}
+    ],[
+      {type:'yesno',label:'Strata certificate issued?',key:'certIssued',required:true},
+      {type:'date',label:'Certificate issue date',key:'certIssueDate',required:true},
+      {type:'number',label:'Outstanding levies amount',key:'outstandingLevies',prefix:'$',required:true}
+    ],[
+      {type:'yesno',label:'Strata clearance given?',key:'clearanceGiven',required:true},
+      {type:'date',label:'Clearance date',key:'clearanceDateStr',required:true},
+      {type:'textarea',label:'Special strata notes',key:'strataNotes',placeholder:'Strata manager comments...',required:false}
+    ]]
   },
   {
-    id: 'finplanner', icon: '\u{1F4B0}', name: 'Financial Planner',
-    title: 'Verify Financial Strategy',
-    selectLabel: 'Current Planning Status',
-    uploadLabel: 'Attach Signed Strategy Doc',
-    stages: ['Strategy Drafted', 'Approved by Client', 'Implemented'],
-    fileHints: ['Strategy Draft (PDF)', 'Signed Approval (PDF)', 'Implementation Report (PDF)'],
-    log: 'Strapi: role_type==FinancialPlanner — planning pipeline loaded.'
+    id:'finplanner', icon:'\u{1F4B0}', name:'Financial Planner', title:'Verify Financial Strategy', log:'Strapi: role_type==FinancialPlanner — planning loaded.',
+    stages:['Strategy Drafted','Approved by Client','Implemented'],
+    fileHints:['Attach Strategy Draft (PDF)','Attach Signed Approval (PDF)','Attach Implementation Report (PDF)'],
+    stageFields:[[
+      {type:'checkbox',label:'Strategy components included',key:'stratComponents',options:['Budget plan','Debt reduction','Investment strategy','Superannuation','Insurance needs','Estate planning'],required:true},
+      {type:'select',label:'Client risk profile',key:'riskProfile',options:['Conservative','Moderately conservative','Balanced','Growth','High growth'],required:true},
+      {type:'text',label:'Client engagement reference',key:'engagementRef',placeholder:'e.g. FP-ENG-0028',required:true}
+    ],[
+      {type:'yesno',label:'Strategy approved by client?',key:'approved',required:true},
+      {type:'date',label:'Approval date',key:'approvalDate',required:true},
+      {type:'textarea',label:'Implementation action items',key:'actionItems',placeholder:'Steps required to implement...',required:true}
+    ],[
+      {type:'yesno',label:'Plan implemented in full?',key:'implemented',required:true},
+      {type:'date',label:'Implementation date',key:'implDate',required:true},
+      {type:'number',label:'Total funds invested',key:'fundsInvested',prefix:'$',required:true},
+      {type:'text',label:'Product reference numbers',key:'productRefs',placeholder:'e.g. POL-001, INV-002',required:true}
+    ]]
   },
   {
-    id: 'insurance', icon: '\u{1F6E1}\u{FE0F}', name: 'Insurance Broker',
-    title: 'Verify Insurance Cover',
-    selectLabel: 'Current Insurance Status',
-    uploadLabel: 'Attach Policy Document',
-    stages: ['Quote Requested', 'Policy Issued', 'Policy Bound'],
-    fileHints: ['Quote Summary (PDF)', 'Policy Document (PDF)', 'Binding Confirmation (PDF)'],
-    log: 'Strapi: role_type==InsuranceBroker — insurance pipeline loaded.'
+    id:'insurance', icon:'\u{1F6E1}\u{FE0F}', name:'Insurance Broker', title:'Verify Insurance Cover', log:'Strapi: role_type==InsuranceBroker — insurance loaded.',
+    stages:['Quote Requested','Policy Issued','Policy Bound'],
+    fileHints:['Attach Quote Summary (PDF)','Attach Policy Document (PDF)','Attach Binding Confirmation (PDF)'],
+    stageFields:[[
+      {type:'select',label:'Insurance type',key:'insType',options:['Home & Contents','Landlord','Public liability','Professional indemnity','Building warranty','Landlord + Contents'],required:true},
+      {type:'text',label:'Client reference',key:'clientRef',placeholder:'e.g. CL-0049',required:true},
+      {type:'date',label:'Quote request date',key:'quoteDate',required:true}
+    ],[
+      {type:'yesno',label:'Policy issued by insurer?',key:'policyIssued',required:true},
+      {type:'text',label:'Policy number',key:'policyNumber',placeholder:'e.g. HOM-2026-008822',required:true},
+      {type:'number',label:'Annual premium amount',key:'premiumAmount',prefix:'$',required:true},
+      {type:'date',label:'Policy effective date',key:'effectiveDate',required:true}
+    ],[
+      {type:'yesno',label:'Policy bound and active?',key:'bound',required:true},
+      {type:'date',label:'Binding date',key:'bindingDate',required:true},
+      {type:'text',label:'Binder reference number',key:'binderRef',placeholder:'e.g. BND-0093',required:true},
+      {type:'checkbox',label:'Covers included',key:'covers',options:['Building','Contents','Public liability','Loss of rent','Theft','Accidental damage'],required:true}
+    ]]
   },
   {
-    id: 'settlement', icon: '\u{1F91D}', name: 'Settlement Agent',
-    title: 'Verify Settlement Progress',
-    selectLabel: 'Current Settlement Status',
-    uploadLabel: 'Attach Settlement Statement',
-    stages: ['File Opened', 'Documents Prepared', 'Settled'],
-    fileHints: ['File Opening Conf (PDF)', 'Prepared Documents (PDF)', 'Final Settlement (PDF)'],
-    log: 'Strapi: role_type==SettlementAgent — settlement pipeline loaded.'
+    id:'settlement', icon:'\u{1F91D}', name:'Settlement Agent', title:'Verify Settlement Progress', log:'Strapi: role_type==SettlementAgent — settlement loaded.',
+    stages:['File Opened','Documents Prepared','Settled'],
+    fileHints:['Attach File Opening Conf (PDF)','Attach Prepared Documents (PDF)','Attach Final Settlement (PDF)'],
+    stageFields:[[
+      {type:'yesno',label:'Settlement file opened?',key:'fileOpened',required:true},
+      {type:'text',label:'File reference number',key:'fileRef',placeholder:'e.g. SET-FILE-0017',required:true},
+      {type:'date',label:'File opening date',key:'openDate',required:true}
+    ],[
+      {type:'checkbox',label:'Documents prepared',key:'settleDocs',options:['Settlement statement','Discharge authority','Transfer of land','Adjustments schedule','Notice of sale'],required:true},
+      {type:'textarea',label:'Settlement notes',key:'settleNotes',placeholder:'Adjustments, apportionments...',required:true},
+      {type:'yesno',label:'All documents signed by parties?',key:'docsSigned',required:true}
+    ],[
+      {type:'number',label:'Final settlement amount',key:'finalSettleAmount',prefix:'$',required:true},
+      {type:'date',label:'Settlement date',key:'finalSettleDate',required:true},
+      {type:'text',label:'Settlement reference number',key:'settleRef',placeholder:'e.g. STL-2026-0091',required:true},
+      {type:'yesno',label:'All parties paid out?',key:'partiesPaid',required:true}
+    ]]
   },
   {
-    id: 'conveyancer', icon: '\u{1F4DD}', name: 'Licensed Conveyancer',
-    title: 'Verify Conveyancing Progress',
-    selectLabel: 'Current Conveyancing Status',
-    uploadLabel: 'Attach Section 32 Statement',
-    stages: ['Search Complete', 'Section 32 Reviewed', 'Ready to Exchange'],
-    fileHints: ['Property Search (PDF)', 'Section 32 (PDF)', 'Exchange Ready (PDF)'],
-    log: 'Strapi: role_type==Conveyancer — conveyancing pipeline loaded.'
+    id:'conveyancer', icon:'\u{1F4DD}', name:'Licensed Conveyancer', title:'Verify Conveyancing Progress', log:'Strapi: role_type==Conveyancer — conveyancing loaded.',
+    stages:['Search Complete','Section 32 Reviewed','Ready to Exchange'],
+    fileHints:['Attach Property Search (PDF)','Attach Section 32 (PDF)','Attach Exchange Ready (PDF)'],
+    stageFields:[[
+      {type:'checkbox',label:'Searches completed',key:'searches',options:['Title search','Council rates','Water rates','Land tax','Planning certificate','Contaminated land','Road access'],required:true},
+      {type:'yesno',label:'Title search clean and clear?',key:'titleClear',required:true},
+      {type:'date',label:'Search completion date',key:'searchDate',required:true}
+    ],[
+      {type:'yesno',label:'Section 32 statement reviewed?',key:'s32Reviewed',required:true},
+      {type:'textarea',label:'Client queries and concerns',key:'clientQueries',placeholder:'Buyer questions...',required:true},
+      {type:'select',label:'Recommendation',key:'recommendation',options:['Proceed without conditions','Proceed with conditions','Negotiate amendments','Withdraw from sale'],required:true}
+    ],[
+      {type:'yesno',label:'Ready to exchange contracts?',key:'readyToExchange',required:true},
+      {type:'date',label:'Exchange ready date',key:'exchangeReadyDate',required:true},
+      {type:'text',label:'Exchange reference',key:'exchangeRef',placeholder:'e.g. EXC-0094',required:true}
+    ]]
   }
 ];
 
-// ─── STATE ───
-let currentRoleIdx = 0;
-let currentStage = 0;
-let fileUploaded = false;
-let vaultInterval = null;
-let vaultTime = 300;
-let vaultActive = false;
+let currentRoleIdx = 0, currentStage = 0, fileUploaded = false, formData = {};
+let vaultInterval = null, vaultTime = 300, vaultActive = false;
 
-// ─── INIT ───
 function init() {
-  // Parse URL
   const params = new URLSearchParams(window.location.search);
-  const roleParam = params.get('role');
-  const stageParam = params.get('stage');
-
-  if (roleParam) {
-    const idx = PARTNERS.findIndex(p => p.id === roleParam);
-    if (idx >= 0) currentRoleIdx = idx;
-  }
-  if (stageParam) {
-    const s = parseInt(stageParam);
-    if (s >= 1 && s <= 3) currentStage = s - 1;
-  }
-
-  // Build role buttons
+  const rp = params.get('role'), sp = params.get('stage');
+  if (rp) { const idx = PARTNERS.findIndex(p => p.id === rp); if (idx >= 0) currentRoleIdx = idx; }
+  if (sp) { const s = parseInt(sp); if (s >= 1 && s <= 3) currentStage = s - 1; }
   const grid = document.getElementById('roleBtnGrid');
   PARTNERS.forEach((p, i) => {
     const btn = document.createElement('div');
     btn.className = 'role-btn' + (i === currentRoleIdx ? ' active' : '');
-    btn.textContent = `${p.icon} ${p.name}`;
+    btn.textContent = p.icon + ' ' + p.name;
     btn.onclick = () => selectRole(i);
     grid.appendChild(btn);
   });
-
-  renderPhone();
-  updateStageDots();
-  updateURL();
-  log('DEMO: Magic Link simulation initialized with <span class="ev">' + PARTNERS[currentRoleIdx].name + '</span>');
+  renderPhone(); updateStageDots(); updateURL();
+  log('DEMO: Initialized with <span class="ev">' + PARTNERS[currentRoleIdx].name + '</span>');
 }
 
 function selectRole(idx) {
-  currentRoleIdx = idx;
-  currentStage = 0;
-  fileUploaded = false;
-
-  document.querySelectorAll('.role-btn').forEach((b, i) => {
-    b.classList.toggle('active', i === idx);
-  });
-
-  renderPhone();
-  updateStageDots();
-  updateURL();
-  log(PARTNERS[idx].log);
+  currentRoleIdx = idx; currentStage = 0; fileUploaded = false; formData = {};
+  document.querySelectorAll('.role-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  renderPhone(); updateStageDots(); updateURL(); log(PARTNERS[idx].log);
 }
 
 function changeStage(delta) {
   const p = PARTNERS[currentRoleIdx];
-  const newStage = currentStage + delta;
-  if (newStage < 0 || newStage >= p.stages.length) return;
-  currentStage = newStage;
-  fileUploaded = false;
-  renderPhone();
-  updateStageDots();
-  updateURL();
-  log('STAGE: Advanced to <span class="ev">' + p.stages[currentStage] + '</span> (' + (currentStage + 1) + ' of ' + p.stages.length + ')');
+  const ns = currentStage + delta;
+  if (ns < 0 || ns >= p.stages.length) return;
+  currentStage = ns; fileUploaded = false; formData = {};
+  renderPhone(); updateStageDots(); updateURL();
+  log('STAGE: Advanced to <span class="ev">' + p.stages[currentStage] + '</span> (' + (currentStage + 1) + '/' + p.stages.length + ')');
+}
+
+function selectPill(idx) {
+  currentStage = idx; fileUploaded = false; formData = {};
+  renderPhone(); updateStageDots(); updateURL();
 }
 
 function renderPhone() {
   const p = PARTNERS[currentRoleIdx];
   const stage = p.stages[currentStage];
-  const fileHint = p.fileHints[currentStage];
-
   document.getElementById('phoneRoleTag').textContent = p.icon + ' ' + p.name + ' — Magic Link Session';
-  document.getElementById('phoneFooter').textContent = ' Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
+  document.getElementById('phoneFooter').textContent = 'Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
 
-  const container = document.getElementById('phoneContent');
-  container.innerHTML = `
-    <div class="phone-card">
-      <div class="form-title">${p.title}</div>
-      <div class="form-subtitle">Secure partner checklist for file <strong>Pair-493</strong>. Role: <strong>${p.name}</strong> — Stage: <strong>${stage}</strong></div>
+  let html = '<div class="phone-card">';
+  html += '<div class="form-title">' + p.title + '</div>';
+  html += '<div class="form-subtitle">File <strong>Pair-493</strong> &middot; Role: <strong>' + p.name + '</strong> &middot; Stage: <strong>' + stage + '</strong></div>';
 
-      <div class="input-group">
-        <label class="input-label">${p.selectLabel}</label>
-        <div class="pill-group" id="pillGroup">
-          ${p.stages.map((s, i) => `<div class="pill${i === currentStage ? ' active' : ''}" onclick="selectPill(${i})">${s}</div>`).join('')}
-        </div>
-      </div>
+  // Stage pills
+  html += '<div class="input-group"><label class="input-label">Milestone Status</label><div class="pill-group">';
+  p.stages.forEach((s, i) => {
+    html += '<div class="pill' + (i === currentStage ? ' active' : '') + '" onclick="selectPill(' + i + ')">' + s + '</div>';
+  });
+  html += '</div></div>';
 
-      <div class="input-group">
-        <label class="input-label">${p.uploadLabel}</label>
-        <div class="upload-zone${fileUploaded ? ' uploaded' : ''}" id="uploadZone" onclick="triggerUpload()">
-          <span class="upload-icon">${fileUploaded ? '\u2705' : '\uD83D\uDCC1'}</span>
-          <span class="upload-text" id="uploadText">${fileUploaded ? 'document_' + p.id + '_' + (currentStage + 1) + '.pdf attached' : 'Tap to upload ' + fileHint}</span>
-          <span class="upload-sub">Supports PDF format  |  Max 10MB</span>
-        </div>
-      </div>
+  // Dynamic fields
+  const fields = p.stageFields[currentStage];
+  fields.forEach(f => {
+    const reqMark = f.required ? '<span class="required-star">*</span>' : '';
+    html += '<div class="input-group">';
+    html += '<label class="input-label">' + f.label + ' ' + reqMark + '</label>';
 
-      <button class="btn-submit" id="submitBtn" ${fileUploaded ? '' : 'disabled'} onclick="submitForm()">Submit Verification</button>
-    </div>
-  `;
+    if (f.type === 'yesno') {
+      const val = formData[f.key];
+      html += '<div class="yn-group" data-key="' + f.key + '">';
+      html += '<div class="yn-pill yes' + (val === 'yes' ? ' active-yes' : '') + '" onclick="setYesNo(\'' + f.key + '\',\'yes\',this)">Yes</div>';
+      html += '<div class="yn-pill no' + (val === 'no' ? ' active-no' : '') + '" onclick="setYesNo(\'' + f.key + '\',\'no\',this)">No</div>';
+      html += '</div>';
+    } else if (f.type === 'text') {
+      html += '<input class="fld" type="text" data-key="' + f.key + '" placeholder="' + (f.placeholder || '') + '" value="' + (formData[f.key] || '') + '" oninput="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + '>';
+    } else if (f.type === 'textarea') {
+      html += '<textarea class="fld" data-key="' + f.key + '" placeholder="' + (f.placeholder || '') + '" oninput="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + '>' + (formData[f.key] || '') + '</textarea>';
+    } else if (f.type === 'number') {
+      if (f.prefix) {
+        html += '<div class="input-with-prefix"><span class="input-prefix">' + f.prefix + '</span>';
+        html += '<input class="fld" type="number" data-key="' + f.key + '" placeholder="' + (f.placeholder || '') + '" value="' + (formData[f.key] || '') + '" oninput="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + ' min="0"></div>';
+      } else {
+        html += '<input class="fld" type="number" data-key="' + f.key + '" placeholder="' + (f.placeholder || '') + '" value="' + (formData[f.key] || '') + '" oninput="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + ' min="0">';
+      }
+    } else if (f.type === 'date') {
+      html += '<input class="fld" type="date" data-key="' + f.key + '" value="' + (formData[f.key] || '') + '" onchange="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + '>';
+    } else if (f.type === 'select') {
+      html += '<select class="fld" data-key="' + f.key + '" onchange="setVal(\'' + f.key + '\',this.value)" ' + (f.required ? 'required' : '') + '>';
+      html += '<option value="">Select...</option>';
+      f.options.forEach(o => {
+        html += '<option value="' + o + '"' + (formData[f.key] === o ? ' selected' : '') + '>' + o + '</option>';
+      });
+      html += '</select>';
+    } else if (f.type === 'radio') {
+      html += '<div class="radio-group" data-key="' + f.key + '">';
+      f.options.forEach(o => {
+        const active = formData[f.key] === o;
+        html += '<div class="radio-option' + (active ? ' active' : '') + '" onclick="setRadio(\'' + f.key + '\',\'' + o.replace(/'/g, "\\'") + '\',this)">';
+        html += '<div class="radio-dot"><div class="radio-dot-inner"></div></div>';
+        html += '<span class="radio-label">' + o + '</span></div>';
+      });
+      html += '</div>';
+    } else if (f.type === 'checkbox') {
+      const arr = formData[f.key] || [];
+      html += '<div class="cb-group" data-key="' + f.key + '">';
+      f.options.forEach(o => {
+        const active = arr.includes(o);
+        html += '<div class="cb-option' + (active ? ' active' : '') + '" onclick="toggleCheckbox(\'' + f.key + '\',\'' + o.replace(/'/g, "\\'") + '\',this)">';
+        html += '<div class="cb-box">' + (active ? '\u2713' : '') + '</div>';
+        html += '<span class="cb-label">' + o + '</span></div>';
+      });
+      html += '</div>';
+    }
 
+    html += '<div class="err-msg" id="err-' + f.key + '">This field is required</div>';
+    html += '</div>';
+  });
+
+  // File upload
+  html += '<div class="input-group"><label class="input-label">' + p.fileHints[currentStage] + ' <span class="required-star">*</span></label>';
+  html += '<div class="upload-zone' + (fileUploaded ? ' uploaded' : '') + '" id="uploadZone" onclick="triggerUpload()">';
+  html += '<span class="upload-icon">' + (fileUploaded ? '\u2705' : '\uD83D\uDCC1') + '</span>';
+  html += '<span class="upload-text" id="uploadText">' + (fileUploaded ? '\u2705 document_verified.pdf attached' : 'Tap to upload document') + '</span>';
+  html += '<span class="upload-sub">PDF format  |  Max 10MB</span></div></div>';
+
+  html += '<button class="btn-submit" id="submitBtn" onclick="submitForm()">Submit Verification</button>';
+  html += '</div>';
+  document.getElementById('phoneContent').innerHTML = html;
   document.getElementById('stagePrev').disabled = currentStage === 0;
   document.getElementById('stageNext').disabled = currentStage >= p.stages.length - 1;
+
+  const fc = document.getElementById('fieldCount');
+  fc.textContent = fields.length + ' field' + (fields.length > 1 ? 's' : '') + ' in this stage';
 }
 
-function selectPill(idx) {
-  currentStage = idx;
-  fileUploaded = false;
-  renderPhone();
-  updateStageDots();
-  updateURL();
+// ─── Field helpers ───
+function setVal(key, val) { formData[key] = val; clearError(key); }
+
+function setYesNo(key, val, el) {
+  formData[key] = val; clearError(key);
+  const parent = el.parentElement;
+  parent.querySelectorAll('.yn-pill').forEach(p => { p.classList.remove('active-yes', 'active-no'); });
+  el.classList.add(val === 'yes' ? 'active-yes' : 'active-no');
+}
+
+function setRadio(key, val, el) {
+  formData[key] = val; clearError(key);
+  const parent = el.parentElement;
+  parent.querySelectorAll('.radio-option').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleCheckbox(key, val, el) {
+  if (!formData[key]) formData[key] = [];
+  const arr = formData[key];
+  const idx = arr.indexOf(val);
+  if (idx >= 0) { arr.splice(idx, 1); el.classList.remove('active'); el.querySelector('.cb-box').textContent = ''; }
+  else { arr.push(val); el.classList.add('active'); el.querySelector('.cb-box').textContent = '\u2713'; }
+  clearError(key);
 }
 
 function triggerUpload() {
   fileUploaded = true;
-  const p = PARTNERS[currentRoleIdx];
-  document.getElementById('uploadText').textContent = '✅ document_' + p.id + '_' + (currentStage + 1) + '.pdf attached';
+  document.getElementById('uploadText').textContent = '\u2705 document_verified.pdf attached';
   document.getElementById('uploadZone').classList.add('uploaded');
-  document.getElementById('submitBtn').disabled = false;
-  log('FILE: Document staging complete — <span class="ev">document_' + p.id + '_' + (currentStage + 1) + '.pdf</span> ready for transmission.');
+  log('FILE: Document staged for <span class="ev">' + PARTNERS[currentRoleIdx].id + '</span>');
+}
+
+function clearError(key) {
+  const el = document.getElementById('err-' + key);
+  if (el) el.classList.remove('show');
+}
+
+// ─── Validation ───
+function validateForm() {
+  const p = PARTNERS[currentRoleIdx];
+  const fields = p.stageFields[currentStage];
+  let valid = true;
+  fields.forEach(f => {
+    const val = formData[f.key];
+    let failed = false;
+    if (f.required) {
+      if (f.type === 'yesno') { if (!val) failed = true; }
+      else if (f.type === 'checkbox') { if (!val || val.length === 0) failed = true; }
+      else if (f.type === 'radio') { if (!val) failed = true; }
+      else if (f.type === 'select') { if (!val) failed = true; }
+      else { if (!val || val.trim() === '') failed = true; }
+    }
+    if (failed) {
+      const el = document.getElementById('err-' + f.key);
+      if (el) el.classList.add('show');
+      valid = false;
+    } else {
+      const el = document.getElementById('err-' + f.key);
+      if (el) el.classList.remove('show');
+    }
+  });
+  if (!fileUploaded) { valid = false; alert('Please attach the verification document.'); }
+  return valid;
 }
 
 function submitForm() {
-  if (!fileUploaded) return;
+  if (!validateForm()) return;
   const p = PARTNERS[currentRoleIdx];
   const stage = p.stages[currentStage];
-  log('API: <span class="ev">POST /api/verifications</span> — user_pair=Pair-493, role=' + p.id + ', stage=' + (currentStage + 1) + ', status=completed');
 
+  const payload = { user_pair: 'Pair-493', role: p.id, stage: currentStage + 1, stage_name: stage, file: 'document_verified.pdf' };
+  const fields = p.stageFields[currentStage];
+  fields.forEach(f => {
+    if (f.type === 'checkbox') payload[f.key] = formData[f.key] || [];
+    else payload[f.key] = formData[f.key] || '';
+  });
+
+  log('API: <span class="ev">POST /api/verifications</span> — payload: <span class="warn">' + JSON.stringify(payload) + '</span>');
+
+  const payloadDisplay = JSON.stringify(payload, null, 2);
   const container = document.getElementById('phoneContent');
   container.innerHTML = `
     <div class="success-overlay">
@@ -460,24 +689,24 @@ function submitForm() {
       <div class="success-title">Verification Complete!</div>
       <div class="success-desc">
         <strong>${p.name}</strong> — ${stage}<br>
-        Milestone data pushed to Strapi database.<br>
-        Property Path advanced for Pair-493.
+        Pair-493 Property Path advanced.
       </div>
+      <div class="success-data">${escapeHtml(payloadDisplay)}</div>
       <button class="btn-reset" onclick="resetForm()">Simulate New Transaction</button>
     </div>
   `;
-  document.getElementById('phoneFooter').textContent = ' Verification Recorded  |  Strapi Sync OK';
-  log('SUCCESS: Property Path advanced for Pair-493. Dashboard updated.');
-  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('phoneFooter').textContent = 'Verification Recorded  |  Strapi Sync OK';
+  log('SUCCESS: Property Path advanced. Dashboard updated for Pair-493.');
 }
 
 function resetForm() {
-  fileUploaded = false;
-  renderPhone();
-  updateStageDots();
-  document.getElementById('phoneFooter').textContent = ' Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
-  log('RESET: Form cleared. Ready for new verification transaction.');
+  fileUploaded = false; formData = {};
+  renderPhone(); updateStageDots();
+  document.getElementById('phoneFooter').textContent = 'Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
+  log('RESET: Form cleared. Ready for new transaction.');
 }
+
+function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function updateStageDots() {
   const p = PARTNERS[currentRoleIdx];
@@ -495,61 +724,34 @@ function updateStageDots() {
 
 function updateURL() {
   const p = PARTNERS[currentRoleIdx];
-  const url = 'demo.html?role=' + p.id + '&stage=' + (currentStage + 1);
-  document.getElementById('urlBar').textContent = url;
+  document.getElementById('urlBar').textContent = 'demo.html?role=' + p.id + '&stage=' + (currentStage + 1);
 }
 
 // ─── VAULT ───
 function startVault() {
-  if (vaultActive) return;
-  vaultActive = true;
-  vaultTime = 300;
-  document.getElementById('vaultBadge').className = 'status-badge secure';
-  document.getElementById('vaultBadge').textContent = ' Active';
-  document.getElementById('vaultIcon').textContent = '\u{1F510}';
-  updateVaultTimer();
+  if (vaultActive) return; vaultActive = true; vaultTime = 300;
+  document.getElementById('vaultBadge').className = 'status-badge secure'; document.getElementById('vaultBadge').textContent = 'Active';
+  document.getElementById('vaultIcon').textContent = '\u{1F510}'; updateVaultTimer();
   log('VAULT: Pre-signed token generated. 5:00 window opened.');
   clearInterval(vaultInterval);
-  vaultInterval = setInterval(() => {
-    vaultTime--;
-    updateVaultTimer();
-    if (vaultTime <= 0) {
-      clearInterval(vaultInterval);
-      vaultActive = false;
-      document.getElementById('vaultBadge').className = 'status-badge expired';
-      document.getElementById('vaultBadge').textContent = ' Expired';
-      document.getElementById('vaultIcon').textContent = '\u{26D4}';
-      log('<span class="err">SECURITY: Token expired. HTTP 403 — Access blocked.</span>');
-    }
+  vaultInterval = setInterval(() => { vaultTime--; updateVaultTimer();
+    if (vaultTime <= 0) { clearInterval(vaultInterval); vaultActive = false;
+      document.getElementById('vaultBadge').className = 'status-badge expired'; document.getElementById('vaultBadge').textContent = 'Expired';
+      document.getElementById('vaultIcon').textContent = '\u26D4';
+      log('<span class="err">SECURITY: Token expired. HTTP 403 — Access blocked.</span>'); }
   }, 1000);
 }
+function resetVault() { clearInterval(vaultInterval); vaultActive = false; vaultTime = 300;
+  document.getElementById('vaultBadge').className = 'status-badge secure'; document.getElementById('vaultBadge').textContent = 'Idle';
+  document.getElementById('vaultIcon').textContent = '\u{1F510}'; document.getElementById('vaultTimer').textContent = '05:00'; log('VAULT: Session reset.'); }
+function updateVaultTimer() { const m = String(Math.floor(vaultTime / 60)).padStart(2,'0'); const s = String(vaultTime % 60).padStart(2,'0'); document.getElementById('vaultTimer').textContent = m + ':' + s; }
 
-function resetVault() {
-  clearInterval(vaultInterval);
-  vaultActive = false;
-  vaultTime = 300;
-  document.getElementById('vaultBadge').className = 'status-badge secure';
-  document.getElementById('vaultBadge').textContent = ' Idle';
-  document.getElementById('vaultIcon').textContent = '\u{1F510}';
-  document.getElementById('vaultTimer').textContent = '05:00';
-  log('VAULT: Session manually reset.');
-}
-
-function updateVaultTimer() {
-  const m = String(Math.floor(vaultTime / 60)).padStart(2, '0');
-  const s = String(vaultTime % 60).padStart(2, '0');
-  document.getElementById('vaultTimer').textContent = m + ':' + s;
-}
-
-// ─── TERMINAL ───
 function log(msg) {
   const t = document.getElementById('termLog');
   const time = new Date().toLocaleTimeString();
   t.innerHTML += '<div><span class="ts">[' + time + ']</span> ' + msg + '</div>';
   t.scrollTop = t.scrollHeight;
 }
-
-// ─── BOOT ───
 init();
 </script>
 </body>
