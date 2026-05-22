@@ -150,7 +150,7 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       <div class="panel-title"> Secure File Vault Simulator</div>
       <div class="vault-display">
         <div class="vault-token">
-          <div class="token-ring" id="tokenRing">14</div>
+          <div class="token-ring" id="tokenRing">7</div>
           <div class="token-info">
             <div class="token-label" id="vaultLabel">Magic Link Validity</div>
             <div class="token-value" id="timerDisplay">—</div>
@@ -235,7 +235,7 @@ function launchDemo(index) {
 
 // ─── VAULT SIMULATION ───
 let vaultActive = false;
-const VALIDITY_DAYS = 14;
+const VALIDITY_DAYS = 7;
 
 function triggerVaultAccess() {
   if (vaultActive) return;
