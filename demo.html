@@ -204,20 +204,21 @@ select.fld { cursor: pointer; appearance: none; background-image: url("data:imag
       <div class="url-bar" id="urlBar">demo.html?role=broker&amp;stage=1</div>
     </div>
     <div class="control-section">
-      <span class="control-label">Secure Token Vault</span>
+      <span class="control-label">Magic Link Validity (Days)</span>
       <div class="vault-mini">
         <div class="vault-mini-info">
           <span style="font-size:1.1rem;" id="vaultIcon">&#x1F510;</span>
           <div>
-            <div class="vault-mini-label">Countdown</div>
-            <div class="vault-mini-timer" id="vaultTimer">05:00</div>
+            <div class="vault-mini-label" id="vaultLabel">Link Status</div>
+            <div class="vault-mini-timer" id="vaultTimer">—</div>
           </div>
         </div>
         <span class="status-badge secure" id="vaultBadge" style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;">Idle</span>
       </div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;" id="vaultDateRange"></div>
       <div style="display:flex;gap:8px;margin-top:6px;">
-        <button class="btn btn-primary" onclick="startVault()" style="flex:1;padding:7px;font-size:0.75rem;">Trigger Access</button>
-        <button class="btn btn-secondary" onclick="resetVault()" style="padding:7px 12px;font-size:0.75rem;">Reset</button>
+        <button class="btn btn-primary" onclick="startVault()" style="flex:1;padding:7px;font-size:0.75rem;">Issue Magic Link</button>
+        <button class="btn btn-secondary" onclick="expireVault()" style="padding:7px 12px;font-size:0.75rem;">Simulate Expiry</button>
       </div>
     </div>
     <div class="control-section" style="flex:1;">
@@ -728,23 +729,34 @@ function updateURL() {
 }
 
 // ─── VAULT ───
+let vaultActive = false;
+const VALIDITY_DAYS = 14;
+
 function startVault() {
-  if (vaultActive) return; vaultActive = true; vaultTime = 300;
-  document.getElementById('vaultBadge').className = 'status-badge secure'; document.getElementById('vaultBadge').textContent = 'Active';
-  document.getElementById('vaultIcon').textContent = '\u{1F510}'; updateVaultTimer();
-  log('VAULT: Pre-signed token generated. 5:00 window opened.');
-  clearInterval(vaultInterval);
-  vaultInterval = setInterval(() => { vaultTime--; updateVaultTimer();
-    if (vaultTime <= 0) { clearInterval(vaultInterval); vaultActive = false;
-      document.getElementById('vaultBadge').className = 'status-badge expired'; document.getElementById('vaultBadge').textContent = 'Expired';
-      document.getElementById('vaultIcon').textContent = '\u26D4';
-      log('<span class="err">SECURITY: Token expired. HTTP 403 — Access blocked.</span>'); }
-  }, 1000);
+  if (vaultActive) return;
+  vaultActive = true;
+  const now = new Date();
+  const expiry = new Date(now);
+  expiry.setDate(expiry.getDate() + VALIDITY_DAYS);
+  const fmt = d => d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+  document.getElementById('vaultLabel').textContent = 'Valid for ' + VALIDITY_DAYS + ' days';
+  document.getElementById('vaultTimer').textContent = VALIDITY_DAYS + ' days';
+  document.getElementById('vaultDateRange').textContent = 'Issued: ' + fmt(now) + '  |  Expires: ' + fmt(expiry);
+  document.getElementById('vaultBadge').className = 'status-badge secure';
+  document.getElementById('vaultBadge').textContent = 'Active';
+  document.getElementById('vaultIcon').textContent = '\u{1F510}';
+  log('LINK: Magic link generated. Valid for <span class="ev">' + VALIDITY_DAYS + ' days</span> until ' + fmt(expiry) + '.');
 }
-function resetVault() { clearInterval(vaultInterval); vaultActive = false; vaultTime = 300;
-  document.getElementById('vaultBadge').className = 'status-badge secure'; document.getElementById('vaultBadge').textContent = 'Idle';
-  document.getElementById('vaultIcon').textContent = '\u{1F510}'; document.getElementById('vaultTimer').textContent = '05:00'; log('VAULT: Session reset.'); }
-function updateVaultTimer() { const m = String(Math.floor(vaultTime / 60)).padStart(2,'0'); const s = String(vaultTime % 60).padStart(2,'0'); document.getElementById('vaultTimer').textContent = m + ':' + s; }
+function expireVault() {
+  vaultActive = false;
+  document.getElementById('vaultLabel').textContent = 'Link Status';
+  document.getElementById('vaultTimer').textContent = 'Expired';
+  document.getElementById('vaultDateRange').textContent = '';
+  document.getElementById('vaultBadge').className = 'status-badge expired';
+  document.getElementById('vaultBadge').textContent = 'Expired';
+  document.getElementById('vaultIcon').textContent = '\u26D4';
+  log('<span class="err">SECURITY: Magic link expired. HTTP 403 — Access blocked.</span>');
+}
 
 function log(msg) {
   const t = document.getElementById('termLog');

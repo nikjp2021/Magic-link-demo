@@ -355,11 +355,12 @@ File upload is always required. Submit is blocked until all required fields pass
 
 ### 5.4 Security Implementation
 
-- Pre-signed URLs with 5-minute TTL
-- Single-use token invalidated after first access
-- HTTP 403 returned on expired token
+- **Pre-signed URLs with 14-day validity** — magic link remains accessible for the partner's response window
+- Single-use token invalidated after first successful submission
+- HTTP 403 returned if link is accessed after expiry or after submission
 - All uploads validated to PDF format, max 10MB
 - Audit trail logged to Strapi `verification_logs`
+- Expired links can be re-issued by the admin via the Command Center
 
 ---
 
