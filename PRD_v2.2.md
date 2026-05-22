@@ -28,15 +28,15 @@ Vestie Partners (Mortgage Brokers, Property Lawyers, Building Inspectors, etc.) 
 ### 1.2 Lifecycle Flow
 
 ```
-[1] Admin assigns User Pair to Partner via Command Center
+[1] User Pair hits a property path milestone in the mobile app
          |
-[2] System fires automated email with unique magic link
+[2] System detects milestone → fires automated magic link email to the assigned partner
          |
-[3] Partner taps link → smart webform loads (role detected via URL)
+[3] Partner taps link → smart webform loads (role + stage detected via URL)
          |
 [4] Partner completes dynamic fields (yes/no, text, numbers, dates, checkboxes, selections) + uploads PDF proof
          |
-[5] Strapi records all field data → Property Path advances in mobile app
+[5] Strapi records all field data → Property Path advances to next milestone
 ```
 
 ### 1.3 Cost-Saving Principle
@@ -169,6 +169,85 @@ Each stage of each partner has a custom set of form fields chosen from 8 support
 | Stage 2 | yesno(s32 reviewed) + textarea(client queries) + select(recommendation: proceed/conditions/negotiate/withdraw) |
 | Stage 3 | yesno(ready to exchange) + date(exchange ready) + text(exchange ref) |
 
+### 3.3 Property Path Trigger Map
+
+Each Partner is assigned to a specific phase of the user's property purchase journey. The magic link email fires automatically when the user's Property Path reaches a matching milestone. The table below maps each partner role to the trigger event, the property phase they operate in, and which real-world action advances each stage.
+
+| Partner | Trigger Event (Milestone Hit) | Property Phase | Stage 1 Fires When | Stage 2 Fires When | Stage 3 Fires When |
+|---------|------------------------------|----------------|-------------------|-------------------|-------------------|
+| Mortgage Broker | User taps "Finance" step | Finance | Pre-approval requested in app | Bank issues conditional approval | Settlement date confirmed by solicitor |
+| Property Lawyer | User reaches "Legal Review" step | Legal & Settlement | Vendor solicitor drafts contract | User instructs lawyer to exchange | Settlement date confirmed |
+| Building Inspector | Offer accepted → Due Diligence opens | Due Diligence | User books inspection via app | Inspector completes site visit | 7-day review window opens |
+| Tax Specialist | User enters "Tax" step | Due Diligence | Financial year end approaching | Mid-year depreciation review | ATO lodgement deadline |
+| Real Estate Agent | User marks "List Property" | Acquisition | Property goes live on market | Verbal offer accepted | Contract signed by vendor |
+| Property Valuer | Lender requests valuation in app | Due Diligence | Valuation ordered via lender portal | Property access granted by owner | Report due to lender |
+| Land Surveyor | Subdivision flagged during Due Diligence | Due Diligence | Survey instruction issued | Site marking completed | Council lodgement deadline |
+| Strata Manager | Property identified as strata titled | Due Diligence | Strata records requested by conveyancer | Certificate required for exchange | Clearance needed before settlement |
+| Financial Planner | User selects "Financial Plan" from menu | Finance | Initial consultation booked with planner | Client reviews strategy draft | Implementation date set |
+| Insurance Broker | Property purchase or refinance triggered | Finance | User requests quote from app | Policy issued by insurer | Settlement requires binding insurance |
+| Settlement Agent | Contract goes unconditional | Legal & Settlement | File opened after cooling-off expiry | Documents prepared T-7 days before settlement | Settlement day (T) |
+| Licensed Conveyancer | User reaches "Conveyancing" step | Legal & Settlement | Property identified for purchase | Section 32 received from vendor | Exchange date confirmed |
+
+#### Trigger Flow by Property Phase
+
+```
+Phase 1: Acquisition
+  Real Estate Agent
+    Stage 1: Property listed on market
+    Stage 2: Offer received and accepted
+    Stage 3: Contract signed → moves to Legal Phase
+
+Phase 2: Finance
+  Mortgage Broker
+    Stage 1: Pre-approval requested
+    Stage 2: Full approval granted
+    Stage 3: Funds disbursed at settlement
+  Financial Planner
+    Stage 1: Initial consultation booked
+    Stage 2: Strategy approved by client
+    Stage 3: Plan implemented
+  Insurance Broker
+    Stage 1: Quote requested
+    Stage 2: Policy issued
+    Stage 3: Policy bound for settlement
+
+Phase 3: Due Diligence
+  Building Inspector
+    Stage 1: Inspection booked
+    Stage 2: Report generated with findings
+    Stage 3: Issues resolved or waived
+  Property Valuer
+    Stage 1: Valuation ordered
+    Stage 2: Site visit completed
+    Stage 3: Report delivered to lender
+  Land Surveyor
+    Stage 1: Survey instructed
+    Stage 2: Boundaries marked on site
+    Stage 3: Plan lodged with council
+  Tax Specialist
+    Stage 1: Depreciation schedule prepared
+    Stage 2: Ledger finalized
+    Stage 3: Submitted to ATO
+  Strata Manager
+    Stage 1: Records requested
+    Stage 2: Certificate issued
+    Stage 3: Clearance given
+
+Phase 4: Legal & Settlement
+  Property Lawyer
+    Stage 1: Contract received and reviewed
+    Stage 2: Contracts exchanged
+    Stage 3: Settlement completed
+  Licensed Conveyancer
+    Stage 1: Searches complete and clear
+    Stage 2: Section 32 reviewed
+    Stage 3: Ready to exchange
+  Settlement Agent
+    Stage 1: File opened
+    Stage 2: Documents prepared
+    Stage 3: Settled — all parties paid
+```
+
 ---
 
 ## 4. Interactive Prototype
@@ -176,7 +255,7 @@ Each stage of each partner has a custom set of form fields chosen from 8 support
 ### 4.1 File Structure
 
 ```
-D:\Viestie\
+D:\Vestie\
   index.html      — Command Center dashboard (role grid, vault sim, audit log)
   demo.html       — Universal mobile form (all 12 roles, 36 stage views, 8 field types)
   PRD_v2.2.md     — This document
@@ -289,3 +368,4 @@ File upload is always required. Submit is blocked until all required fields pass
 | Date | Version | Changes |
 |------|---------|---------|
 | 22/05/2026 | 2.2.0 | Full 12-role matrix, interactive HTML prototype, Command Center, Magic Link specification. Enhanced forms with 8 field types across 36 stage views. |
+| 22/05/2026 | 2.2.1 | Added Property Path Trigger Map (Section 3.3) mapping each partner form to its property milestone trigger event. Updated lifecycle flow. |
