@@ -14,8 +14,10 @@ Interactive HTML prototype demonstrating a **single-template, multi-role Magic L
 | `demo.html` | Universal mobile form — 8 field types (yes/no, text, textarea, number, date, select, radio, checkbox), per-stage field sets, inline validation, and Strapi JSON payload output |
 | `admin.html` | Admin Operations Dashboard — pipeline traffic, fee ledger, subscription grid, stagnation alerts, and CSV export (Modules A–E) |
 | `fee_config.html` | Partner Fee Configuration Engine — interactive split-pane prototype demonstrating hidden Strapi profile fields driving automatic fee calculation |
-| `PRD_v2.2.md` | Full product requirements document — role matrix, field specs, trigger map, technical notes |
-| `PRD_v2.4.md` | Addendum — Admin Dashboard spec (Modules A–E) and Hidden Partner Fee Configurations (Section 8) |
+| `PRD_01_Magic_Link_Architecture.md` | Magic Link spec — 12-role matrix, 36-stage field layouts, 8 field types, trigger map, Strapi mapping, security |
+| `PRD_02_Admin_Operations_Dashboard.md` | Admin Dashboard spec — Modules A–E, component matrix, use cases, user stories, Strapi schema extensions |
+| `PRD_03_Hidden_Fee_Configurations.md` | Private partner profile fields — billing_type, base_fee_amount, commission_rate, trigger_milestone, calculation rules |
+| `PRD_04_Invoice_Scope_Validation.md` | Invoice streams — User 50/50 splits vs Partner Commission ledger, invoice_records schema, US-FIN-006/007 |
 
 ## How to Run
 

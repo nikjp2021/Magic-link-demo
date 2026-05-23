@@ -1,7 +1,8 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 
+**Module:** Magic Link Partner Verification Architecture
 **Project:** Vestie Mobile Application & Operational Command Center
-**Version:** 2.2 — Magic Link Architecture & Interactive Prototype
+**Version:** 2.2
 **Author:** Nikhil Tiwari
 **Date:** 22/05/2026
 
@@ -258,7 +259,7 @@ Phase 4: Legal & Settlement
 D:\Vestie\
   index.html      — Command Center dashboard (role grid, vault sim, audit log)
   demo.html       — Universal mobile form (all 12 roles, 36 stage views, 8 field types)
-  PRD_v2.2.md     — This document
+  PRD_01_Magic_Link_Architecture.md  — This document
 ```
 
 ### 4.2 How to Run
