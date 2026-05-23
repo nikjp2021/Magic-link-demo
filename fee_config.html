@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie — Partner Fee Configuration Engine</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --phone-bg: #F7FAFC;
+  --phone-text: #2D3748;
+  --phone-muted: #718096;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
+.container { max-width: 1360px; width: 100%; }
+
+/* Header */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 28px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 44px; height: 44px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff; }
+.brand-text { font-size: 1.5rem; font-weight: 800; }
+.brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.badge-secure { padding: 6px 14px; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 20px; color: var(--green); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+/* Layout */
+.master-grid { display: grid; grid-template-columns: 380px 1fr; gap: 28px; align-items: start; }
+
+/* Phone Frame */
+.phone-frame { background: #22252A; border-radius: 44px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); height: 720px; border: 3px solid #3A3F47; position: relative; }
+.phone-notch { width: 110px; height: 18px; background: #22252A; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 10; }
+.phone-screen { background: var(--phone-bg); border-radius: 34px; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; position: relative; color: var(--phone-text); }
+.phone-screen::-webkit-scrollbar { width: 4px; }
+.phone-screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.phone-navbar { background: #FFFFFF; padding: 24px 16px 12px 16px; border-bottom: 1px solid #E2E8F0; text-align: center; font-weight: 700; font-size: 0.9rem; }
+.phone-body { padding: 16px; flex-grow: 1; }
+.email-item { background: #FFFFFF; border-radius: 10px; padding: 12px; border-left: 4px solid #FF6B6B; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 12px; }
+.email-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
+.email-snippet { font-size: 0.75rem; color: var(--phone-muted); }
+.magic-form { background: #FFFFFF; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; }
+.magic-form h4 { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; }
+.magic-form p { font-size: 0.75rem; color: var(--phone-muted); margin-bottom: 14px; }
+.magic-form label { font-size: 0.7rem; font-weight: 700; color: var(--phone-muted); display: block; margin-bottom: 4px; }
+.checkbox-block { background: #F7FAFC; border: 1px solid #CBD5E0; padding: 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+.checkbox-block input[type="checkbox"] { width: auto; margin-right: 4px; }
+.upload-zone { border: 2px dashed #CBD5E0; padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; background: #F8FAFC; margin-bottom: 14px; }
+.upload-zone.attached { border-color: var(--green); background: #E8F8F0; }
+.btn-prime { background: var(--gradient); color: #FFFFFF; border: none; padding: 12px; font-weight: 700; font-size: 0.85rem; border-radius: 10px; width: 100%; cursor: pointer; box-shadow: 0 4px 6px rgba(255,107,107,0.2); }
+.btn-prime:hover { opacity: 0.9; }
+.success-state { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px 20px; }
+.success-state span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+.success-state h4 { color: var(--green); font-weight: 700; font-size: 1.1rem; }
+.success-state p { font-size: 0.8rem; color: var(--phone-muted); margin-top: 6px; line-height: 1.4; }
+
+/* Control Panel */
+.control-panel { display: flex; flex-direction: column; gap: 20px; }
+.panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.input-row label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+.input-row input, .input-row select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.85rem; font-weight: 600; background: var(--bg-card); color: var(--text-primary); }
+.input-row select option { background: var(--bg-card); color: var(--text-primary); }
+.strapi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.strapi-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.ledger-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; }
+.ledger-table th { background: var(--bg-primary); padding: 8px; font-weight: 700; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.ledger-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); font-weight: 600; }
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.badge-pending { background: rgba(241, 196, 15, 0.15); color: var(--yellow); }
+.badge-success { background: rgba(46, 204, 113, 0.15); color: var(--green); }
+.terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; line-height: 1.5; }
+.terminal-box::-webkit-scrollbar { width: 4px; }
+.terminal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Footer */
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 28px; }
+
+/* Responsive */
+@media (max-width: 900px) { .master-grid { grid-template-columns: 1fr; } .phone-frame { height: 600px; } }
+@media (max-width: 480px) { body { padding: 12px; } .input-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-icon">V</div>
+      <div class="brand-text"><span>Vestie</span> Fee Configuration Engine</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;">&#8592; Command Center</a>
+      <div class="badge-secure">&#128274; Hidden Profile Fields</div>
+    </div>
+  </div>
+
+  <!-- Master Grid -->
+  <div class="master-grid">
+
+    <!-- Phone Chassis -->
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen" id="phoneScreen">
+        <div class="phone-navbar" id="navTitle">&#128229; Partner Mobile Email Inbox</div>
+        <div class="phone-body" id="phoneBody">
+          <p style="font-size:0.8rem;color:var(--phone-muted);margin-bottom:12px;font-weight:600;">Simulated partner smartphone notifications:</p>
+          <div class="email-item" onclick="openMagicWebform()">
+            <div class="email-title">&#9993; Vestie Client Referral Update</div>
+            <div class="email-snippet">File ID: REF-2026-0429. Action Required: Please verify milestone status for Client Pair...</div>
+          </div>
+        </div>
+        <div class="phone-body success-state" id="successState" style="display:none;">
+          <span>&#9889;</span>
+          <h4>Milestone Sync Complete!</h4>
+          <p>Data injected straight to database fields. Real-time ledger calculated. User Property Path pushed forward.</p>
+          <button class="btn-prime" style="margin-top:15px;" onclick="resetSimulation()">Test New Parameter Setup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+
+      <!-- Strapi Hidden Fields -->
+      <div class="panel-card">
+        <div class="panel-title">&#128274; Strapi CMS: Hidden Partner Profile Fields (Admin Only)</div>
+        <div class="strapi-card">
+          <div class="strapi-title">&#128295; Partner Configuration Presets</div>
+          <div class="input-row">
+            <div>
+              <label>Selected Partner Profession</label>
+              <select id="partnerSelect" onchange="applyPresetPartner()">
+                <option value="Depreciation">&#128202; Tax Depreciation Specialist</option>
+                <option value="Lawyer">&#9878;&#65039; Property Conveyancer / Lawyer</option>
+                <option value="Broker">&#127987; Mortgage Broker (Percentage Loop)</option>
+              </select>
+            </div>
+            <div>
+              <label>Trigger Milestone</label>
+              <select id="strapiMilestone">
+                <option value="Report Delivered">Report Delivered</option>
+                <option value="Engagement Confirmed">Engagement Confirmed</option>
+                <option value="Loan Settlement">Loan Settlement</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-row">
+            <div>
+              <label>Billing Structure</label>
+              <select id="strapiBillingType" onchange="toggleFormInputs()">
+                <option value="Flat">Flat Invoicing Rate</option>
+                <option value="Percent">Percentage Commission Rule</option>
+              </select>
+            </div>
+            <div>
+              <label id="valueInputLabel">Stored Flat Rate Owed (AUD)</label>
+              <input type="number" id="strapiFeeValue" value="120">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Ledger -->
+      <div class="panel-card">
+        <div class="panel-title">&#128203; Live Automated Transaction Invoicing Ledger (Anna's View)</div>
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Referral ID</th>
+              <th>Profession</th>
+              <th>Target Trigger</th>
+              <th>Calculated Owed</th>
+              <th>Payment Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>REF-2026-0429</td>
+              <td id="ledgerRole">Tax Depreciation</td>
+              <td id="ledgerTrigger"><span class="badge badge-pending">Report Delivered</span></td>
+              <td id="ledgerCash" style="color:#FF8E53;font-weight:700;">$120.00 AUD</td>
+              <td><span class="badge badge-pending" id="ledgerStatus">Pending Link</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Terminal -->
+      <div class="panel-card" style="padding:16px;">
+        <div class="terminal-box" id="terminalBox">> Server Stack Ready. Stored hidden partner parameters compiled successfully.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Vestie Operations &middot; Hidden Partner Fee Configuration v2.4 &middot; Section 8
+  </div>
+</div>
+
+<script>
+// Partner configuration presets
+const presets = {
+  Depreciation: { billing: "Flat", value: 120, milestone: "Report Delivered", roleText: "Tax Depreciation" },
+  Lawyer: { billing: "Flat", value: 300, milestone: "Engagement Confirmed", roleText: "Property Lawyer" },
+  Broker: { billing: "Percent", value: 0.015, milestone: "Loan Settlement", roleText: "Mortgage Broker" }
+};
+
+function applyPresetPartner() {
+  const selected = document.getElementById('partnerSelect').value;
+  const config = presets[selected];
+  document.getElementById('strapiBillingType').value = config.billing;
+  document.getElementById('strapiFeeValue').value = config.value;
+  document.getElementById('strapiMilestone').value = config.milestone;
+  document.getElementById('ledgerRole').innerText = config.roleText;
+  document.getElementById('ledgerCash').innerText = config.billing === "Flat" ? "$" + config.value.toFixed(2) + " AUD" : "Calc Pending...";
+  document.getElementById('ledgerTrigger').innerHTML = '<span class="badge badge-pending">' + config.milestone + '</span>';
+  toggleFormInputs();
+  pushLog("Strapi Database Core: Switched active target. Hidden profile variables loaded for [" + config.roleText + "].");
+}
+
+function toggleFormInputs() {
+  const type = document.getElementById('strapiBillingType').value;
+  document.getElementById('valueInputLabel').innerText = type === 'Flat' ? "Stored Flat Rate Owed (AUD)" : "Partner Rate (e.g., 0.015 for 1.5%)";
+}
+
+function openMagicWebform() {
+  const role = document.getElementById('partnerSelect').value;
+  const config = presets[role];
+  const targetMilestone = document.getElementById('strapiMilestone').value;
+  document.getElementById('navTitle').innerText = "\U0001F310 Safari Mobile Web Browser View";
+  document.getElementById('phoneBody').innerHTML = '\
+    <div class="magic-form">\
+      <h4>' + config.roleText + ' Update Form</h4>\
+      <p>Secure Action Link token active. Updating file: <strong>Pair-493</strong></p>\
+      <label>Verify Immediate Milestone Task</label>\
+      <div class="checkbox-block">\
+        <input type="checkbox" id="milestoneCheck" checked> Mark as [' + targetMilestone + ']\
+      </div>\
+      <label>Mandatory PDF Proof Attachment</label>\
+      <div class="upload-zone" id="uploadZone" onclick="attachFile()">\
+        <span style="font-size:1.2rem;display:block;">&#128193;</span>\
+        <span style="font-size:0.75rem;font-weight:700;" id="proofText">Tap to select verification asset file</span>\
+      </div>\
+      <button class="btn-prime" onclick="processBackendCalculation()">Submit Verification</button>\
+    </div>\
+  ';
+  pushLog("Magic Link Loop: Partner tapped cryptographic email URL. Browser compiled responsive template without profile password login entry rows.");
+}
+
+function attachFile() {
+  document.getElementById('uploadZone').className = 'upload-zone attached';
+  document.getElementById('proofText').innerText = '\u2705 report_proof_document.pdf attached';
+  pushLog("FILE UPLOAD: Partner attached proof document via Magic Link interface.");
+}
+
+function processBackendCalculation() {
+  const billingModel = document.getElementById('strapiBillingType').value;
+  const inputVal = parseFloat(document.getElementById('strapiFeeValue').value);
+  let finalOwed = 0;
+
+  if (billingModel === 'Flat') {
+    finalOwed = inputVal;
+    pushLog("Calculation Engine: Flat rate rule activated. Copied direct fee: $" + finalOwed.toFixed(2) + ".");
+  } else {
+    const propertyPrice = 750000;
+    const loanAmount = propertyPrice * 0.80;
+    const partnerCommission = loanAmount * inputVal;
+    finalOwed = partnerCommission * 0.20;
+    pushLog("Calculation Engine: Percentage rule. ($750k property \u00d7 80% LVR \u00d7 " + (inputVal * 100) + "%) \u00d7 20% Vestie split = $" + finalOwed.toFixed(2));
+  }
+
+  document.getElementById('ledgerCash').innerText = "$" + finalOwed.toFixed(2) + " AUD";
+  document.getElementById('ledgerStatus').className = "badge badge-success";
+  document.getElementById('ledgerStatus').innerText = "Verified & Invoiced";
+
+  document.getElementById('phoneBody').style.display = 'none';
+  document.getElementById('successState').style.display = 'flex';
+  document.getElementById('navTitle').innerText = "\u2714\ufe0f Data Sync Complete";
+}
+
+function resetSimulation() { location.reload(); }
+
+function pushLog(msg) {
+  const box = document.getElementById('terminalBox');
+  box.innerHTML += "<br>> " + msg;
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+</body>
+</html>

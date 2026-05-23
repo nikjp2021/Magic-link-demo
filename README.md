@@ -12,7 +12,10 @@ Interactive HTML prototype demonstrating a **single-template, multi-role Magic L
 |------|---------|
 | `index.html` | Command Center — dark UI dashboard with 12 partner tiles, security vault panel, and real-time audit log |
 | `demo.html` | Universal mobile form — 8 field types (yes/no, text, textarea, number, date, select, radio, checkbox), per-stage field sets, inline validation, and Strapi JSON payload output |
+| `admin.html` | Admin Operations Dashboard — pipeline traffic, fee ledger, subscription grid, stagnation alerts, and CSV export (Modules A–E) |
+| `fee_config.html` | Partner Fee Configuration Engine — interactive split-pane prototype demonstrating hidden Strapi profile fields driving automatic fee calculation |
 | `PRD_v2.2.md` | Full product requirements document — role matrix, field specs, trigger map, technical notes |
+| `PRD_v2.4.md` | Addendum — Admin Dashboard spec (Modules A–E) and Hidden Partner Fee Configurations (Section 8) |
 
 ## How to Run
 
