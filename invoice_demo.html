@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie — Invoice Template Demo</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --blue: #3B82F6;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
+.container { max-width: 1360px; width: 100%; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 28px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 44px; height: 44px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff; }
+.brand-text { font-size: 1.5rem; font-weight: 800; }
+.brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.master-grid { display: grid; grid-template-columns: 380px 1fr; gap: 28px; align-items: start; }
+.phone-frame { background: #22252A; border-radius: 44px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); height: 740px; border: 3px solid #3A3F47; position: relative; }
+.phone-notch { width: 110px; height: 18px; background: #22252A; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 10; }
+.phone-screen { background: #F7FAFC; border-radius: 34px; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; position: relative; color: #2D3748; }
+.phone-screen::-webkit-scrollbar { width: 4px; }
+.phone-screen::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 4px; }
+.phone-header { background: #FFFFFF; padding: 24px 16px 12px; border-bottom: 1px solid #E2E8F0; text-align: center; font-weight: 700; font-size: 0.85rem; }
+.phone-body { padding: 20px 16px; flex-grow: 1; }
+.control-panel { display: flex; flex-direction: column; gap: 20px; }
+.panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.toggle-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.toggle-btn { flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+.toggle-btn.active { border-color: var(--gradient); background: rgba(255,107,107,0.1); color: var(--text-primary); }
+
+.invoice-card { background: #FFFFFF; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #E2E8F0; }
+.invoice-card .label { font-size: 0.7rem; color: #718096; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.invoice-card .value { font-size: 1rem; font-weight: 800; color: #2D3748; margin-bottom: 12px; }
+.invoice-divider { border: none; border-top: 1px dashed #CBD5E0; margin: 14px 0; }
+.split-display { display: flex; justify-content: space-between; align-items: center; background: #F7FAFC; padding: 14px; border-radius: 10px; margin-bottom: 16px; }
+.split-display .share-amount { font-size: 1.5rem; font-weight: 800; color: #FF6B6B; }
+.pay-buttons { display: flex; flex-direction: column; gap: 8px; }
+.pay-btn { padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.pay-btn.apple { background: #000; color: #fff; }
+.pay-btn.google { background: #fff; color: #1A73E8; border: 2px solid #DADCE0; }
+.pay-btn.card { background: #FF6B6B; color: #fff; }
+.pay-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.pay-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.commission-card { background: #FFFFFF; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #E2E8F0; }
+.commission-card .label { font-size: 0.7rem; color: #718096; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.commission-card .value { font-size: 1rem; font-weight: 800; color: #2D3748; margin-bottom: 10px; }
+.comm-amount { font-size: 1.8rem; font-weight: 800; color: #2D3748; text-align: center; padding: 16px; background: #F7FAFC; border-radius: 10px; margin-bottom: 14px; }
+.comm-amount span { color: #FF6B6B; }
+.uuid-display { font-family: monospace; font-size: 0.75rem; color: #718096; background: #F7FAFC; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 14px; }
+.badge-inline { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+.badge-pending { background: rgba(241,196,15,0.15); color: #B8860B; }
+.badge-paid { background: rgba(46,204,113,0.15); color: #1E8A4A; }
+.verify-btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; background: var(--gradient); color: #fff; transition: all 0.2s; }
+.verify-btn:hover { opacity: 0.9; }
+.verify-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.success-check { text-align: center; padding: 30px 10px; }
+.success-check .check-icon { font-size: 3rem; }
+.success-check h3 { color: #1E8A4A; font-weight: 800; margin: 8px 0 4px; }
+.success-check p { font-size: 0.8rem; color: #718096; }
+.state-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; padding: 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+.ledger-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; }
+.ledger-table th { background: var(--bg-primary); padding: 8px; font-weight: 700; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.ledger-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); font-weight: 600; }
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.badge-pending { background: rgba(241, 196, 15, 0.15); color: var(--yellow); }
+.badge-success { background: rgba(46, 204, 113, 0.15); color: var(--green); }
+.terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; line-height: 1.5; }
+.terminal-box::-webkit-scrollbar { width: 4px; }
+.terminal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+@media (max-width: 900px) { .master-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-icon">V</div>
+      <div class="brand-text"><span>Vestie</span> Invoice Templates</div>
+    </div>
+    <div>
+      <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:20px;">&#9664; Back</a>
+    </div>
+  </div>
+
+  <div class="master-grid">
+
+    <!-- Phone pane -->
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen" id="phoneScreen">
+        <div class="phone-header">Vestie</div>
+        <div class="phone-body" id="phoneBody"></div>
+      </div>
+    </div>
+
+    <!-- Control panel -->
+    <div class="control-panel">
+
+      <div class="panel-card">
+        <div class="panel-title"> Template Selector</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="togA" onclick="switchTemplate('A')">&#128179; Template A<br><span style="font-weight:400;font-size:0.7rem;">User Split Card</span></button>
+          <button class="toggle-btn" id="togB" onclick="switchTemplate('B')">&#128202; Template B<br><span style="font-weight:400;font-size:0.7rem;">Partner Commission</span></button>
+        </div>
+        <div class="state-desc" id="stateDesc"><strong>Current State:</strong> Unpaid — awaiting payment</div>
+        <button class="verify-btn" id="simBtn" onclick="simulateAction()">&#9654; Simulate Payment</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title"> Invoice Ledger</div>
+        <table class="ledger-table">
+          <thead><tr><th>UUID</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="ledgerBody">
+            <tr><td>INV-001</td><td>User Split</td><td>$300.00</td><td><span class="badge badge-pending">Unpaid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title"> System Log</div>
+        <div class="terminal-box" id="terminalLog">
+          <div>[SYSTEM] Invoice Template Demo v1.0 initialized</div>
+          <div>[READY] Template A loaded — awaiting payment simulation</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── STATE ───
+let currentTemplate = 'A';
+let paidState = false;
+let loggedState = false;
+let invoiceCounter = 1;
+
+// ─── DATA ───
+const templateA = {
+  title: 'Shared Cost-Split Card',
+  property: '123 Main Street, Sydney NSW 2000',
+  totalCost: 600,
+  split: '50/50',
+  yourShare: 300,
+  description: 'Template A — User-Facing: Displays the total cost, 50/50 split, and individual share. The user pays their half via Apple Pay, Google Pay, or Credit Card.'
+};
+
+const templateB = {
+  title: 'B2B Commission Statement',
+  partner: 'Hometown Mortgages',
+  commission: 1800,
+  uuid: 'INV-A7F3D9',
+  description: 'Template B — Partner-Facing: Shows the locked commission amount, invoice UUID, and status. Anna clicks Verify to lock the invoice after the partner hits their trigger milestone.'
+};
+
+function render() {
+  const body = document.getElementById('phoneBody');
+  const desc = document.getElementById('stateDesc');
+  const btn = document.getElementById('simBtn');
+
+  if (currentTemplate === 'A') {
+    if (paidState) {
+      body.innerHTML = `
+        <div class="success-check">
+          <div class="check-icon">&#10003;</div>
+          <h3>Payment Successful</h3>
+          <p>Your share of <strong>$${templateA.yourShare.toFixed(2)}</strong> has been processed.</p>
+          <p style="margin-top:4px;font-size:0.75rem;">Transaction: INV-${String(invoiceCounter-1).padStart(3,'0')}</p>
+        </div>
+      `;
+      desc.innerHTML = '<strong>Current State:</strong> <span style="color:#2ECC71;">Paid</span> — user has settled their 50% share.';
+      btn.textContent = '\u21BA Reset to Unpaid';
+    } else {
+      body.innerHTML = `
+        <div class="invoice-card">
+          <div class="label">Property</div>
+          <div class="value">${templateA.property}</div>
+          <div class="label">Total Cost</div>
+          <div class="value">$${templateA.totalCost.toFixed(2)}</div>
+          <div style="text-align:center;font-weight:700;font-size:0.85rem;color:#718096;margin:8px 0;">Split ${templateA.split}</div>
+          <div class="split-display">
+            <span style="font-weight:700;">Your Share</span>
+            <span class="share-amount">$${templateA.yourShare.toFixed(2)}</span>
+          </div>
+          <div class="pay-buttons">
+            <button class="pay-btn apple" onclick="simulatePayment()">&#63743; Pay with Apple Pay</button>
+            <button class="pay-btn google" onclick="simulatePayment()">G Pay with Google Pay</button>
+            <button class="pay-btn card" onclick="simulatePayment()">&#128179; Pay with Credit Card</button>
+          </div>
+        </div>
+      `;
+      desc.innerHTML = '<strong>Current State:</strong> Unpaid — awaiting user payment';
+      btn.textContent = '\u25B6 Simulate Payment';
+    }
+  } else {
+    if (loggedState) {
+      body.innerHTML = `
+        <div class="success-check">
+          <div class="check-icon">&#9989;</div>
+          <h3>Invoice Locked</h3>
+          <p>Commission of <strong>$${templateB.commission.toFixed(2)}</strong> recorded and frozen.</p>
+          <p style="margin-top:4px;font-size:0.75rem;font-family:monospace;">${templateB.uuid}-${String(invoiceCounter-1).padStart(4,'0')}</p>
+        </div>
+      `;
+      desc.innerHTML = '<strong>Current State:</strong> <span style="color:#2ECC71;">Locked</span> — static invoice row added to ledger. Anna bills via Xero.';
+      btn.textContent = '\u21BA Reset to Pending';
+    } else {
+      body.innerHTML = `
+        <div class="commission-card">
+          <div class="label">Partner</div>
+          <div class="value">${templateB.partner}</div>
+          <div class="label">Commission Amount</div>
+          <div class="comm-amount"><span>$</span>${templateB.commission.toFixed(2)}</div>
+          <div class="uuid-display">${templateB.uuid}-${String(invoiceCounter).padStart(4,'0')}</div>
+          <div style="text-align:center;margin-bottom:14px;">
+            <span class="badge-inline badge-pending">&#9200; Pending Verification</span>
+          </div>
+          <button class="verify-btn" onclick="simulateVerification()">&#9989; Verify &amp; Lock Invoice</button>
+        </div>
+      `;
+      desc.innerHTML = '<strong>Current State:</strong> Pending — partner has hit milestone, awaiting admin verification to lock the invoice.';
+      btn.textContent = '\u25B6 Simulate Verification';
+    }
+  }
+}
+
+function switchTemplate(t) {
+  currentTemplate = t;
+  paidState = false;
+  loggedState = false;
+  document.getElementById('togA').className = 'toggle-btn' + (t === 'A' ? ' active' : '');
+  document.getElementById('togB').className = 'toggle-btn' + (t === 'B' ? ' active' : '');
+  render();
+  log('SWITCH: Template ' + t + ' loaded (' + (t==='A' ? templateA.title : templateB.title) + ')');
+}
+
+function simulateAction() {
+  if (currentTemplate === 'A') {
+    if (paidState) resetState();
+    else simulatePayment();
+  } else {
+    if (loggedState) resetState();
+    else simulateVerification();
+  }
+}
+
+function simulatePayment() {
+  if (paidState) return;
+  paidState = true;
+  const invId = invoiceCounter++;
+  const amt = templateA.yourShare;
+  addLedgerRow('INV-' + String(invId).padStart(3,'0'), 'User Split', amt, 'Paid');
+  log('PAYMENT: User paid $' + amt.toFixed(2) + ' via card — invoice INV-' + String(invId).padStart(3,'0') + ' marked Paid');
+  render();
+}
+
+function simulateVerification() {
+  if (loggedState) return;
+  loggedState = true;
+  const invId = invoiceCounter++;
+  const amt = templateB.commission;
+  addLedgerRow(templateB.uuid + '-' + String(invId).padStart(4,'0'), 'Partner Commission', amt, 'Locked');
+  log('VERIFY: Partner commission $' + amt.toFixed(2) + ' locked — invoice ' + templateB.uuid + '-' + String(invId).padStart(4,'0') + ' recorded');
+  render();
+}
+
+function resetState() {
+  paidState = false;
+  loggedState = false;
+  log('RESET: State cleared for re-demo');
+  render();
+}
+
+function addLedgerRow(uuid, type, amount, status) {
+  const tbody = document.getElementById('ledgerBody');
+  const badgeClass = (status === 'Paid' || status === 'Locked') ? 'badge-success' : 'badge-pending';
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td>' + uuid + '</td><td>' + type + '</td><td>$' + amount.toFixed(2) + '</td><td><span class="badge ' + badgeClass + '">' + status + '</span></td>';
+  tbody.prepend(tr);
+}
+
+function log(msg) {
+  const t = document.getElementById('terminalLog');
+  const time = new Date().toLocaleTimeString();
+  t.innerHTML += '<div><span style="color:#6B7280;">[' + time + ']</span> ' + msg + '</div>';
+  t.scrollTop = t.scrollHeight;
+}
+
+// ─── INIT ───
+render();
+log('READY: Template A displayed — click payment buttons or use Simulate Payment');
+</script>
+</body>
+</html>

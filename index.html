@@ -150,10 +150,10 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
   <!-- Admin & Config Section -->
   <div class="section-header" style="margin-top:8px;">
     <span class="section-title"> Operations &amp; Configuration <span style="font-size:0.8rem;color:var(--text-muted);font-weight:400;">— Admin tools for Anna and fee setup</span></span>
-    <span class="section-badge">2 Dashboards</span>
+    <span class="section-badge">3 Dashboards</span>
   </div>
 
-  <div class="partner-grid" style="grid-template-columns:repeat(2,1fr);">
+  <div class="partner-grid" style="grid-template-columns:repeat(3,1fr);">
     <div class="partner-tile" onclick="window.open('admin.html','_blank')" style="border-color:rgba(99,102,241,0.3);">
       <div class="partner-tag" style="background:rgba(99,102,241,0.15);color:#818CF8;"> Admin</div>
       <div class="partner-icon">&#128202;</div>
@@ -166,6 +166,13 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       <div class="partner-icon">&#128274;</div>
       <div class="partner-name">Partner Fee Configuration Engine</div>
       <div class="partner-desc">Hidden Strapi profile fields — set billing type, flat fee, commission rate, and trigger milestones per partner.</div>
+      <div class="partner-stages"><div class="stage-dot active"></div><div class="stage-dot active"></div><div class="stage-dot active"></div></div>
+    </div>
+    <div class="partner-tile" onclick="window.open('invoice_demo.html','_blank')" style="border-color:rgba(46,204,113,0.3);">
+      <div class="partner-tag" style="background:rgba(46,204,113,0.15);color:#2ECC71;"> Invoices</div>
+      <div class="partner-icon">&#128196;</div>
+      <div class="partner-name">Invoice Template Demo</div>
+      <div class="partner-desc">Template A (User Split Card) and Template B (Commission Statement) — toggle, pay, and verify in real-time.</div>
       <div class="partner-stages"><div class="stage-dot active"></div><div class="stage-dot active"></div><div class="stage-dot active"></div></div>
     </div>
   </div>
