@@ -41,14 +41,13 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .control-panel { display: flex; flex-direction: column; gap: 20px; }
 .panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
 .panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.toggle-row { display: flex; gap: 10px; margin-bottom: 16px; }
-.toggle-btn { flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+.toggle-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.toggle-btn { flex: 1; padding: 10px 6px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; line-height: 1.3; }
 .toggle-btn.active { border-color: var(--gradient); background: rgba(255,107,107,0.1); color: var(--text-primary); }
 
 .invoice-card { background: #FFFFFF; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #E2E8F0; }
 .invoice-card .label { font-size: 0.7rem; color: #718096; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
 .invoice-card .value { font-size: 1rem; font-weight: 800; color: #2D3748; margin-bottom: 12px; }
-.invoice-divider { border: none; border-top: 1px dashed #CBD5E0; margin: 14px 0; }
 .split-display { display: flex; justify-content: space-between; align-items: center; background: #F7FAFC; padding: 14px; border-radius: 10px; margin-bottom: 16px; }
 .split-display .share-amount { font-size: 1.5rem; font-weight: 800; color: #FF6B6B; }
 .pay-buttons { display: flex; flex-direction: column; gap: 8px; }
@@ -103,7 +102,6 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 
   <div class="master-grid">
 
-    <!-- Phone pane -->
     <div class="phone-frame">
       <div class="phone-notch"></div>
       <div class="phone-screen" id="phoneScreen">
@@ -112,14 +110,14 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       </div>
     </div>
 
-    <!-- Control panel -->
     <div class="control-panel">
 
       <div class="panel-card">
         <div class="panel-title"> Template Selector</div>
         <div class="toggle-row">
-          <button class="toggle-btn active" id="togA" onclick="switchTemplate('A')">&#128179; Template A<br><span style="font-weight:400;font-size:0.7rem;">User Split Card</span></button>
-          <button class="toggle-btn" id="togB" onclick="switchTemplate('B')">&#128202; Template B<br><span style="font-weight:400;font-size:0.7rem;">Partner Commission</span></button>
+          <button class="toggle-btn active" id="togA" onclick="switchTemplate('A')">&#128179; Template A<br><span style="font-weight:400;font-size:0.65rem;">Client Fee</span></button>
+          <button class="toggle-btn" id="togB" onclick="switchTemplate('B')">&#128269; Template B<br><span style="font-weight:400;font-size:0.65rem;">Service Rendered</span></button>
+          <button class="toggle-btn" id="togC" onclick="switchTemplate('C')">&#128202; Template C<br><span style="font-weight:400;font-size:0.65rem;">Commission Payout</span></button>
         </div>
         <div class="state-desc" id="stateDesc"><strong>Current State:</strong> Unpaid — awaiting payment</div>
         <button class="verify-btn" id="simBtn" onclick="simulateAction()">&#9654; Simulate Payment</button>
@@ -128,9 +126,9 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       <div class="panel-card">
         <div class="panel-title"> Invoice Ledger</div>
         <table class="ledger-table">
-          <thead><tr><th>UUID</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
+          <thead><tr><th>UUID</th><th>Stream</th><th>Amount</th><th>Status</th></tr></thead>
           <tbody id="ledgerBody">
-            <tr><td>INV-001</td><td>User Split</td><td>$300.00</td><td><span class="badge badge-pending">Unpaid</span></td></tr>
+            <tr><td>INV-001</td><td>Client Fee</td><td>$300.00</td><td><span class="badge badge-pending">Unpaid</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -138,8 +136,8 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       <div class="panel-card">
         <div class="panel-title"> System Log</div>
         <div class="terminal-box" id="terminalLog">
-          <div>[SYSTEM] Invoice Template Demo v1.0 initialized</div>
-          <div>[READY] Template A loaded — awaiting payment simulation</div>
+          <div>[SYSTEM] Invoice Template Demo v2.6 initialized</div>
+          <div>[READY] Template A loaded — Client Fee split awaiting payment</div>
         </div>
       </div>
 
@@ -149,28 +147,39 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 </div>
 
 <script>
-// ─── STATE ───
 let currentTemplate = 'A';
 let paidState = false;
 let loggedState = false;
 let invoiceCounter = 1;
 
-// ─── DATA ───
-const templateA = {
-  title: 'Shared Cost-Split Card',
-  property: '123 Main Street, Sydney NSW 2000',
-  totalCost: 600,
-  split: '50/50',
-  yourShare: 300,
-  description: 'Template A — User-Facing: Displays the total cost, 50/50 split, and individual share. The user pays their half via Apple Pay, Google Pay, or Credit Card.'
-};
-
-const templateB = {
-  title: 'B2B Commission Statement',
-  partner: 'Hometown Mortgages',
-  commission: 1800,
-  uuid: 'INV-A7F3D9',
-  description: 'Template B — Partner-Facing: Shows the locked commission amount, invoice UUID, and status. Anna clicks Verify to lock the invoice after the partner hits their trigger milestone.'
+const tmpl = {
+  A: {
+    title: 'Client Fee — Legal Setup',
+    icon: '\u{1F91D}',
+    property: '123 Main Street, Sydney NSW 2000',
+    totalCost: 600,
+    yourShare: 300,
+    streamLabel: 'Client Fee',
+    desc: 'Template A — Client Fee: Platform setup cost split 50/50 between co-buyers. User pays their share via Apple Pay, Google Pay, or Credit Card.'
+  },
+  B: {
+    title: 'Service Rendered — Building Inspection',
+    icon: '\u{1F50D}',
+    property: '45 Park Avenue, Melbourne VIC 3000',
+    totalCost: 240,
+    yourShare: 120,
+    streamLabel: 'Service Rendered',
+    desc: 'Template B — Service Rendered: Partner service fee (Building & Pest Inspection) split 50/50. User pays their half in-app.'
+  },
+  C: {
+    title: 'Commission Payout — Broker',
+    icon: '\u{1F3E6}',
+    partner: 'Hometown Mortgages',
+    commission: 1800,
+    uuid: 'INV-A7F3D9',
+    streamLabel: 'Commission Payout',
+    desc: 'Template C — Commission Payout: B2B corporate commission locked when broker hits milestone. Anna verifies and exports to Xero.'
+  }
 };
 
 function render() {
@@ -178,69 +187,28 @@ function render() {
   const desc = document.getElementById('stateDesc');
   const btn = document.getElementById('simBtn');
 
-  if (currentTemplate === 'A') {
-    if (paidState) {
-      body.innerHTML = `
-        <div class="success-check">
-          <div class="check-icon">&#10003;</div>
-          <h3>Payment Successful</h3>
-          <p>Your share of <strong>$${templateA.yourShare.toFixed(2)}</strong> has been processed.</p>
-          <p style="margin-top:4px;font-size:0.75rem;">Transaction: INV-${String(invoiceCounter-1).padStart(3,'0')}</p>
-        </div>
-      `;
-      desc.innerHTML = '<strong>Current State:</strong> <span style="color:#2ECC71;">Paid</span> — user has settled their 50% share.';
-      btn.textContent = '\u21BA Reset to Unpaid';
-    } else {
-      body.innerHTML = `
-        <div class="invoice-card">
-          <div class="label">Property</div>
-          <div class="value">${templateA.property}</div>
-          <div class="label">Total Cost</div>
-          <div class="value">$${templateA.totalCost.toFixed(2)}</div>
-          <div style="text-align:center;font-weight:700;font-size:0.85rem;color:#718096;margin:8px 0;">Split ${templateA.split}</div>
-          <div class="split-display">
-            <span style="font-weight:700;">Your Share</span>
-            <span class="share-amount">$${templateA.yourShare.toFixed(2)}</span>
-          </div>
-          <div class="pay-buttons">
-            <button class="pay-btn apple" onclick="simulatePayment()">&#63743; Pay with Apple Pay</button>
-            <button class="pay-btn google" onclick="simulatePayment()">G Pay with Google Pay</button>
-            <button class="pay-btn card" onclick="simulatePayment()">&#128179; Pay with Credit Card</button>
-          </div>
-        </div>
-      `;
-      desc.innerHTML = '<strong>Current State:</strong> Unpaid — awaiting user payment';
-      btn.textContent = '\u25B6 Simulate Payment';
-    }
-  } else {
+  if (currentTemplate === 'C') {
     if (loggedState) {
-      body.innerHTML = `
-        <div class="success-check">
-          <div class="check-icon">&#9989;</div>
-          <h3>Invoice Locked</h3>
-          <p>Commission of <strong>$${templateB.commission.toFixed(2)}</strong> recorded and frozen.</p>
-          <p style="margin-top:4px;font-size:0.75rem;font-family:monospace;">${templateB.uuid}-${String(invoiceCounter-1).padStart(4,'0')}</p>
-        </div>
-      `;
+      body.innerHTML = '<div class="success-check"><div class="check-icon">&#9989;</div><h3>Invoice Locked</h3><p>Commission of <strong>$' + tmpl.C.commission.toFixed(2) + '</strong> recorded and frozen.</p><p style="margin-top:4px;font-size:0.75rem;font-family:monospace;">' + tmpl.C.uuid + '-' + String(Math.max(invoiceCounter-1,0)).padStart(4,'0') + '</p></div>';
       desc.innerHTML = '<strong>Current State:</strong> <span style="color:#2ECC71;">Locked</span> — static invoice row added to ledger. Anna bills via Xero.';
       btn.textContent = '\u21BA Reset to Pending';
     } else {
-      body.innerHTML = `
-        <div class="commission-card">
-          <div class="label">Partner</div>
-          <div class="value">${templateB.partner}</div>
-          <div class="label">Commission Amount</div>
-          <div class="comm-amount"><span>$</span>${templateB.commission.toFixed(2)}</div>
-          <div class="uuid-display">${templateB.uuid}-${String(invoiceCounter).padStart(4,'0')}</div>
-          <div style="text-align:center;margin-bottom:14px;">
-            <span class="badge-inline badge-pending">&#9200; Pending Verification</span>
-          </div>
-          <button class="verify-btn" onclick="simulateVerification()">&#9989; Verify &amp; Lock Invoice</button>
-        </div>
-      `;
-      desc.innerHTML = '<strong>Current State:</strong> Pending — partner has hit milestone, awaiting admin verification to lock the invoice.';
+      body.innerHTML = '<div class="commission-card"><div class="label">Partner</div><div class="value">' + tmpl.C.partner + '</div><div class="label">Commission Amount</div><div class="comm-amount"><span>$</span>' + tmpl.C.commission.toFixed(2) + '</div><div class="uuid-display">' + tmpl.C.uuid + '-' + String(invoiceCounter).padStart(4,'0') + '</div><div style="text-align:center;margin-bottom:14px;"><span class="badge-inline badge-pending">&#9200; Pending Verification</span></div><button class="verify-btn" onclick="simulateVerification()">&#9989; Verify &amp; Lock Invoice</button></div>';
+      desc.innerHTML = '<strong>Current State:</strong> Pending — partner has hit milestone, awaiting admin verification.';
       btn.textContent = '\u25B6 Simulate Verification';
     }
+    return;
+  }
+
+  const t = tmpl[currentTemplate];
+  if (paidState) {
+    body.innerHTML = '<div class="success-check"><div class="check-icon">&#10003;</div><h3>Payment Successful</h3><p>Your share of <strong>$' + t.yourShare.toFixed(2) + '</strong> has been processed.</p><p style="margin-top:4px;font-size:0.75rem;">Transaction: INV-' + String(invoiceCounter-1).padStart(3,'0') + '</p></div>';
+    desc.innerHTML = '<strong>Current State:</strong> <span style="color:#2ECC71;">Paid</span> — user has settled their 50% share.';
+    btn.textContent = '\u21BA Reset to Unpaid';
+  } else {
+    body.innerHTML = '<div class="invoice-card"><div class="label">Property</div><div class="value">' + t.property + '</div><div class="label">' + t.title + '</div><div class="value" style="font-size:0.85rem;font-weight:600;color:#718096;">' + t.icon + ' ' + currentTemplate + '</div><div class="label">Total Cost</div><div class="value">$' + t.totalCost.toFixed(2) + '</div><div style="text-align:center;font-weight:700;font-size:0.85rem;color:#718096;margin:8px 0;">Split 50/50</div><div class="split-display"><span style="font-weight:700;">Your Share</span><span class="share-amount">$' + t.yourShare.toFixed(2) + '</span></div><div class="pay-buttons"><button class="pay-btn apple" onclick="simulatePayment()">&#63743; Pay with Apple Pay</button><button class="pay-btn google" onclick="simulatePayment()">G Pay with Google Pay</button><button class="pay-btn card" onclick="simulatePayment()">&#128179; Pay with Credit Card</button></div></div>';
+    desc.innerHTML = '<strong>Current State:</strong> Unpaid — ' + (currentTemplate === 'A' ? 'client fee split' : 'service rendered split') + ' awaiting user payment';
+    btn.textContent = '\u25B6 Simulate Payment';
   }
 }
 
@@ -250,17 +218,18 @@ function switchTemplate(t) {
   loggedState = false;
   document.getElementById('togA').className = 'toggle-btn' + (t === 'A' ? ' active' : '');
   document.getElementById('togB').className = 'toggle-btn' + (t === 'B' ? ' active' : '');
+  document.getElementById('togC').className = 'toggle-btn' + (t === 'C' ? ' active' : '');
   render();
-  log('SWITCH: Template ' + t + ' loaded (' + (t==='A' ? templateA.title : templateB.title) + ')');
+  log('SWITCH: Template ' + t + ' — ' + tmpl[t].title);
 }
 
 function simulateAction() {
-  if (currentTemplate === 'A') {
-    if (paidState) resetState();
-    else simulatePayment();
-  } else {
+  if (currentTemplate === 'C') {
     if (loggedState) resetState();
     else simulateVerification();
+  } else {
+    if (paidState) resetState();
+    else simulatePayment();
   }
 }
 
@@ -268,9 +237,10 @@ function simulatePayment() {
   if (paidState) return;
   paidState = true;
   const invId = invoiceCounter++;
-  const amt = templateA.yourShare;
-  addLedgerRow('INV-' + String(invId).padStart(3,'0'), 'User Split', amt, 'Paid');
-  log('PAYMENT: User paid $' + amt.toFixed(2) + ' via card — invoice INV-' + String(invId).padStart(3,'0') + ' marked Paid');
+  const t = tmpl[currentTemplate];
+  const amt = t.yourShare;
+  addLedgerRow('INV-' + String(invId).padStart(3,'0'), t.streamLabel, amt, 'Paid');
+  log('PAYMENT: $' + amt.toFixed(2) + ' paid (' + t.streamLabel + ') — invoice INV-' + String(invId).padStart(3,'0') + ' marked Paid');
   render();
 }
 
@@ -278,9 +248,9 @@ function simulateVerification() {
   if (loggedState) return;
   loggedState = true;
   const invId = invoiceCounter++;
-  const amt = templateB.commission;
-  addLedgerRow(templateB.uuid + '-' + String(invId).padStart(4,'0'), 'Partner Commission', amt, 'Locked');
-  log('VERIFY: Partner commission $' + amt.toFixed(2) + ' locked — invoice ' + templateB.uuid + '-' + String(invId).padStart(4,'0') + ' recorded');
+  const amt = tmpl.C.commission;
+  addLedgerRow(tmpl.C.uuid + '-' + String(invId).padStart(4,'0'), tmpl.C.streamLabel, amt, 'Locked');
+  log('VERIFY: Commission $' + amt.toFixed(2) + ' locked — ' + tmpl.C.uuid + '-' + String(invId).padStart(4,'0') + ' recorded');
   render();
 }
 
@@ -306,9 +276,8 @@ function log(msg) {
   t.scrollTop = t.scrollHeight;
 }
 
-// ─── INIT ───
 render();
-log('READY: Template A displayed — click payment buttons or use Simulate Payment');
+log('READY: Template A loaded — click payment buttons or use Simulate Payment');
 </script>
 </body>
 </html>

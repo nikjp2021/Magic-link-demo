@@ -104,28 +104,43 @@ The Magic Link handler reads these fields at submission time and writes the calc
 
 ## 5. Invoice Generation & Templates
 
-Two streams, two templates.
+Three streams, three templates.
 
-### 5.1 Stream 1: User-Facing Shared Cost Split (Template A)
+### 5.1 Stream 1: Client Fee (Template A)
 
-Rendered as a mobile card on the Property Path. Shows the total cost, applies a 50/50 split, and presents a payment button for the user's share.
+A platform setup cost split 50/50 between co-buyers. Example: Co-Ownership Agreement Setup Fee ($600 total, $300 each). Rendered as a mobile card on the Property Path with Apple Pay / Google Pay / Credit Card.
 
 **Template A layout:**
 ```
 Property: 123 Main Street, Sydney
+Client Fee: Co-Ownership Document Setup
 Total Cost: $600.00
 Split: 50/50
 Your Share: $300.00
 [Pay with Apple Pay] [Google Pay] [Credit Card]
 ```
 
-Once paid, the `invoice_records` row flips to `Paid` for that user. The other user's payment is tracked independently.
+Once paid, the `invoice_records` row flips to `Paid` for that user.
 
-### 5.2 Stream 2: Partner Commission Statement (Template B)
+### 5.2 Stream 2: Service Rendered (Template B)
 
-Rendered in the admin dashboard. Auto-generated when a partner hits their `trigger_milestone` via Magic Link. Pulls the partner's hidden profile fields to compute the amount, then locks a static row.
+A partner service fee split 50/50 between co-buyers. Example: Building & Pest Inspection ($240 total, $120 each). Uses the same split card layout with different labels and amounts.
 
 **Template B layout:**
+```
+Property: 45 Park Avenue, Melbourne
+Service: Building & Pest Inspection
+Total Cost: $240.00
+Split: 50/50
+Your Share: $120.00
+[Pay with Apple Pay] [Google Pay] [Credit Card]
+```
+
+### 5.3 Stream 3: Commission Payout (Template C)
+
+A B2B corporate commission owed to Vestie by an external partner. Auto-generated when a partner hits their `trigger_milestone` via Magic Link. Pulls the partner's hidden profile fields to compute the amount, then locks a static row.
+
+**Template C layout:**
 ```
 Partner: Hometown Mortgages
 Commission: $1,800.00
@@ -136,9 +151,9 @@ Status: PENDING
 
 Once verified, the row is frozen — Anna exports it to Xero at end of month. No automated B2B payment gateway in MVP scope.
 
-### 5.3 How They Share `invoice_records`
+### 5.4 How They Share `invoice_records`
 
-Both streams write to the same `invoice_records` collection. The `invoice_type` field distinguishes them (`User_Split` vs `Partner_Commission`).
+All three streams write to the same `invoice_records` collection. The `billing_stream` field distinguishes them (`Client_Fee`, `Service_Rendered`, `Commission_Payout`).
 
 ## 6. Post-Payment Flow
 
@@ -264,7 +279,7 @@ Anna's dashboard now includes a dedicated receivables ledger that aggregates all
 | `invoice_uuid` | UUID | Primary key |
 | `parent_referral_id` | Relation | Links to `referral_records` |
 | `invoice_type` | Enum | User_Split or Partner_Commission |
-| `billing_stream` | Enum | User_Cost_Split or B2B_Partner_Receivable |
+| `billing_stream` | Enum | Client_Fee, Service_Rendered, or Commission_Payout |
 | `asset_description` | String | e.g. "Building & Pest Inspection Split" |
 | `gross_amount` | Decimal | AUD |
 | `individual_share` | Decimal | AUD (50% for user splits) |
@@ -341,7 +356,7 @@ Anna's dashboard now includes a dedicated receivables ledger that aggregates all
 | `demo.html` | Magic Link form — all 12 roles, 3 stages, 8 field types | Click a tile in index.html |
 | `admin.html` | Admin Dashboard — Modules A–E, simulators, CSV export | Click Admin link in header |
 | `fee_config.html` | Fee Config Engine — hidden Strapi fields driving auto-calculation | Click Fee Config link in header |
-| `invoice_demo.html` | Invoice Templates — Template A (Split Card) and Template B (Commission Statement) toggle | Click Invoice Demo tile in index.html |
+| `invoice_demo.html` | Invoice Templates — 3-template toggle (A: Client Fee, B: Service Rendered, C: Commission Payout) with in-app pay and B2B verify | Click Invoice Demo tile in index.html |
 | `paystub_demo.html` | Unified Receivables & Paystub Engine — 3-scenario toggle (Legal Split / Inspection / Broker Commission), paystub, email dispatch, Financial Hub, and admin receivables ledger | Click Paystub & Hub tile in index.html |
 
 All files run in any browser with zero dependencies.
