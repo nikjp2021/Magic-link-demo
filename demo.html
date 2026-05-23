@@ -121,7 +121,6 @@ select.fld { cursor: pointer; appearance: none; background-image: url("data:imag
 .success-icon { font-size: 3rem; margin-bottom: 12px; }
 .success-title { font-size: 1.25rem; font-weight: 800; color: var(--success); margin-bottom: 6px; }
 .success-desc { font-size: 0.85rem; color: var(--phone-muted); line-height: 1.5; margin-bottom: 20px; }
-.success-data { background: #F7FAFC; border-radius: 10px; padding: 14px; text-align: left; width: 100%; font-size: 0.72rem; font-family: monospace; color: var(--phone-muted); white-space: pre-wrap; line-height: 1.6; border: 1px solid var(--phone-border); margin-bottom: 16px; max-height: 200px; overflow-y: auto; }
 .btn-reset { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
 .btn-reset:hover { background: var(--bg-hover); }
 
@@ -681,7 +680,6 @@ function submitForm() {
 
   log('API: <span class="ev">POST /api/verifications</span> — payload: <span class="warn">' + JSON.stringify(payload) + '</span>');
 
-  const payloadDisplay = JSON.stringify(payload, null, 2);
   const container = document.getElementById('phoneContent');
   container.innerHTML = `
     <div class="success-overlay">
@@ -689,9 +687,9 @@ function submitForm() {
       <div class="success-title">Verification Complete!</div>
       <div class="success-desc">
         <strong>${p.name}</strong> — ${stage}<br>
+        All form data recorded to Strapi database.<br>
         Pair-493 Property Path advanced.
       </div>
-      <div class="success-data">${escapeHtml(payloadDisplay)}</div>
       <button class="btn-reset" onclick="resetForm()">Simulate New Transaction</button>
     </div>
   `;
@@ -705,8 +703,6 @@ function resetForm() {
   document.getElementById('phoneFooter').textContent = 'Verified Secure by Vestie Encrypted Cloud  |  Pair-493 (VIC/NSW)';
   log('RESET: Form cleared. Ready for new transaction.');
 }
-
-function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function updateStageDots() {
   const p = PARTNERS[currentRoleIdx];
