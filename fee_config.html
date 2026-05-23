@@ -27,19 +27,14 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
 .container { max-width: 1360px; width: 100%; }
-
-/* Header */
 .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 28px; }
 .header-brand { display: flex; align-items: center; gap: 14px; }
 .brand-icon { width: 44px; height: 44px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff; }
 .brand-text { font-size: 1.5rem; font-weight: 800; }
 .brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .badge-secure { padding: 6px 14px; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 20px; color: var(--green); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-
-/* Layout */
+.badge-blue { padding: 4px 10px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #60A5FA; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
 .master-grid { display: grid; grid-template-columns: 380px 1fr; gap: 28px; align-items: start; }
-
-/* Phone Frame */
 .phone-frame { background: #22252A; border-radius: 44px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); height: 720px; border: 3px solid #3A3F47; position: relative; }
 .phone-notch { width: 110px; height: 18px; background: #22252A; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 10; }
 .phone-screen { background: var(--phone-bg); border-radius: 34px; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; position: relative; color: var(--phone-text); }
@@ -60,12 +55,12 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .upload-zone.attached { border-color: var(--green); background: #E8F8F0; }
 .btn-prime { background: var(--gradient); color: #FFFFFF; border: none; padding: 12px; font-weight: 700; font-size: 0.85rem; border-radius: 10px; width: 100%; cursor: pointer; box-shadow: 0 4px 6px rgba(255,107,107,0.2); }
 .btn-prime:hover { opacity: 0.9; }
+.btn-outline { background: transparent; color: var(--phone-text); border: 2px solid #CBD5E0; padding: 12px; font-weight: 700; font-size: 0.85rem; border-radius: 10px; width: 100%; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-outline:hover { border-color: #A0AEC0; }
 .success-state { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px 20px; }
 .success-state span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
 .success-state h4 { color: var(--green); font-weight: 700; font-size: 1.1rem; }
 .success-state p { font-size: 0.8rem; color: var(--phone-muted); margin-top: 6px; line-height: 1.4; }
-
-/* Control Panel */
 .control-panel { display: flex; flex-direction: column; gap: 20px; }
 .panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
 .panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
@@ -84,11 +79,11 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; line-height: 1.5; }
 .terminal-box::-webkit-scrollbar { width: 4px; }
 .terminal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-/* Footer */
 .footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 28px; }
-
-/* Responsive */
+.toggle-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.toggle-opt { flex: 1; padding: 10px; text-align: center; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); transition: all 0.2s; }
+.toggle-opt.active { background: var(--gradient); color: #fff; border-color: transparent; }
+.hidden { display: none; }
 @media (max-width: 900px) { .master-grid { grid-template-columns: 1fr; } .phone-frame { height: 600px; } }
 @media (max-width: 480px) { body { padding: 12px; } .input-row { grid-template-columns: 1fr; } }
 </style>
@@ -104,7 +99,7 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
     </div>
     <div style="display:flex;align-items:center;gap:20px;">
       <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;">&#8592; Command Center</a>
-      <div class="badge-secure">&#128274; Hidden Profile Fields</div>
+      <span class="badge-blue" id="streamBadge">&#128101; User Split Active</span>
     </div>
   </div>
 
@@ -129,17 +124,31 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
           <p>Data injected straight to database fields. Real-time ledger calculated. User Property Path pushed forward.</p>
           <button class="btn-prime" style="margin-top:15px;" onclick="resetSimulation()">Test New Parameter Setup</button>
         </div>
+        <div class="phone-body success-state" id="splitSuccessState" style="display:none;">
+          <span>&#9989;</span>
+          <h4>Payment Complete!</h4>
+          <p>Your share has been settled. The co-buyer property path advances to the next milestone.</p>
+          <button class="btn-prime" style="margin-top:15px;" onclick="resetSimulation()">Test Another Payment</button>
+        </div>
       </div>
     </div>
 
     <!-- Control Panel -->
     <div class="control-panel">
 
-      <!-- Strapi Hidden Fields -->
+      <!-- Invoice Stream Selector + Strapi Fields -->
       <div class="panel-card">
-        <div class="panel-title">&#128274; Strapi CMS: Hidden Partner Profile Fields (Admin Only)</div>
-        <div class="strapi-card">
-          <div class="strapi-title">&#128295; Partner Configuration Presets</div>
+        <div class="panel-title">&#128274; Invoice Stream &amp; Configuration</div>
+
+        <!-- Stream Toggle -->
+        <div class="toggle-row">
+          <div class="toggle-opt active" id="togglePartner" onclick="setStream('partner')">&#127987; Partner Commission</div>
+          <div class="toggle-opt" id="toggleUser" onclick="setStream('user')">&#128101; User-Facing Split (50/50)</div>
+        </div>
+
+        <!-- Partner Commission Fields -->
+        <div class="strapi-card" id="partnerFields">
+          <div class="strapi-title">&#128295; Hidden Partner Profile Fields</div>
           <div class="input-row">
             <div>
               <label>Selected Partner Profession</label>
@@ -172,18 +181,47 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
             </div>
           </div>
         </div>
+
+        <!-- User Split Fields -->
+        <div class="strapi-card hidden" id="userSplitFields">
+          <div class="strapi-title">&#128101; Co-Buyer Split Configuration</div>
+          <div class="input-row">
+            <div>
+              <label>Service Type</label>
+              <select id="splitService">
+                <option value="Co-ownership Agreement Setup">Co-ownership Agreement Setup</option>
+                <option value="Property Valuation Fee">Property Valuation Fee</option>
+                <option value="Legal Document Review">Legal Document Review</option>
+              </select>
+            </div>
+            <div>
+              <label>Total Fixed Cost (AUD)</label>
+              <input type="number" id="splitTotal" value="600">
+            </div>
+          </div>
+          <div class="input-row">
+            <div>
+              <label>Split Ratio</label>
+              <input type="text" id="splitRatio" value="50 / 50" disabled style="opacity:0.6;">
+            </div>
+            <div>
+              <label>Each User Pays</label>
+              <input type="text" id="splitEach" value="$300.00" disabled style="opacity:0.6;">
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Live Ledger -->
       <div class="panel-card">
-        <div class="panel-title">&#128203; Live Automated Transaction Invoicing Ledger (Anna's View)</div>
+        <div class="panel-title">&#128203; <span id="ledgerTitle">Live Automated Transaction Invoicing Ledger (Anna's View)</span></div>
         <table class="ledger-table">
           <thead>
             <tr>
               <th>Referral ID</th>
-              <th>Profession</th>
-              <th>Target Trigger</th>
-              <th>Calculated Owed</th>
+              <th id="ledgerColProfession">Profession</th>
+              <th id="ledgerColTrigger">Target Trigger</th>
+              <th id="ledgerColAmount">Calculated Owed</th>
               <th>Payment Status</th>
             </tr>
           </thead>
@@ -209,17 +247,40 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 
   <!-- Footer -->
   <div class="footer">
-    Vestie Operations &middot; Hidden Partner Fee Configuration v2.4 &middot; Section 8
+    Vestie Operations &middot; Fee Configuration Engine v2.4 &middot; Sections 8–9
   </div>
 </div>
 
 <script>
-// Partner configuration presets
+let currentStream = 'partner'; // 'partner' | 'user'
+
+// Partner presets
 const presets = {
   Depreciation: { billing: "Flat", value: 120, milestone: "Report Delivered", roleText: "Tax Depreciation" },
   Lawyer: { billing: "Flat", value: 300, milestone: "Engagement Confirmed", roleText: "Property Lawyer" },
   Broker: { billing: "Percent", value: 0.015, milestone: "Loan Settlement", roleText: "Mortgage Broker" }
 };
+
+function setStream(stream) {
+  currentStream = stream;
+  document.getElementById('togglePartner').className = 'toggle-opt' + (stream === 'partner' ? ' active' : '');
+  document.getElementById('toggleUser').className = 'toggle-opt' + (stream === 'user' ? ' active' : '');
+  document.getElementById('partnerFields').className = 'strapi-card' + (stream === 'partner' ? '' : ' hidden');
+  document.getElementById('userSplitFields').className = 'strapi-card' + (stream === 'user' ? '' : ' hidden');
+  document.getElementById('streamBadge').innerHTML = stream === 'partner'
+    ? '&#127987; Partner Commission Active'
+    : '&#128101; User Split Active';
+
+  // Update ledger columns
+  document.getElementById('ledgerColProfession').innerText = stream === 'partner' ? 'Profession' : 'User Pair';
+  document.getElementById('ledgerColTrigger').innerText = stream === 'partner' ? 'Target Trigger' : 'Service Type';
+  document.getElementById('ledgerColAmount').innerText = stream === 'partner' ? 'Calculated Owed' : 'Each Share (50%)';
+
+  // Reset phone view
+  resetSimulation();
+
+  pushLog('Stream switched: ' + (stream === 'partner' ? 'Partner Commission (Stream 2)' : 'User-Facing Split (Stream 1)') + '.');
+}
 
 function applyPresetPartner() {
   const selected = document.getElementById('partnerSelect').value;
@@ -231,7 +292,7 @@ function applyPresetPartner() {
   document.getElementById('ledgerCash').innerText = config.billing === "Flat" ? "$" + config.value.toFixed(2) + " AUD" : "Calc Pending...";
   document.getElementById('ledgerTrigger').innerHTML = '<span class="badge badge-pending">' + config.milestone + '</span>';
   toggleFormInputs();
-  pushLog("Strapi Database Core: Switched active target. Hidden profile variables loaded for [" + config.roleText + "].");
+  pushLog("Strapi: Switched to [" + config.roleText + "]. Hidden profile variables loaded.");
 }
 
 function toggleFormInputs() {
@@ -240,8 +301,15 @@ function toggleFormInputs() {
 }
 
 function openMagicWebform() {
-  const role = document.getElementById('partnerSelect').value;
-  const config = presets[role];
+  if (currentStream === 'partner') {
+    openPartnerForm();
+  } else {
+    openUserSplitForm();
+  }
+}
+
+function openPartnerForm() {
+  const config = presets[document.getElementById('partnerSelect').value];
   const targetMilestone = document.getElementById('strapiMilestone').value;
   document.getElementById('navTitle').innerText = "\U0001F310 Safari Mobile Web Browser View";
   document.getElementById('phoneBody').innerHTML = '\
@@ -260,47 +328,121 @@ function openMagicWebform() {
       <button class="btn-prime" onclick="processBackendCalculation()">Submit Verification</button>\
     </div>\
   ';
-  pushLog("Magic Link Loop: Partner tapped cryptographic email URL. Browser compiled responsive template without profile password login entry rows.");
+  pushLog("Magic Link: Partner tapped email URL. Compiled responsive template.");
+}
+
+function openUserSplitForm() {
+  const service = document.getElementById('splitService');
+  const serviceText = service.options[service.selectedIndex].text;
+  const total = parseFloat(document.getElementById('splitTotal').value) || 600;
+  const share = total / 2;
+  document.getElementById('splitEach').value = '$' + share.toFixed(2);
+
+  document.getElementById('navTitle').innerText = "\U0001F4F1 Property Path — Mobile App";
+  document.getElementById('phoneBody').innerHTML = '\
+    <div class="magic-form">\
+      <h4>Your Property Path — Step 3 of 5</h4>\
+      <p>Co-buyer pair: <strong>Emma &amp; Oliver</strong></p>\
+      <div style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;margin-bottom:14px;">\
+        <div style="font-size:0.75rem;color:var(--phone-muted);margin-bottom:4px;">Service</div>\
+        <div style="font-weight:700;font-size:0.95rem;">' + serviceText + '</div>\
+        <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #E2E8F0;">\
+          <div><div style="font-size:0.7rem;color:var(--phone-muted);">Total Cost</div><div style="font-weight:700;">$' + total.toFixed(2) + '</div></div>\
+          <div style="text-align:right;"><div style="font-size:0.7rem;color:var(--phone-muted);">Your 50% Share</div><div style="font-weight:800;font-size:1.2rem;color:#FF6B6B;">$' + share.toFixed(2) + '</div></div>\
+        </div>\
+      </div>\
+      <button class="btn-outline" onclick="splitPayWithApple()">&#63743; Pay with Apple Pay</button>\
+      <button class="btn-outline" onclick="splitPayWithGoogle()">&#128266; Pay with Google Pay</button>\
+      <button class="btn-prime" onclick="splitPayCard()">&#128179; Pay with Credit Card</button>\
+    </div>\
+  ';
+  pushLog("User Split: Co-buyer Emma opened payment screen for \"" + serviceText + "\". Share: $" + share.toFixed(2) + ".");
 }
 
 function attachFile() {
   document.getElementById('uploadZone').className = 'upload-zone attached';
   document.getElementById('proofText').innerText = '\u2705 report_proof_document.pdf attached';
-  pushLog("FILE UPLOAD: Partner attached proof document via Magic Link interface.");
+  pushLog("FILE: Partner attached proof document via Magic Link.");
 }
 
 function processBackendCalculation() {
   const billingModel = document.getElementById('strapiBillingType').value;
   const inputVal = parseFloat(document.getElementById('strapiFeeValue').value);
   let finalOwed = 0;
-
   if (billingModel === 'Flat') {
     finalOwed = inputVal;
-    pushLog("Calculation Engine: Flat rate rule activated. Copied direct fee: $" + finalOwed.toFixed(2) + ".");
+    pushLog("Calc: Flat rate. Copied direct fee: $" + finalOwed.toFixed(2) + ".");
   } else {
     const propertyPrice = 750000;
     const loanAmount = propertyPrice * 0.80;
     const partnerCommission = loanAmount * inputVal;
     finalOwed = partnerCommission * 0.20;
-    pushLog("Calculation Engine: Percentage rule. ($750k property \u00d7 80% LVR \u00d7 " + (inputVal * 100) + "%) \u00d7 20% Vestie split = $" + finalOwed.toFixed(2));
+    pushLog("Calc: Percentage. ($750k \u00d7 80% LVR \u00d7 " + (inputVal * 100) + "%) \u00d7 20% Vestie split = $" + finalOwed.toFixed(2));
   }
-
   document.getElementById('ledgerCash').innerText = "$" + finalOwed.toFixed(2) + " AUD";
   document.getElementById('ledgerStatus').className = "badge badge-success";
   document.getElementById('ledgerStatus').innerText = "Verified & Invoiced";
-
   document.getElementById('phoneBody').style.display = 'none';
   document.getElementById('successState').style.display = 'flex';
   document.getElementById('navTitle').innerText = "\u2714\ufe0f Data Sync Complete";
 }
 
-function resetSimulation() { location.reload(); }
+function splitPayWithApple() { completeSplitPayment('Apple Pay'); }
+function splitPayWithGoogle() { completeSplitPayment('Google Pay'); }
+function splitPayCard() { completeSplitPayment('Credit Card'); }
+
+function completeSplitPayment(method) {
+  const total = parseFloat(document.getElementById('splitTotal').value) || 600;
+  const share = total / 2;
+  document.getElementById('ledgerRole').innerText = 'Emma (Pair-601)';
+  document.getElementById('ledgerTrigger').innerHTML = '<span class="badge badge-success">' + document.getElementById('splitService').options[document.getElementById('splitService').selectedIndex].text + '</span>';
+  document.getElementById('ledgerCash').innerText = '$' + share.toFixed(2) + ' AUD';
+  document.getElementById('ledgerStatus').className = "badge badge-success";
+  document.getElementById('ledgerStatus').innerText = "Paid";
+
+  document.getElementById('phoneBody').style.display = 'none';
+  document.getElementById('splitSuccessState').style.display = 'flex';
+  document.getElementById('navTitle').innerText = "\u2714\ufe0f Payment Complete";
+  pushLog("User Split: Emma paid $" + share.toFixed(2) + " via " + method + ". 50% share settled. Co-buyer path advances.");
+}
+
+function resetSimulation() {
+  document.getElementById('phoneBody').style.display = 'block';
+  document.getElementById('successState').style.display = 'none';
+  document.getElementById('splitSuccessState').style.display = 'none';
+  document.getElementById('navTitle').innerText = currentStream === 'partner'
+    ? '\uD83D\uDCE5 Partner Mobile Email Inbox'
+    : '\uD83D\uDCF1 Co-Buyer Mobile App';
+  document.getElementById('phoneBody').innerHTML = currentStream === 'partner'
+    ? '<p style="font-size:0.8rem;color:var(--phone-muted);margin-bottom:12px;font-weight:600;">Simulated partner smartphone notifications:</p><div class="email-item" onclick="openMagicWebform()"><div class="email-title">\u2709\ufe0f Vestie Client Referral Update</div><div class="email-snippet">File ID: REF-2026-0429. Action Required: Please verify milestone status for Client Pair...</div></div>'
+    : '<p style="font-size:0.8rem;color:var(--phone-muted);margin-bottom:12px;font-weight:600;">Your Property Path progress:</p><div class="email-item" onclick="openMagicWebform()"><div class="email-title">\uD83C\uDFE6 Step 3: Shared Cost Payment</div><div class="email-snippet">Co-ownership Agreement Setup — Your 50% share of $300.00 is due. Tap to pay.</div></div>';
+
+  // Reset ledger back to defaults for current stream
+  if (currentStream === 'partner') {
+    const config = presets[document.getElementById('partnerSelect').value];
+    document.getElementById('ledgerRole').innerText = config.roleText;
+    document.getElementById('ledgerCash').innerText = config.billing === "Flat" ? "$" + config.value.toFixed(2) + " AUD" : "Calc Pending...";
+    document.getElementById('ledgerTrigger').innerHTML = '<span class="badge badge-pending">' + config.milestone + '</span>';
+    document.getElementById('ledgerStatus').className = "badge badge-pending";
+    document.getElementById('ledgerStatus').innerText = "Pending Link";
+  } else {
+    const total = parseFloat(document.getElementById('splitTotal').value) || 600;
+    document.getElementById('ledgerRole').innerText = 'Emma (Pair-601)';
+    document.getElementById('ledgerTrigger').innerHTML = '<span class="badge badge-pending">' + document.getElementById('splitService').options[document.getElementById('splitService').selectedIndex].text + '</span>';
+    document.getElementById('ledgerCash').innerText = '$' + (total/2).toFixed(2) + ' AUD';
+    document.getElementById('ledgerStatus').className = "badge badge-pending";
+    document.getElementById('ledgerStatus').innerText = "Awaiting Payment";
+  }
+}
 
 function pushLog(msg) {
   const box = document.getElementById('terminalBox');
   box.innerHTML += "<br>> " + msg;
   box.scrollTop = box.scrollHeight;
 }
+
+// ─── BOOT ───
+setStream('partner');
 </script>
 </body>
 </html>

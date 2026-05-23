@@ -24,8 +24,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; }
 .container { max-width: 1480px; width: 100%; padding: 20px; }
-
-/* Header */
 .header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 20px; }
 .header-brand { display: flex; align-items: center; gap: 14px; }
 .brand-icon { width: 40px; height: 40px; background: var(--gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: #fff; }
@@ -37,38 +35,29 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .badge-admin { padding: 6px 14px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 20px; color: #818CF8; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 .export-csv-btn { padding: 8px 18px; background: var(--gradient); border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; gap: 6px; }
 .export-csv-btn:hover { opacity: 0.9; }
-
-/* Layout */
 .dash-grid { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start; }
 .main-col { display: flex; flex-direction: column; gap: 20px; }
-
-/* Section labels */
 .section-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* KPI Grid */
 .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; position: relative; overflow: hidden; }
 .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gradient); }
 .kpi-label { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
 .kpi-value { font-size: 1.8rem; font-weight: 800; margin-bottom: 2px; }
 .kpi-sub { font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-
-/* Table */
 .table-container { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
 .table-title { font-size: 1rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
 .data-table th { padding: 10px 10px; text-align: left; font-weight: 700; color: var(--text-secondary); border-bottom: 1px solid var(--border); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; }
 .data-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
-.data-table tbody tr:hover td { background: var(--bg-hover); cursor: pointer; }
-
+.data-table tbody tr:hover td { background: var(--bg-hover); }
+.data-table tbody tr.clickable:hover td { cursor: pointer; }
 .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
 .badge-green { background: rgba(46,204,113,0.15); color: var(--green); }
 .badge-yellow { background: rgba(241,196,15,0.15); color: var(--yellow); }
 .badge-red { background: rgba(231,76,60,0.15); color: var(--red); }
 .badge-gray { background: rgba(107,114,128,0.15); color: var(--text-muted); }
-
-/* Sidebar */
+.badge-blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
 .sidebar { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 16px; }
 .sidebar-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
 .sidebar-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
@@ -83,17 +72,11 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .terminal-feed { background: #0A0C12; color: #48BB78; font-family: 'Courier New', Courier, monospace; font-size: 0.72rem; padding: 12px; border-radius: 8px; height: 120px; overflow-y: auto; line-height: 1.5; }
 .terminal-feed::-webkit-scrollbar { width: 4px; }
 .terminal-feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-/* Footer */
 .footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 20px; }
-
-/* Toast */
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); opacity: 0; transform: translateY(20px); transition: all 0.3s; z-index: 1000; }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast-icon { font-size: 1.2rem; }
 .toast-text { font-size: 0.85rem; font-weight: 600; }
-
-/* Responsive */
 @media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } .sidebar { position: static; } }
 @media (max-width: 768px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { body { padding: 0; } .container { padding: 12px; } .kpi-row { grid-template-columns: 1fr; } }
@@ -117,11 +100,9 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
   </div>
 
   <div class="dash-grid">
-
-    <!-- Main Column -->
     <div class="main-col">
 
-      <!-- Section: Module A + B (App & Revenue) -->
+      <!-- Module A: App Growth -->
       <div class="section-label">App Growth Metrics (Module A)</div>
       <div class="kpi-row">
         <div class="kpi-card"><div class="kpi-label">App Store Downloads</div><div class="kpi-value" id="valDownloads">14,350</div><div class="kpi-sub"><span style="color:var(--green);">+12%</span> Growth velocity loop</div></div>
@@ -129,14 +110,15 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
         <div class="kpi-card"><div class="kpi-label">Compliance Verified Profiles</div><div class="kpi-value" id="valCompliance">9,410</div><div class="kpi-sub">&#9878;&#65039; Signed legal audit trails</div></div>
       </div>
 
+      <!-- Module B: Revenue & Ledger -->
       <div class="section-label" style="margin-top:8px;">Revenue &amp; Ledger (Module B)</div>
       <div class="kpi-row">
         <div class="kpi-card"><div class="kpi-label">Referral Fees Earned (Paid)</div><div class="kpi-value" id="valEarned">$24,500 <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span></div><div class="kpi-sub">Total cleared bank balance</div></div>
         <div class="kpi-card"><div class="kpi-label">Outstanding Receivables</div><div class="kpi-value" id="valOutstanding">$12,300 <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span></div><div class="kpi-sub">Total unresolved invoices</div></div>
-        <div class="kpi-card"><div class="kpi-label">Partner Payables (Reverse Owed)</div><div class="kpi-value" id="valReverse">$1,170 <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span></div><div class="kpi-sub">&#128260; Total 15% partner kickbacks</div></div>
+        <div class="kpi-card"><div class="kpi-label">Pending Split Payments</div><div class="kpi-value" id="valPendingSplits" style="color:var(--yellow);">2</div><div class="kpi-sub">&#128101; Co-buyer shares awaiting settlement</div></div>
       </div>
 
-      <!-- Section: Module C (Subscriptions) -->
+      <!-- Module C: Subscriptions -->
       <div class="section-label">Subscription &amp; Monetization (Module C)</div>
       <div class="kpi-row">
         <div class="kpi-card"><div class="kpi-label">Free Tier Accounts</div><div class="kpi-value" id="valFreeUsers">8,990</div><div class="kpi-sub">Active non-paying user base</div></div>
@@ -144,46 +126,46 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
         <div class="kpi-card"><div class="kpi-label">Monthly Recurring Revenue (MRR)</div><div class="kpi-value" id="valMRR">$4,158 <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span></div><div class="kpi-sub">Forecasted platform revenue</div></div>
       </div>
 
-      <!-- Transaction Table (Module D + E) -->
+      <!-- Stream 1: User-Facing Split Invoices -->
       <div class="table-container">
         <div class="table-title">
-          <span>Active System Referral &amp; Pipeline Transactions</span>
-          <span class="badge badge-green" style="font-size:0.75rem;">Database Sync Live</span>
+          <span>&#128101; Stream 1 — User-Facing Shared Cost Splits (50/50)</span>
+          <span class="badge badge-blue" style="font-size:0.75rem;">In-App Payment</span>
+        </div>
+        <table class="data-table" id="splitTable">
+          <thead><tr><th>Pair ID</th><th>Service Type</th><th>Total Cost</th><th>User A Share</th><th>User B Share</th><th>User A Status</th><th>User B Status</th></tr></thead>
+          <tbody id="splitBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Stream 2: Partner Commission Ledger -->
+      <div class="table-container">
+        <div class="table-title">
+          <span>&#127987; Stream 2 — Partner Commission Ledger (External Billing)</span>
+          <span class="badge badge-green" style="font-size:0.75rem;">Mark as Paid</span>
         </div>
         <table class="data-table" id="referralTable">
-          <thead>
-            <tr>
-              <th>Referral ID</th>
-              <th>User Pair</th>
-              <th>Assigned Partner</th>
-              <th>Current Milestone</th>
-              <th>Stagnation Alert</th>
-              <th>Invoice Value</th>
-              <th>Fee Status</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Invoice UUID</th><th>Invoice Type</th><th>User Pair</th><th>Assigned Partner</th><th>Current Milestone</th><th>Stagnation Alert</th><th>Invoice Value</th><th>Fee Status</th></tr></thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
 
     </div>
 
-    <!-- Sidebar: Simulation Controller -->
+    <!-- Sidebar -->
     <div class="sidebar">
       <div class="sidebar-card">
         <div class="sidebar-title">&#9881;&#65039; Simulation Controller</div>
-
         <div class="sim-box">
           <span class="sim-label">User Interactions Simulator</span>
           <button class="sidebar-btn secondary" onclick="simulateUserSignup()">Simulate App Install &amp; Signup</button>
           <button class="sidebar-btn secondary" onclick="simulateActiveTraffic()">Simulate Active Concurrent Ping</button>
         </div>
-
         <div class="sim-box">
-          <span class="sim-label">Premium Subscription Conversion</span>
+          <span class="sim-label">Invoice Simulation</span>
+          <button class="sidebar-btn secondary" onclick="simulateCoBuyerPayment()">Simulate Co-Buyer Payment</button>
           <button class="sidebar-btn primary" onclick="simulatePremiumUpgrade()">Convert Free User to Premium</button>
         </div>
-
         <div class="sim-box" style="background:#0A0C12;border-color:#1A1D27;">
           <span class="sim-label" style="color:#6B7280;">System Operation Log Feed</span>
           <div class="terminal-feed" id="logTerminal">> Admin dashboard engine initialized. Data tunnels verified open...</div>
@@ -193,13 +175,11 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 
   </div>
 
-  <!-- Footer -->
   <div class="footer">
-    Vestie Operations &middot; Admin Dashboard v2.4 &middot; Modules A–E
+    Vestie Operations &middot; Admin Dashboard v2.4 &middot; Sections 1–9
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
   <span class="toast-icon">&#9989;</span>
   <span class="toast-text" id="toastText">Operation complete</span>
@@ -216,14 +196,54 @@ const state = {
   reverse: 1170,
   freeUsers: 8990,
   premiumUsers: 420,
-  mrr: 4158
+  mrr: 4158,
+  pendingSplits: 2
 };
 
-// ─── REFERRAL ROWS ───
+// ─── STREAM 1: CO-BUYER SPLIT INVOICES ───
+const splitInvoices = [
+  { pair:'Pair-601 (Emma/Oliver)', service:'Co-ownership Agreement Setup', total:600, shareA:300, shareB:300, paidA:true, paidB:false },
+  { pair:'Pair-602 (Liam/Sophia)', service:'Property Valuation Fee', total:400, shareA:200, shareB:200, paidA:false, paidB:false },
+  { pair:'Pair-603 (Noah/Isabella)', service:'Legal Document Review', total:500, shareA:250, shareB:250, paidA:true, paidB:true }
+];
+
+function renderSplits() {
+  const tbody = document.getElementById('splitBody');
+  tbody.innerHTML = splitInvoices.map((s, i) => {
+    const badgeA = s.paidA ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow" style="cursor:pointer;">Pending</span>';
+    const badgeB = s.paidB ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow" style="cursor:pointer;">Pending</span>';
+    return '<tr class="clickable" onclick="settleSplit(' + i + ')">'
+      + '<td>' + s.pair + '</td>'
+      + '<td>' + s.service + '</td>'
+      + '<td>$' + s.total + '.00 AUD</td>'
+      + '<td>$' + s.shareA + '.00</td>'
+      + '<td>$' + s.shareB + '.00</td>'
+      + '<td id="splitA' + i + '">' + badgeA + '</td>'
+      + '<td id="splitB' + i + '">' + badgeB + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+function settleSplit(idx) {
+  const s = splitInvoices[idx];
+  let changed = false;
+  if (!s.paidA) { s.paidA = true; changed = true; }
+  if (!s.paidB) { s.paidB = true; changed = true; }
+  if (!changed) return;
+
+  state.pendingSplits = splitInvoices.filter(s => !s.paidA || !s.paidB).length;
+  document.getElementById('valPendingSplits').innerText = state.pendingSplits;
+
+  document.getElementById('splitA' + idx).innerHTML = '<span class="badge badge-green">Paid</span>';
+  document.getElementById('splitB' + idx).innerHTML = '<span class="badge badge-green">Paid</span>';
+  appendLog('Split Invoice: ' + s.pair + ' — both shares marked as paid for "' + s.service + '". $' + s.total + '.00 settled.');
+}
+
+// ─── STREAM 2: PARTNER COMMISSION LEDGER ───
 const referrals = [
-  { ref:'REF-2026-00142', pair:'Pair-493 (John/Sam)', partner:'Apex Tax Specialists', milestone:'Report Delivered', stagnant:false, days:0, value:120, reverse:18, paid:false },
-  { ref:'REF-2026-00143', pair:'Pair-512 (Anna/Lucy)', partner:'Zenith Home Loans', milestone:'Pre-Approval Issued', stagnant:true, days:9, value:1800, reverse:270, paid:false },
-  { ref:'REF-2026-00144', pair:'Pair-519 (Mark/Dave)', partner:'Vanguard Conveyancing', milestone:'Contract Exchanged', stagnant:false, days:0, value:300, reverse:45, paid:false }
+  { ref:'INV-2026-0001', type:'Partner_Commission', pair:'Pair-493 (John/Sam)', partner:'Apex Tax Specialists', milestone:'Report Delivered', stagnant:false, days:0, value:120, reverse:18, paid:false },
+  { ref:'INV-2026-0002', type:'Partner_Commission', pair:'Pair-512 (Anna/Lucy)', partner:'Zenith Home Loans', milestone:'Pre-Approval Issued', stagnant:true, days:9, value:1800, reverse:270, paid:false },
+  { ref:'INV-2026-0003', type:'Partner_Commission', pair:'Pair-519 (Mark/Dave)', partner:'Vanguard Conveyancing', milestone:'Contract Exchanged', stagnant:false, days:0, value:300, reverse:45, paid:false }
 ];
 
 function renderReferrals() {
@@ -234,9 +254,11 @@ function renderReferrals() {
       : '<span class="badge badge-green">Active Update</span>';
     const feeBadge = r.paid
       ? '<span class="badge badge-green">Paid &amp; Settled</span>'
-      : '<span class="badge badge-yellow" style="cursor:pointer;">Click to Pay</span>';
-    return '<tr onclick="settleReferral(' + i + ')">'
+      : '<span class="badge badge-yellow" style="cursor:pointer;">Mark as Paid</span>';
+    const typeBadge = '<span class="badge badge-blue">Partner Commission</span>';
+    return '<tr class="clickable" onclick="settleReferral(' + i + ')">'
       + '<td>' + r.ref + '</td>'
+      + '<td>' + typeBadge + '</td>'
       + '<td>' + r.pair + '</td>'
       + '<td>' + r.partner + '</td>'
       + '<td>' + r.milestone + '</td>'
@@ -260,7 +282,7 @@ function settleReferral(idx) {
   document.getElementById('valReverse').innerHTML = '$' + state.reverse.toLocaleString() + ' <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span>';
 
   document.getElementById('feeStatus' + idx).innerHTML = '<span class="badge badge-green">Paid &amp; Settled</span>';
-  appendLog('Ledger Transaction: Admin cleared payment for ' + r.ref + ' (' + r.partner + '). Receivable converted to settled cash. $' + r.value.toFixed(2) + ' earned.');
+  appendLog('Commission: Anna marked ' + r.ref + ' (' + r.partner + ') as paid. $' + r.value.toFixed(2) + ' earned. Reverse kickback: $' + r.reverse.toFixed(2) + '.');
 }
 
 // ─── SIMULATIONS ───
@@ -271,14 +293,28 @@ function simulateUserSignup() {
   document.getElementById('valDownloads').innerText = state.downloads.toLocaleString();
   document.getElementById('valFreeUsers').innerText = state.freeUsers.toLocaleString();
   document.getElementById('valCompliance').innerText = state.compliance.toLocaleString();
-  appendLog('Onboarding: New customer downloaded app. Sign-up passed compliance audit. Compliance log signed -> [bool: true, timestamp: Now].');
+  appendLog('Onboarding: New customer downloaded app. Sign-up passed compliance audit.');
 }
 
 function simulateActiveTraffic() {
   const bump = Math.floor(Math.random() * 25) + 5;
   state.active += bump;
   document.getElementById('valActive').innerText = state.active.toLocaleString();
-  appendLog('Traffic Monitor: Received API heartbeat ping. Concurrent app users: ' + state.active + ' (+' + bump + ').');
+  appendLog('Traffic Monitor: Received API heartbeat ping. Concurrent users: ' + state.active + ' (+' + bump + ').');
+}
+
+function simulateCoBuyerPayment() {
+  const pending = splitInvoices.filter(s => !s.paidA || !s.paidB);
+  if (pending.length === 0) { appendLog('INFO: All split invoices already settled.'); return; }
+  const target = pending[0];
+  target.paidA = true;
+  target.paidB = true;
+  const idx = splitInvoices.indexOf(target);
+  document.getElementById('splitA' + idx).innerHTML = '<span class="badge badge-green">Paid</span>';
+  document.getElementById('splitB' + idx).innerHTML = '<span class="badge badge-green">Paid</span>';
+  state.pendingSplits = splitInvoices.filter(s => !s.paidA || !s.paidB).length;
+  document.getElementById('valPendingSplits').innerText = state.pendingSplits;
+  appendLog('Split Payment Simulated: ' + target.pair + ' — both shares paid for "' + target.service + '".');
 }
 
 function simulatePremiumUpgrade() {
@@ -289,18 +325,21 @@ function simulatePremiumUpgrade() {
   document.getElementById('valFreeUsers').innerText = state.freeUsers.toLocaleString();
   document.getElementById('valPremiumUsers').innerText = state.premiumUsers.toLocaleString();
   document.getElementById('valMRR').innerHTML = '$' + state.mrr.toFixed(2) + ' <span style="font-size:0.9rem;font-weight:600;color:var(--text-muted);">AUD</span>';
-  appendLog('Billing Event: Free user converted to Premium via Stripe Checkout. MRR increased to $' + state.mrr.toFixed(2) + '.');
+  appendLog('Billing Event: Free user converted to Premium. MRR: $' + state.mrr.toFixed(2) + '.');
 }
 
 function simulateCSVExport() {
   const ts = new Date().toISOString().slice(0,10);
   const filename = 'vestie_ledger_reconciliation_' + ts + '.csv';
 
-  const headers = ['Referral ID,User Pair,Assigned Partner,Milestone,Stagnation,Invoice Value,Fee Status'];
-  const rows = referrals.map(r =>
-    [r.ref, r.pair, r.partner, r.milestone, r.stagnant ? 'Stagnant ' + r.days + 'd' : 'Active', '$' + r.value.toFixed(2), r.paid ? 'Paid' : 'Pending'].join(',')
+  const rows1 = splitInvoices.map(s =>
+    [s.pair, s.service, '$' + s.total, s.paidA ? 'Paid' : 'Pending', s.paidB ? 'Paid' : 'Pending'].join(',')
   );
-  const csv = headers.concat(rows).join('\n');
+  const rows2 = referrals.map(r =>
+    [r.ref, 'Partner_Commission', r.pair, r.partner, r.paid ? 'Paid' : 'Pending'].join(',')
+  );
+  const csv = 'Stream 1 - User Splits\nPair,Service,Total,User A,User B\n' + rows1.join('\n')
+    + '\n\nStream 2 - Partner Commissions\nInvoice,Type,Pair,Partner,Status\n' + rows2.join('\n');
 
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -308,7 +347,7 @@ function simulateCSVExport() {
   a.href = url; a.download = filename;
   a.click(); URL.revokeObjectURL(url);
 
-  appendLog('Export: ' + filename + ' generated and downloaded successfully.');
+  appendLog('Export: ' + filename + ' generated (both invoice streams).');
   showToast('CSV exported: ' + filename);
 }
 
@@ -326,6 +365,7 @@ function showToast(msg) {
 }
 
 // ─── BOOT ───
+renderSplits();
 renderReferrals();
 </script>
 </body>
