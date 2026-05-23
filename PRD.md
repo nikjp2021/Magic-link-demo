@@ -171,7 +171,23 @@ Payment Gateway Success Callback
 
 All three steps use the **Unified Dynamic Renderer Component** — no standalone layouts.
 
-### 6.2 `user_paystubs` Schema
+### 6.2 Multi-Scenario Paystub Framework
+
+The same paystub and Financial Hub templates support 3 real-world scenarios by pulling data from Strapi fields at render time:
+
+| # | Scenario | Example | Calculation | Receivable Type |
+|---|----------|---------|-------------|-----------------|
+| 1 | User Legal Fee Split | Co-Ownership Agreement Setup ($600) | $600 ÷ 2 = $300/user | User cost split |
+| 2 | User Partner Service Split | Building & Pest Inspection ($240) | $240 ÷ 2 = $120/user | User cost split |
+| 3 | B2B Partner Commission | Broker corporate commission ($1,200) | Property Price × LVR × Rate × 20% | Anna's receivable ledger |
+
+**How it works:** When a payment clears or a partner hits a milestone, the post-payment engine reads the `asset_description` and `billing_stream` from the `invoice_records` row, picks the matching scenario labels, and renders the universal paystub template with the correct text and amounts. No custom code per scenario.
+
+### 6.3 Admin Receivables Tracker
+
+Anna's dashboard now includes a dedicated receivables ledger that aggregates all outstanding B2B commission rows (`billing_stream = B2B_Partner_Receivable`, `ledger_clear_status = Unpaid_Outstanding`). Rows flash a warning flag if unpaid for over 7 days. Anna marks them as settled when the money clears her bank account.
+
+### 6.4 `user_paystubs` Schema
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -181,13 +197,17 @@ All three steps use the **Unified Dynamic Renderer Component** — no standalone
 | `transaction_ref` | String | Bank/Stripe processor code |
 | `vault_file_path` | Media | Private PDF link |
 
-### 6.3 Use Cases
+### 6.5 Use Cases
 
 | # | Module | Screen | Role | Description |
 |---|--------|--------|------|-------------|
 | 7.1 | FinTech | Post-Payment Paystub | Mobile User | After payment clears, show itemised receipt with asset details, pricing, split, bank transaction number, and green verification stamp |
 | 7.2 | Communication | Automated Receipt Email | System Engine | Background transactional email bundling receipt variables sent to user's verified inbox |
 | 7.3 | FinTech | Financial Link Directory | Mobile User | "My Finances" tab in profile menu listing all past transactions and billing statements |
+| 8.1 | FinTech | Multi-Use Case Split Card | Mobile User | When any shared expense milestone unlocks, the app loads the template card dynamically populated with the correct text and price from Strapi tables |
+| 8.2 | FinTech | On-Screen Dynamic Paystub | Mobile User | When a payment clears, the checkout screen transitions to an itemised receipt with transaction codes and green validation stamp |
+| 8.3 | FinTech | Financial Link Folder | Mobile User | "My Finances" lists all historically paid splits; tapping any row expands its original paystub view |
+| 8.4 | FinTech | Admin Receivables Tracker | System Admin | Ledger on Anna's dashboard aggregating all outstanding corporate commissions owed to Vestie |
 
 ## 7. Strapi Schema Reference
 
@@ -237,16 +257,20 @@ All three steps use the **Unified Dynamic Renderer Component** — no standalone
 | `document_url` | String | Uploaded PDF path |
 | `status` | Enum | Submitted or Complete |
 
-### 6.5 `invoice_records`
+### 7.5 `invoice_records`
 
 | Field | Type | Notes |
 |-------|------|-------|
 | `invoice_uuid` | UUID | Primary key |
 | `parent_referral_id` | Relation | Links to `referral_records` |
 | `invoice_type` | Enum | User_Split or Partner_Commission |
+| `billing_stream` | Enum | User_Cost_Split or B2B_Partner_Receivable |
+| `asset_description` | String | e.g. "Building & Pest Inspection Split" |
 | `gross_amount` | Decimal | AUD |
 | `individual_share` | Decimal | AUD (50% for user splits) |
+| `accounting_receivable` | Decimal | Exact balance due to Vestie |
 | `invoice_status` | Enum | Unpaid or Paid |
+| `ledger_clear_status` | Enum | Unpaid_Outstanding or Paid_Settled |
 
 ### 7.6 `invoice_templates`
 
@@ -301,29 +325,13 @@ All three steps use the **Unified Dynamic Renderer Component** — no standalone
 *As a co-buyer, I want a permanent "My Finances" folder in my profile to review all past split invoices and paystubs.*
 - **AC:** When the user navigates to their profile and taps "My Finances", the UI queries the `user_paystubs` collection, fetches all settled records linked to their account, and displays them in a scannable history list.
 
-### US-ADM-004 (Automated Financial Accounting)
-*As Anna, I want to see an auto-calculated ledger (earned, outstanding, reverse fees) so I don't run manual checks.*
-- **AC:** When a partner submits their Magic Link at a fee-triggering milestone, the system pulls that partner's profile rules, updates `referral_records`, recalculates balances, and displays the update in <2 seconds.
+### US-FIN-012 (Dynamic Multi-Scenario Paystub)
+*As a co-buyer, I want the paystub receipt to accurately show the service I paid for, whether it's a legal setup fee, an inspection bill, or any other shared cost.*
+- **AC:** When the payment gateway returns success, the system transforms the checkout screen into a universal itemised paystub template that dynamically maps the item labels matching the use case (e.g. "Building & Pest Inspection"), records a processor reference ID, and dispatches a verification email.
 
-### US-ADM-005 (Deal Stagnation Alerts)
-*As Anna, I want red alert flags on deals inactive for 7+ days so I can follow up with partners.*
-- **AC:** A daily background pass checks `status_history` timestamps. If delta >7 days, the record's alert flag flips to true and a red badge appears on the row.
-
-### US-FIN-006 (User Shared Cost Split)
-*As a co-buyer, I want to see my 50% split and pay it in-app instead of manual bank transfers.*
-- **AC:** When a shared-cost milestone unlocks, the app shows `Total $600 → Your Share $300` with a Pay button. Payment state is isolated per user. On success, the user's row flips to `Paid`.
-
-### US-FIN-007 (Partner Commission Recording)
-*As Anna, I want the system to lock a static commission row the moment a partner hits their trigger milestone, so I can export to Xero without recalculation errors.*
-- **AC:** On Magic Link submission at trigger milestone, the engine computes the fee, writes a locked `Unpaid` row to `invoice_records`, and displays it on the admin ledger.
-
-### US-INV-008 (User Split Card Template)
-*As a co-buyer, I want a clear inline card on my Property Path showing the split amount with one-tap payment options.*
-- **AC:** The Template A card shows property address, total cost, 50% split, individual share, and Apple Pay / Google Pay / Credit Card buttons. States: unpaid (buttons active) → paid (success checkmark).
-
-### US-INV-009 (Partner Commission Statement Template)
-*As Anna, I want the partner commission displayed as a locked statement row I can verify, so I know exactly who to bill.*
-- **AC:** Template B shows partner name, computed commission, invoice UUID, and a Verify & Lock button. After verification, the row freezes and appears on the admin ledger.
+### US-FIN-013 (Financial Link Directory Management)
+*As a co-buyer, I want my "My Finances" folder to list multiple past payment receipts across different service types, and let me tap any row to re-open its original paystub.*
+- **AC:** After the user has cleared multiple dynamic split costs (e.g. both a Legal Setup Fee and an Inspection Bill), the Financial Link loads a history list detailing each transaction. Each row expands into its original itemised paystub when tapped.
 
 ## 9. Interactive Prototypes
 
@@ -334,7 +342,7 @@ All three steps use the **Unified Dynamic Renderer Component** — no standalone
 | `admin.html` | Admin Dashboard — Modules A–E, simulators, CSV export | Click Admin link in header |
 | `fee_config.html` | Fee Config Engine — hidden Strapi fields driving auto-calculation | Click Fee Config link in header |
 | `invoice_demo.html` | Invoice Templates — Template A (Split Card) and Template B (Commission Statement) toggle | Click Invoice Demo tile in index.html |
-| `paystub_demo.html` | Post-Payment Engine — checkout, on-screen paystub, email dispatch, and Financial Hub (3-step cycle) | Click Paystub & Hub tile in index.html |
+| `paystub_demo.html` | Unified Receivables & Paystub Engine — 3-scenario toggle (Legal Split / Inspection / Broker Commission), paystub, email dispatch, Financial Hub, and admin receivables ledger | Click Paystub & Hub tile in index.html |
 
 All files run in any browser with zero dependencies.
 
@@ -355,3 +363,4 @@ All files run in any browser with zero dependencies.
 | 23/05/2026 | 2.4 | Admin Dashboard (Modules A–E), Hidden Fee Configurations, two-stream Invoice Generation |
 | 23/05/2026 | 2.5 | Dynamic Invoice Templates: Template A (User Split Card) and Template B (Commission Statement), `invoice_templates` schema, interactive prototype |
 | 23/05/2026 | 2.6 | Post-Payment Flow: 3-step cycle (paystub, email, Financial Hub), `user_paystubs` schema, US-FIN-010/011, interactive prototype |
+| 23/05/2026 | 2.6a | Multi-Scenario Paystub Framework: 3 scenarios (Legal Split / Inspection / Broker Commission), expanded `invoice_records` schema (`billing_stream`, `asset_description`, `accounting_receivable`, `ledger_clear_status`), admin receivables tracker, US-FIN-012/013, use cases 8.1–8.4 |

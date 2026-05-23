@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vestie — Post-Payment Paystub & Financial Hub Demo</title>
+<title>Vestie — Unified Receivables & Paystub Demo</title>
 <style>
 :root {
   --bg-primary: #0F1117;
@@ -41,36 +41,39 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 .control-panel { display: flex; flex-direction: column; gap: 20px; }
 .panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
 .panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.step-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.step-dot { flex: 1; text-align: center; padding: 8px 6px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; background: var(--bg-card); color: var(--text-muted); transition: all 0.3s; }
-.step-dot.active { background: rgba(255,107,107,0.15); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
-.step-dot.done { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+
+.scenario-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+.scenario-btn { padding: 10px 8px; border-radius: 8px; border: 2px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; text-align: center; line-height: 1.3; }
+.scenario-btn.active { border-color: var(--gradient); background: rgba(255,107,107,0.1); color: var(--text-primary); }
+.state-desc { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 14px; padding: 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); min-height: 50px; }
 
 .app-card { background: #FFFFFF; border-radius: 12px; padding: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; margin-bottom: 14px; }
 .app-card .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; }
 .app-card .label { color: #718096; }
-.app-card .value { font-weight: 700; }
 .receipt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px dashed #EDF2F7; padding-bottom: 8px; }
 .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
 .badge-pending { background: #FEF3C7; color: #D97706; }
 .badge-success { background: #D1FAE5; color: #059669; }
+.badge-danger { background: #FDE8E8; color: #9B1C1C; }
 .share-row { border-top: 1px dashed #CBD5E0; padding-top: 8px; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
 .share-row .amt { color: #FF6B6B; font-weight: 800; font-size: 1.1rem; }
 .paystub-border { border-top: 4px solid var(--green); }
-.green-text { color: var(--green); }
 
 .btn-primary { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; background: var(--gradient); color: #fff; transition: all 0.2s; }
 .btn-primary:hover { opacity: 0.9; }
-.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn-secondary { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; background: #718096; color: #fff; transition: all 0.2s; }
 .btn-secondary:hover { opacity: 0.9; }
 
-.state-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; padding: 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
 .email-preview { background: #F7FAFC; border: 1px dashed #CBD5E0; border-radius: 10px; padding: 14px; font-size: 0.75rem; color: #718096; line-height: 1.4; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; }
 .email-preview.has-content { text-align: left; display: block; }
 .email-preview .email-subject { font-weight: 700; color: #2D3748; border-bottom: 1px solid #EDF2F7; padding-bottom: 4px; margin-bottom: 6px; }
 .email-preview .email-body { color: #718096; font-size: 0.72rem; }
-.terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; line-height: 1.5; }
+
+.ledger-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left; }
+.ledger-table th { background: var(--bg-primary); padding: 8px; font-weight: 700; color: var(--text-secondary); border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 0.65rem; }
+.ledger-table td { padding: 8px; border-bottom: 1px solid var(--border); font-weight: 600; }
+
+.terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.78rem; height: 100px; overflow-y: auto; line-height: 1.5; }
 .terminal-box::-webkit-scrollbar { width: 4px; }
 .terminal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 .history-item { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s; }
@@ -87,7 +90,7 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
   <div class="header">
     <div class="header-brand">
       <div class="brand-icon">V</div>
-      <div class="brand-text"><span>Vestie</span> Post-Payment Engine</div>
+      <div class="brand-text"><span>Vestie</span> Receivables &amp; Paystub Engine</div>
     </div>
     <div>
       <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:20px;">&#9664; Back</a>
@@ -99,7 +102,7 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
     <div class="phone-frame">
       <div class="phone-notch"></div>
       <div class="phone-screen">
-        <div class="phone-header" id="phoneHeader">Checkout: Split Cost Processing</div>
+        <div class="phone-header" id="phoneHeader">Checkout: Shared Cost Processing</div>
         <div class="phone-body" id="phoneBody"></div>
       </div>
     </div>
@@ -107,14 +110,14 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
     <div class="control-panel">
 
       <div class="panel-card">
-        <div class="panel-title"> Post-Payment Cycle</div>
-        <div class="step-row">
-          <div class="step-dot active" id="step1">1. Checkout</div>
-          <div class="step-dot" id="step2">2. Paystub</div>
-          <div class="step-dot" id="step3">3. Financial Hub</div>
+        <div class="panel-title"> Multi-Scenario Selector</div>
+        <div class="scenario-row">
+          <button class="scenario-btn active" id="sc1" onclick="switchScenario(1)"> Legal<br><span style="font-weight:400;font-size:0.65rem;">Setup $600</span></button>
+          <button class="scenario-btn" id="sc2" onclick="switchScenario(2)"> Inspection<br><span style="font-weight:400;font-size:0.65rem;">Service $240</span></button>
+          <button class="scenario-btn" id="sc3" onclick="switchScenario(3)"> Commission<br><span style="font-weight:400;font-size:0.65rem;">B2B $1,200</span></button>
         </div>
-        <div class="state-desc" id="stateDesc"><strong>Step 1:</strong> Checkout — awaiting payment to trigger the post-payment cycle</div>
-        <button class="btn-primary" id="actionBtn" onclick="handleAction()">Simulate In-App Payment</button>
+        <div class="state-desc" id="stateDesc"><strong>Scenario 1:</strong> Legal Setup — user sees $600 total, $300 split, awaiting payment</div>
+        <button class="btn-primary" id="actionBtn" onclick="handleAction()">Process Split Payment</button>
       </div>
 
       <div class="panel-card">
@@ -123,10 +126,26 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       </div>
 
       <div class="panel-card">
+        <div class="panel-title" style="justify-content:space-between;">
+          <span>Receivables Ledger (Anna's View)</span>
+          <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">Live</span>
+        </div>
+        <table class="ledger-table">
+          <thead><tr><th>Invoice</th><th>Stream</th><th>Description</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>INV-2026-081A</td><td>User_Cost_Split</td><td>Legal Setup</td><td>$300.00</td><td><span class="badge badge-pending" id="ledger1">Outstanding</span></td></tr>
+            <tr><td>INV-2026-081B</td><td>User_Cost_Split</td><td>Inspection</td><td>$120.00</td><td><span class="badge badge-pending" id="ledger2">Outstanding</span></td></tr>
+            <tr><td>INV-2026-081C</td><td>Partner_Receivable</td><td>Broker Commission</td><td>$1,200.00</td><td><span class="badge badge-danger" id="ledger3">Unpaid</span></td></tr>
+          </tbody>
+        </table>
+        <button class="btn-secondary" style="margin-top:12px;" onclick="openFinancialHub()">Open Financial Hub Folder</button>
+      </div>
+
+      <div class="panel-card">
         <div class="panel-title"> System Log</div>
         <div class="terminal-box" id="terminalLog">
-          <div>[SYSTEM] Post-Payment Engine v1.0 initialized</div>
-          <div>[READY] Awaiting payment callback...</div>
+          <div>[SYSTEM] Unified Receivables Engine v2.6 initialized</div>
+          <div>[READY] Scenario 1 loaded — Legal Setup split awaiting payment</div>
         </div>
       </div>
 
@@ -136,91 +155,141 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
 </div>
 
 <script>
-let step = 1;
+const scenarios = {
+  1: { title: 'Legal Setup', icon: '\u{1F91D}', desc: 'Co-Ownership Document Fee', total: 600, split: 300, recId: 'REC-2026-081A', ledgerId: 'ledger1', log: 'Strapi: Loaded Scenario 1 — Co-Ownership Document Fee split ($600 ÷ 2)' },
+  2: { title: 'Inspection', icon: '\u{1F50D}', desc: 'Building & Pest Inspection', total: 240, split: 120, recId: 'REC-2026-081B', ledgerId: 'ledger2', log: 'Strapi: Loaded Scenario 2 — Building & Pest Inspection split ($240 ÷ 2)' },
+  3: { title: 'Commission', icon: '\u{1F3E6}', desc: 'Broker Corporate Commission', total: 1200, split: 0, recId: 'INV-2026-081C', ledgerId: 'ledger3', log: 'Strapi: Loaded Scenario 3 — Broker commission $1,200 receivable (Milestone: Loan Settlement Approved)' }
+};
 
-function renderCheckout() {
-  document.getElementById('phoneHeader').textContent = 'Checkout: Split Cost Processing';
-  document.getElementById('phoneBody').innerHTML = `
+let currentScenario = 1;
+let paid = { 1: false, 2: false };
+let verified = false;
+
+function render() {
+  const phoneHeader = document.getElementById('phoneHeader');
+  const phoneBody = document.getElementById('phoneBody');
+  const stateDesc = document.getElementById('stateDesc');
+  const actionBtn = document.getElementById('actionBtn');
+  const emailPreview = document.getElementById('emailPreview');
+
+  if (currentScenario === 3) {
+    if (verified) {
+      phoneHeader.textContent = '\u2705 Commission Recorded';
+      phoneBody.innerHTML = '<div class="app-card" style="text-align:center;padding:30px 10px;"><span style="font-size:2.5rem;display:block;margin-bottom:8px;">\u26A1</span><h4 style="color:var(--green);font-weight:700;">Receivable Locked</h4><p style="font-size:0.75rem;color:#718096;margin-top:6px;">Corporate commission of <strong>$1,200.00</strong> logged to Anna\'s ledger.</p></div>';
+      stateDesc.innerHTML = '<strong>Scenario 3:</strong> Commission locked — Anna can export this receivable to Xero.';
+      actionBtn.textContent = 'Reset Scenario 3';
+      emailPreview.innerHTML = '<em>No email dispatch (B2B receivable — Anna bills externally).</em>';
+      return;
+    }
+    phoneHeader.textContent = 'Broker: Loan Settlement Approved';
+    phoneBody.innerHTML = `
+      <div class="app-card" style="border-left:4px solid var(--blue);">
+        <h4 style="font-size:0.95rem;font-weight:800;margin-bottom:4px;">Zenith Home Loans (Broker)</h4>
+        <p style="font-size:0.75rem;color:#718096;margin-bottom:14px;">Milestone: Loan Settlement Approved</p>
+        <div style="background:#F7FAFC;border:1px solid #CBD5E0;padding:10px;border-radius:6px;text-align:center;font-weight:700;font-size:0.78rem;color:var(--blue);">Magic Link Token Authenticated</div>
+        <button class="btn-primary" style="margin-top:12px;background:var(--blue);" onclick="verifyCommission()">Submit Work Verification</button>
+      </div>
+    `;
+    stateDesc.innerHTML = '<strong>Scenario 3:</strong> B2B Commission — broker confirms milestone, receivable locks to ledger.';
+    actionBtn.textContent = 'Simulate Broker Milestone';
+    emailPreview.innerHTML = '<em>No email dispatch (B2B receivable — Anna bills externally).</em>';
+    return;
+  }
+
+  const s = scenarios[currentScenario];
+  if (paid[currentScenario]) {
+    phoneHeader.textContent = 'Digital Paystub Receipt';
+    phoneBody.innerHTML = `
+      <div class="app-card paystub-border">
+        <div class="receipt-header">
+          <span style="font-weight:800;font-size:0.9rem;color:var(--green);">VESTIE OFFICIAL PAYSTUB</span>
+          <span class="badge badge-success">Paid</span>
+        </div>
+        <div class="row"><span class="label">Receipt ID:</span><strong>${s.recId}</strong></div>
+        <div class="row"><span class="label">Bank Auth Code:</span><span style="font-family:monospace;font-weight:700;">STRP_8493${currentScenario}_OK</span></div>
+        <div class="row"><span class="label">Service Settled:</span><strong>${s.desc}</strong></div>
+        <div class="row"><span class="label">Gross Total:</span><span>$${s.total.toFixed(2)} AUD</span></div>
+        <div class="share-row"><span style="font-weight:700;">Your 50% Share Paid:</span><span style="color:var(--green);font-weight:800;font-size:1.15rem;">$${s.split.toFixed(2)} AUD</span></div>
+      </div>
+      <p style="font-size:0.75rem;color:#718096;text-align:center;line-height:1.3;">Receipt filed to your Financial Hub. Email confirmation sent.</p>
+      <button class="btn-secondary" style="margin-top:12px;" onclick="openFinancialHub()">View My Finances</button>
+    `;
+    stateDesc.innerHTML = '<strong>Scenario ' + currentScenario + ':</strong> Paystub — receipt shown, email dispatched, record filed to Financial Hub.';
+    actionBtn.textContent = 'Reset Scenario ' + currentScenario;
+    emailPreview.className = 'email-preview has-content';
+    emailPreview.innerHTML = '<div class="email-subject">Subject: Your Vestie Payment Receipt Confirmation</div><div class="email-body"><strong>To:</strong> user_profile_493@vestie.com.au<br>Hi John, your 50% split payment of <strong>$' + s.split.toFixed(2) + ' AUD</strong> for ' + s.desc + ' has cleared. Your itemized paystub PDF is attached.</div>';
+    return;
+  }
+
+  phoneHeader.textContent = 'Checkout: Shared Cost Processing';
+  phoneBody.innerHTML = `
     <div class="app-card">
       <div class="receipt-header">
-        <span style="font-weight:800;font-size:0.9rem;">Co-Ownership Document Fee</span>
+        <span style="font-weight:800;font-size:0.9rem;">${s.icon} ${s.desc}</span>
         <span class="badge badge-pending">Unpaid</span>
       </div>
-      <div class="row"><span class="label">Total Fixed Cost:</span><span class="value">$600.00 AUD</span></div>
-      <div class="share-row"><span style="font-weight:700;">Your 50% Share Owed:</span><span class="amt">$300.00 AUD</span></div>
-      <button class="btn-primary" style="margin-top:12px;" onclick="handleAction()">Process In-App Checkout</button>
+      <div class="row"><span class="label">Total Asset Cost:</span><strong>$${s.total.toFixed(2)} AUD</strong></div>
+      <div class="share-row"><span style="font-weight:700;">Your 50% Share Owed:</span><span class="amt">$${s.split.toFixed(2)} AUD</span></div>
+      <button class="btn-primary" style="margin-top:12px;" onclick="paySplit()">Process Split Payment</button>
     </div>
   `;
-  document.getElementById('stateDesc').innerHTML = '<strong>Step 1:</strong> Checkout — user sees 50% split with Pay button';
-  document.getElementById('actionBtn').textContent = 'Simulate In-App Payment';
-  document.getElementById('emailPreview').className = 'email-preview';
-  document.getElementById('emailPreview').innerHTML = '<em>No outgoing transaction mail in queue.</em>';
-  setSteps(1);
+  stateDesc.innerHTML = '<strong>Scenario ' + currentScenario + ':</strong> ' + s.desc + ' — user sees $' + s.total + ' total, $' + s.split + ' split, awaiting payment';
+  actionBtn.textContent = 'Process Split Payment';
+  emailPreview.className = 'email-preview';
+  emailPreview.innerHTML = '<em>No outgoing transaction mail in queue.</em>';
 }
 
-function renderPaystub() {
-  document.getElementById('phoneHeader').textContent = 'Digital Paystub Receipt';
-  document.getElementById('phoneBody').innerHTML = `
-    <div class="app-card paystub-border">
-      <div class="receipt-header">
-        <span style="font-weight:800;font-size:0.9rem;color:var(--green);">VESTIE OFFICIAL PAYSTUB</span>
-        <span class="badge badge-success">Paid</span>
-      </div>
-      <div class="row"><span class="label">Receipt ID:</span><strong>REC-2026-90481</strong></div>
-      <div class="row"><span class="label">Bank Auth Code:</span><span style="font-family:monospace;font-weight:700;">STRP_849321_OK</span></div>
-      <div class="row"><span class="label">Service Settled:</span><strong>Co-Owner Agreement Setup</strong></div>
-      <div class="row"><span class="label">Gross Parent Cost:</span><span>$600.00 AUD</span></div>
-      <div class="share-row"><span style="font-weight:700;">Your 50% Share Paid:</span><span style="color:var(--green);font-weight:800;font-size:1.15rem;">$300.00 AUD</span></div>
-    </div>
-    <p style="font-size:0.75rem;color:#718096;text-align:center;line-height:1.3;">Receipt filed to your Financial Hub. An email copy has been sent.</p>
-    <button class="btn-secondary" style="margin-top:12px;" onclick="renderHub()">View My Finances</button>
-  `;
-  document.getElementById('stateDesc').innerHTML = '<strong>Step 2:</strong> Paystub — on-screen receipt shown, email dispatched, record filed';
-  document.getElementById('actionBtn').textContent = 'Return to Checkout';
-  document.getElementById('emailPreview').className = 'email-preview has-content';
-  document.getElementById('emailPreview').innerHTML = `
-    <div class="email-subject">Subject: Your Vestie Payment Receipt Confirmation</div>
-    <div class="email-body">
-      <strong>To:</strong> user_profile_493@vestie.com.au<br>
-      Hi John, your 50% split payment of <strong>$300.00 AUD</strong> for Co-Owner Agreement Setup has cleared. Your itemized paystub PDF is attached.
-    </div>
-  `;
-  setSteps(2);
-}
-
-function renderHub() {
-  document.getElementById('phoneHeader').textContent = 'My Finances (Financial Link)';
-  document.getElementById('phoneBody').innerHTML = `
-    <p style="font-size:0.75rem;color:#718096;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Settled Transactions</p>
-    <div class="history-item" onclick="renderPaystub()">
-      <div>
-        <div class="h-title">Co-Owner Legal Setup Fee</div>
-        <div class="h-ref">Ref: REC-2026-90481</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="h-amt">$300.00</div>
-        <span class="badge badge-success">View Paystub</span>
-      </div>
-    </div>
-  `;
-  document.getElementById('stateDesc').innerHTML = '<strong>Step 3:</strong> Financial Hub — permanent history folder in user profile. Tap a record to view its paystub.';
-  document.getElementById('actionBtn').textContent = 'Reset Demo';
-  setSteps(3);
+function switchScenario(n) {
+  currentScenario = n;
+  document.getElementById('sc1').className = 'scenario-btn' + (n===1?' active':'');
+  document.getElementById('sc2').className = 'scenario-btn' + (n===2?' active':'');
+  document.getElementById('sc3').className = 'scenario-btn' + (n===3?' active':'');
+  render();
+  log(scenarios[n].log);
 }
 
 function handleAction() {
-  if (step === 1) { renderPaystub(); step = 2; log('Payment Callback: Gateway approved. Paystub displayed, email dispatched, record filed.'); }
-  else if (step === 2) { renderHub(); step = 3; log('Navigation: User opened Financial Hub from paystub screen.'); }
-  else { renderCheckout(); step = 1; log('Reset: Demo cleared to initial checkout state.'); }
+  if (currentScenario === 3) { verifyCommission(); return; }
+  if (paid[currentScenario]) { paid[currentScenario] = false; log('Reset: Scenario ' + currentScenario + ' cleared.'); render(); return; }
+  paySplit();
 }
 
-function setSteps(s) {
-  for (let i = 1; i <= 3; i++) {
-    const el = document.getElementById('step' + i);
-    if (i < s) el.className = 'step-dot done';
-    else if (i === s) el.className = 'step-dot active';
-    else el.className = 'step-dot';
-  }
+function paySplit() {
+  paid[currentScenario] = true;
+  document.getElementById(scenarios[currentScenario].ledgerId).className = 'badge badge-success';
+  document.getElementById(scenarios[currentScenario].ledgerId).textContent = 'Settled';
+  log('Payment: $' + scenarios[currentScenario].split.toFixed(2) + ' paid for ' + scenarios[currentScenario].desc + '. Paystub generated, email dispatched.');
+  render();
+}
+
+function verifyCommission() {
+  verified = true;
+  document.getElementById('ledger3').className = 'badge badge-success';
+  document.getElementById('ledger3').textContent = 'Invoiced';
+  log('Broker milestone verified. Commission $1,200 locked as corporate receivable on admin ledger.');
+  render();
+}
+
+function openFinancialHub() {
+  document.getElementById('phoneHeader').textContent = 'My Finances (Financial Link)';
+  let html = '<p style="font-size:0.75rem;color:#718096;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Settled Transaction Vault:</p>';
+  let hasAny = false;
+  if (paid[1]) { hasAny = true; html += '<div class="history-item" onclick="showPaystub(1)"><div><div class="h-title">Legal Setup Document Split</div><div class="h-ref">ID: ' + scenarios[1].recId + '</div></div><div style="text-align:right;"><div class="h-amt">$' + scenarios[1].split.toFixed(2) + '</div><span class="badge badge-success">View</span></div></div>'; }
+  if (paid[2]) { hasAny = true; html += '<div class="history-item" onclick="showPaystub(2)"><div><div class="h-title">Building & Pest Inspection Split</div><div class="h-ref">ID: ' + scenarios[2].recId + '</div></div><div style="text-align:right;"><div class="h-amt">$' + scenarios[2].split.toFixed(2) + '</div><span class="badge badge-success">View</span></div></div>'; }
+  if (!hasAny) html += '<p style="font-size:0.8rem;color:#718096;text-align:center;margin-top:20px;font-weight:600;">No settled transactions yet. Process a payment first.</p>';
+  document.getElementById('phoneBody').innerHTML = html;
+  document.getElementById('stateDesc').innerHTML = '<strong>Financial Hub:</strong> permanent archive of all past paystubs. Tap any row to re-open the receipt.';
+  document.getElementById('actionBtn').textContent = 'Return to Scenario ' + currentScenario;
+  log('Navigation: User opened Financial Hub folder.');
+}
+
+function showPaystub(n) {
+  const prev = currentScenario;
+  currentScenario = n;
+  paid[n] = true;
+  render();
+  currentScenario = prev;
+  log('View: Paystub for Scenario ' + n + ' re-opened from Financial Hub.');
 }
 
 function log(msg) {
@@ -230,9 +299,7 @@ function log(msg) {
   t.scrollTop = t.scrollHeight;
 }
 
-renderCheckout();
-step = 1;
-log('READY: Checkout screen loaded — awaiting user payment.');
+switchScenario(1);
 </script>
 </body>
 </html>
