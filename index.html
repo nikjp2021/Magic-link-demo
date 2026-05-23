@@ -129,7 +129,11 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
         <div class="stat-item"><div class="stat-value" id="verifyCount">0</div><div class="stat-label">Verifications</div></div>
         <div class="stat-item"><div class="stat-value" id="activeToken">0</div><div class="stat-label">Active Tokens</div></div>
       </div>
-      <div class="badge-secure"><span class="live-dot"></span> Secure Session</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <a href="admin.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)';this.style.borderColor='rgba(255,107,107,0.3)';" onmouseout="this.style.color='var(--text-secondary)';this.style.borderColor='var(--border)';">&#128202; Admin</a>
+        <a href="fee_config.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)';this.style.borderColor='rgba(255,142,83,0.3)';" onmouseout="this.style.color='var(--text-secondary)';this.style.borderColor='var(--border)';">&#128274; Fee Config</a>
+        <div class="badge-secure"><span class="live-dot"></span> Secure Session</div>
+      </div>
     </div>
   </div>
 

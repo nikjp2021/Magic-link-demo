@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie — Admin Operations Dashboard</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; }
+.container { max-width: 1480px; width: 100%; padding: 20px; }
+
+/* Header */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 20px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 40px; height: 40px; background: var(--gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: #fff; }
+.brand-text { font-size: 1.3rem; font-weight: 800; }
+.brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-links { display: flex; align-items: center; gap: 16px; }
+.header-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: color 0.2s; }
+.header-links a:hover { color: var(--text-primary); }
+.badge-admin { padding: 6px 14px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 20px; color: #818CF8; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+/* Layout */
+.dash-grid { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; }
+.main-col { display: flex; flex-direction: column; gap: 20px; }
+
+/* Panel Card */
+.panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.panel-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.export-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.export-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* KPI Bar */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.kpi-value { font-size: 1.6rem; font-weight: 800; }
+.kpi-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+.kpi-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+
+/* Segmented Bar */
+.segmented-bar { display: flex; height: 28px; border-radius: 6px; overflow: hidden; margin: 12px 0; }
+.seg-segment { display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: #fff; transition: all 0.2s; cursor: pointer; position: relative; }
+.seg-segment:hover { opacity: 0.85; transform: scaleY(1.05); }
+.seg-tooltip { display: none; position: absolute; bottom: 32px; background: var(--bg-card); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; white-space: nowrap; z-index: 10; }
+.seg-segment:hover .seg-tooltip { display: block; }
+
+/* Funnel */
+.funnel { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 12px 0; }
+.funnel-stage { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 500px; }
+.funnel-label { font-size: 0.8rem; font-weight: 600; }
+.funnel-count { font-size: 1.1rem; font-weight: 800; color: var(--accent-1); }
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.data-table th { padding: 10px 8px; text-align: left; font-weight: 700; color: var(--text-secondary); border-bottom: 1px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.data-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+.data-table tr:hover td { background: var(--bg-hover); }
+
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+.badge-green { background: rgba(46,204,113,0.15); color: var(--green); }
+.badge-yellow { background: rgba(241,196,15,0.15); color: var(--yellow); }
+.badge-red { background: rgba(231,76,60,0.15); color: var(--red); }
+.badge-blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
+.badge-gray { background: rgba(107,114,128,0.15); color: var(--text-muted); }
+
+/* Plan dist */
+.plan-dist { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+.plan-item { font-size: 0.8rem; }
+.plan-item strong { font-size: 1rem; }
+.plan-item .tier { color: var(--text-secondary); margin-left: 4px; }
+
+/* Sidebar */
+.sidebar { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 16px; }
+.sidebar-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.sidebar-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.sidebar-btn { width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+.sidebar-btn.primary { background: var(--gradient); color: #fff; }
+.sidebar-btn.primary:hover { opacity: 0.9; }
+.sidebar-btn.secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+.sidebar-btn.secondary:hover { background: var(--bg-hover); }
+.export-log { background: #0A0C12; border-radius: 8px; padding: 10px; font-family: 'Courier New', Courier, monospace; font-size: 0.72rem; max-height: 160px; overflow-y: auto; line-height: 1.6; color: #48BB78; }
+.export-log::-webkit-scrollbar { width: 4px; }
+.export-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Sidebar data summary */
+.sidebar-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+.sidebar-stat:last-child { border-bottom: none; }
+.sidebar-stat .label { color: var(--text-secondary); }
+.sidebar-stat .value { font-weight: 700; }
+
+/* Fee chart */
+.fee-chart { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.fee-bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.75rem; }
+.fee-bar-label { width: 100px; text-align: right; color: var(--text-secondary); font-weight: 600; }
+.fee-bar-track { flex: 1; height: 18px; background: var(--bg-primary); border-radius: 4px; overflow: hidden; }
+.fee-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+/* States */
+.empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 0.85rem; }
+.empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+.skeleton { background: var(--bg-card); border-radius: 4px; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); opacity: 0; transform: translateY(20px); transition: all 0.3s; z-index: 1000; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-icon { font-size: 1.2rem; }
+.toast-text { font-size: 0.85rem; font-weight: 600; }
+
+/* Footer */
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 20px; }
+
+/* Responsive */
+@media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } .sidebar { position: static; } }
+@media (max-width: 768px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { body { padding: 0; } .container { padding: 12px; } .kpi-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-icon">A</div>
+      <div class="brand-text"><span>Vestie</span> Operations Dashboard</div>
+    </div>
+    <div class="header-links">
+      <a href="index.html">&#8592; Command Center</a>
+      <a href="fee_config.html">Fee Config</a>
+      <span class="badge-admin">&#128274; Admin Session</span>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+
+    <!-- Main Column -->
+    <div class="main-col">
+
+      <!-- Module A: Live Traffic & Pipeline -->
+      <div class="panel-card" data-module="A">
+        <div class="panel-header">
+          <span class="panel-title">&#128200; Module A — Live Traffic &amp; Pipeline Monitor</span>
+          <button class="export-btn" onclick="exportModule('A')">Export CSV</button>
+        </div>
+
+        <div class="kpi-row" id="kpiTraffic">
+          <div class="kpi-card"><div class="kpi-value" id="kpiActive">847</div><div class="kpi-label">Active Referrals</div><div class="kpi-sub">Across all partner roles</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiPending">34</div><div class="kpi-label">Pending Verifications</div><div class="kpi-sub">Magic Link sent, not submitted</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiVerified">12</div><div class="kpi-label">Verified Today</div><div class="kpi-sub">Last 24 hours</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiEscalated" style="color:var(--red);">3</div><div class="kpi-label">Escalated</div><div class="kpi-sub">Manual review required</div></div>
+        </div>
+
+        <div style="font-size:0.8rem;font-weight:700;margin-bottom:6px;color:var(--text-secondary);">Weekly Traffic by Partner Role</div>
+        <div class="segmented-bar" id="trafficBar"></div>
+
+        <div style="font-size:0.8rem;font-weight:700;margin:16px 0 6px;color:var(--text-secondary);">Pipeline Funnel</div>
+        <div class="funnel" id="pipelineFunnel">
+          <div class="funnel-stage" style="max-width:100%;"><span class="funnel-label">Stage 1 — Initiated</span><span class="funnel-count" id="funnelS1">412</span></div>
+          <div class="funnel-stage" style="max-width:85%;"><span class="funnel-label">Stage 2 — In Progress</span><span class="funnel-count" id="funnelS2">298</span></div>
+          <div class="funnel-stage" style="max-width:60%;"><span class="funnel-label">Stage 3 — Completed</span><span class="funnel-count" id="funnelS3">137</span></div>
+        </div>
+      </div>
+
+      <!-- Module B: Fee & Ledger Reconciliation -->
+      <div class="panel-card" data-module="B">
+        <div class="panel-header">
+          <span class="panel-title">&#128176; Module B — Fee &amp; Ledger Reconciliation</span>
+          <button class="export-btn" onclick="exportModule('B')">Export CSV</button>
+        </div>
+
+        <div class="kpi-row" id="kpiFinance">
+          <div class="kpi-card"><div class="kpi-value" style="color:var(--green);">$12,450</div><div class="kpi-label">Total Invoiced (MTD)</div><div class="kpi-sub">Month to date</div></div>
+          <div class="kpi-card"><div class="kpi-value" style="color:#60A5FA;">$9,830</div><div class="kpi-label">Total Collected</div><div class="kpi-sub">Successfully reconciled</div></div>
+          <div class="kpi-card"><div class="kpi-value" style="color:var(--yellow);">$2,620</div><div class="kpi-label">Outstanding</div><div class="kpi-sub">Awaiting payment</div></div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="ledgerTable">
+            <thead><tr><th>Referral ID</th><th>Partner</th><th>Role</th><th>Fee Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+
+        <div style="font-size:0.8rem;font-weight:700;margin:16px 0 6px;color:var(--text-secondary);">Fee Distribution by Role (MTD)</div>
+        <div class="fee-chart" id="feeChart"></div>
+      </div>
+
+      <!-- Module C: Subscription Status Grid -->
+      <div class="panel-card" data-module="C">
+        <div class="panel-header">
+          <span class="panel-title">&#128218; Module C — Subscription Status Grid</span>
+          <button class="export-btn" onclick="exportModule('C')">Export CSV</button>
+        </div>
+
+        <div class="plan-dist" id="planDist"></div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="subTable">
+            <thead><tr><th>Partner</th><th>Role</th><th>Plan Tier</th><th>Renewal Date</th><th>Status</th></tr></thead>
+            <tbody id="subBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module D: Stagnation & Risk Alerts -->
+      <div class="panel-card" data-module="D">
+        <div class="panel-header">
+          <span class="panel-title">&#9888;&#65039; Module D — Stagnation &amp; Risk Alerts</span>
+          <button class="export-btn" onclick="exportModule('D')">Export CSV</button>
+        </div>
+
+        <div class="kpi-row" id="kpiRisk">
+          <div class="kpi-card"><div class="kpi-value" style="color:var(--yellow);">18</div><div class="kpi-label">Stalled Referrals</div><div class="kpi-sub">No activity 7+ days</div></div>
+          <div class="kpi-card"><div class="kpi-value" style="color:var(--red);">7</div><div class="kpi-label">Expired Tokens</div><div class="kpi-sub">7-day validity reached</div></div>
+          <div class="kpi-card"><div class="kpi-value" style="color:var(--yellow);">11</div><div class="kpi-label">Incomplete Stage 1</div><div class="kpi-sub">Opened but never submitted</div></div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="stagnationTable">
+            <thead><tr><th>Referral ID</th><th>Partner</th><th>Role</th><th>Current Stage</th><th>Days Inactive</th><th>Risk Level</th></tr></thead>
+            <tbody id="stagnationBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar: Simulation Controller -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">&#9881;&#65039; Simulation Controller</div>
+        <button class="sidebar-btn primary" onclick="refreshData()">&#x21bb; Refresh Data</button>
+        <button class="sidebar-btn secondary" onclick="resetData()">&#8634; Reset to Defaults</button>
+        <button class="sidebar-btn secondary" onclick="toggleEmptyState()">&#128683; Toggle Empty States</button>
+
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+          <div class="sidebar-stat"><span class="label">Data Mode</span><span class="value" id="dataMode">Live</span></div>
+          <div class="sidebar-stat"><span class="label">Last Refresh</span><span class="value" id="lastRefresh">—</span></div>
+          <div class="sidebar-stat"><span class="label">Partner Roles</span><span class="value">12</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">&#128196; Export Log</div>
+        <div class="export-log" id="exportLog">
+          <div>// Export log ready</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Vestie Operations &middot; Admin Dashboard v2.4 &middot; Modules A–E
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon">&#9989;</span>
+  <span class="toast-text" id="toastText">Exported successfully</span>
+</div>
+
+<script>
+// ─── PARTNER NAMES & COLORS ───
+const roles = [
+  { id:'broker',     name:'Mortgage Broker',         color:'#FF6B6B' },
+  { id:'lawyer',     name:'Property Lawyer',          color:'#8B5CF6' },
+  { id:'inspector',  name:'Building Inspector',       color:'#3B82F6' },
+  { id:'tax',        name:'Tax Specialist',           color:'#F59E0B' },
+  { id:'agent',      name:'Real Estate Agent',        color:'#EC4899' },
+  { id:'valuer',     name:'Property Valuer',          color:'#14B8A6' },
+  { id:'surveyor',   name:'Land Surveyor',            color:'#6366F1' },
+  { id:'strata',     name:'Strata Manager',           color:'#A855F7' },
+  { id:'finplanner', name:'Financial Planner',        color:'#10B981' },
+  { id:'insurance',  name:'Insurance Broker',         color:'#F97316' },
+  { id:'settlement', name:'Settlement Agent',         color:'#06B6D4' },
+  { id:'conveyancer',name:'Licensed Conveyancer',     color:'#D946EF' }
+];
+
+const plans = ['Free','Starter','Pro','Enterprise'];
+
+const defaultData = {
+  trafficCounts: [32,28,18,12,22,8,5,6,4,3,7,2],
+  kpis: { active:847, pending:34, verified:12, escalated:3 },
+  funnel: { s1:412, s2:298, s3:137 },
+  finance: { invoiced:12450, collected:9830, outstanding:2620 },
+  risk: { stalled:18, expired:7, incomplete:11 },
+  emptyMode: false
+};
+
+let data = JSON.parse(JSON.stringify(defaultData));
+let exportLog = [];
+
+// ─── INIT ───
+function init() {
+  renderTrafficBar();
+  renderLedger();
+  renderFeeChart();
+  renderSubscriptions();
+  renderStagnation();
+  renderPlanDist();
+  updateSidebar();
+}
+
+// ─── MODULE A: TRAFFIC BAR ───
+function renderTrafficBar() {
+  const bar = document.getElementById('trafficBar');
+  const counts = data.trafficCounts;
+  const total = counts.reduce((a,b)=>a+b, 0);
+  if (data.emptyMode) {
+    bar.innerHTML = '<div class="empty-state" style="width:100%;"><span class="icon">&#128200;</span>No traffic data available</div>';
+    return;
+  }
+  bar.innerHTML = counts.map((c,i) => {
+    const pct = (c/total*100).toFixed(1);
+    return `<div class="seg-segment" style="width:${pct}%;background:${roles[i].color};">
+      <span>${c}</span>
+      <div class="seg-tooltip">${roles[i].name}: ${c} referrals</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── MODULE B: LEDGER ───
+function generateLedgerRows() {
+  if (data.emptyMode) return [];
+  const statuses = ['Paid','Paid','Pending','Paid','Pending','Overdue','Paid','Pending','Paid','Overdue'];
+  const types = ['Flat Fee','Flat Fee','Percentage','Flat Fee','Flat Fee','Percentage','Flat Fee','Percentage','Flat Fee','Percentage'];
+  const amounts = [120,300,1800,120,180,2500,180,3200,120,1500];
+  const dates = ['02 May','01 May','30 Apr','29 Apr','28 Apr','27 Apr','26 Apr','25 Apr','24 Apr','23 Apr'];
+  return roles.slice(0,10).map((r,i) => ({
+    refId: 'REF-' + (2026000+i),
+    partner: r.name,
+    role: r.id,
+    feeType: types[i],
+    amount: amounts[i],
+    status: statuses[i],
+    date: dates[i]
+  }));
+}
+
+function renderLedger() {
+  const tbody = document.getElementById('ledgerBody');
+  const rows = generateLedgerRows();
+  if (data.emptyMode || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><span class="icon">&#128176;</span>No transactions recorded this period</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const badgeClass = r.status === 'Paid' ? 'badge-green' : r.status === 'Pending' ? 'badge-yellow' : 'badge-red';
+    return `<tr><td>${r.refId}</td><td>${r.partner}</td><td style="color:${roles.find(x=>x.id===r.role).color}">${r.partner}</td><td>${r.feeType}</td><td style="font-weight:700;">$${r.amount.toFixed(2)}</td><td><span class="badge ${badgeClass}">${r.status}</span></td><td>${r.date}</td></tr>`;
+  }).join('');
+}
+
+function renderFeeChart() {
+  const chart = document.getElementById('feeChart');
+  if (data.emptyMode) {
+    chart.innerHTML = '<div class="empty-state" style="padding:16px;"><span class="icon">&#128202;</span>No fee distribution data</div>';
+    return;
+  }
+  const fees = [3200,2800,1800,1200,1100,800,600,400,300,250,200,0];
+  const total = fees.reduce((a,b)=>a+b, 0);
+  chart.innerHTML = roles.map((r,i) => {
+    const pct = total > 0 ? (fees[i]/total*100).toFixed(1) : 0;
+    return `<div class="fee-bar-row">
+      <span class="fee-bar-label">${r.name}</span>
+      <div class="fee-bar-track"><div class="fee-bar-fill" style="width:${pct}%;background:${r.color};"></div></div>
+      <span style="font-weight:700;font-size:0.75rem;width:50px;">$${fees[i]}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── MODULE C: SUBSCRIPTIONS ───
+function generateSubRows() {
+  if (data.emptyMode) return [];
+  const tiers = ['Pro','Enterprise','Starter','Free','Starter','Pro','Free','Starter','Pro','Enterprise','Free','Starter'];
+  const statuses = ['Active','Active','Active','Active','Expiring','Active','Active','Expired','Active','Suspended','Expiring','Active'];
+  const renewals = ['15 Jun','22 Jul','01 Jun','10 Aug','28 May','05 Sep','18 Jun','30 Apr','12 Jul','20 Aug','25 May','08 Jun'];
+  const rowStatus = ['Active','Active','Active','Active','Expiring','Active','Active','Expired','Active','Suspended','Expiring','Active'];
+  return roles.map((r,i) => ({
+    partner: r.name,
+    role: r.id,
+    tier: tiers[i],
+    renewal: renewals[i],
+    status: rowStatus[i]
+  }));
+}
+
+function renderPlanDist() {
+  const el = document.getElementById('planDist');
+  if (data.emptyMode) { el.innerHTML = ''; return; }
+  const counts = {Free:3, Starter:4, Pro:4, Enterprise:1};
+  el.innerHTML = Object.entries(counts).map(([k,v]) =>
+    `<span class="plan-item"><strong>${v}</strong><span class="tier">${k}</span></span>`
+  ).join('');
+}
+
+function renderSubscriptions() {
+  const tbody = document.getElementById('subBody');
+  const rows = generateSubRows();
+  if (data.emptyMode || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><span class="icon">&#128218;</span>No partners subscribed yet</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const badgeClass = r.status === 'Active' ? 'badge-green' : r.status === 'Expiring' ? 'badge-yellow' : r.status === 'Expired' ? 'badge-red' : 'badge-gray';
+    return `<tr><td>${r.partner}</td><td style="color:${roles.find(x=>x.id===r.role).color}">${r.partner}</td><td>${r.tier}</td><td>${r.renewal}</td><td><span class="badge ${badgeClass}">${r.status}</span></td></tr>`;
+  }).join('');
+}
+
+// ─── MODULE D: STAGNATION ───
+function generateStagnationRows() {
+  if (data.emptyMode) return [];
+  const partners = [roles[0],roles[3],roles[5],roles[1],roles[7]];
+  const stages = [2,1,2,3,1];
+  const days = [9,15,5,12,8];
+  return partners.map((r,i) => ({
+    refId: 'REF-' + (2027000+i),
+    partner: r.name,
+    role: r.id,
+    stage: stages[i],
+    days: days[i],
+    risk: days[i] >= 14 ? 'High' : days[i] >= 7 ? 'Medium' : 'Low'
+  }));
+}
+
+function renderStagnation() {
+  const tbody = document.getElementById('stagnationBody');
+  const rows = generateStagnationRows();
+  if (data.emptyMode || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><span class="icon">&#9888;&#65039;</span>No stagnation alerts. All workflows progressing normally.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const badgeClass = r.risk === 'High' ? 'badge-red' : r.risk === 'Medium' ? 'badge-yellow' : 'badge-green';
+    return `<tr><td>${r.refId}</td><td>${r.partner}</td><td style="color:${roles.find(x=>x.id===r.role).color}">${r.partner}</td><td>Stage ${r.stage}</td><td>${r.days}</td><td><span class="badge ${badgeClass}">${r.risk}</span></td></tr>`;
+  }).join('');
+
+  // Check alert state: if a single partner has 3+ stalled
+  const counts = {};
+  rows.forEach(r => { counts[r.partner] = (counts[r.partner]||0)+1; });
+  const alertPartner = Object.entries(counts).find(([k,v]) => v >= 3);
+  if (alertPartner) {
+    const alertEl = document.querySelector('[data-module="D"] .panel-header');
+    if (!document.getElementById('stagnationAlert')) {
+      const alert = document.createElement('div');
+      alert.id = 'stagnationAlert';
+      alert.style.cssText = 'background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:0.8rem;display:flex;align-items:center;gap:8px;';
+      alert.innerHTML = '&#128308; <strong>' + alertPartner[0] + '</strong> has ' + alertPartner[1] + ' stalled referrals &mdash; recommend direct outreach.';
+      document.querySelector('[data-module="D"]').appendChild(alert);
+    }
+  }
+}
+
+// ─── SIDEBAR ───
+function updateSidebar() {
+  document.getElementById('dataMode').textContent = data.emptyMode ? 'Empty States' : 'Live';
+  document.getElementById('lastRefresh').textContent = new Date().toLocaleTimeString();
+}
+
+// ─── EXPORT ───
+function exportModule(module) {
+  const tables = { A:'trafficBar', B:'ledgerTable', C:'subTable', D:'stagnationTable' };
+  const names = { A:'Traffic_Pipeline', B:'Fee_Ledger', C:'Subscriptions', D:'Stagnation' };
+  const tableId = tables[module];
+  const name = names[module];
+
+  if (data.emptyMode) {
+    showToast('No data to export for Module ' + module);
+    return;
+  }
+
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  const rows = table.querySelectorAll('tbody tr');
+  if (rows.length === 0 || rows[0].querySelector('.empty-state')) {
+    showToast('No data to export for Module ' + module);
+    return;
+  }
+
+  const headers = [...table.querySelectorAll('thead th')].map(th => '"' + th.innerText.trim() + '"').join(',');
+  const csvRows = [...rows].map(row =>
+    [...row.querySelectorAll('td')].map(cell => '"' + cell.innerText.trim() + '"').join(',')
+  ).join('\n');
+  const csv = headers + '\n' + csvRows;
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,19).replace(/[:-]/g,'');
+  a.href = url;
+  a.download = 'Vestie_' + name + '_' + ts + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  const logMsg = 'CSV exported: ' + name + ' [' + ts + ']';
+  exportLog.push(logMsg);
+  if (exportLog.length > 5) exportLog.shift();
+  document.getElementById('exportLog').innerHTML = exportLog.map(m => '<div>' + m + '</div>').join('');
+
+  showToast('CSV exported: ' + name);
+}
+
+// ─── SIMULATION CONTROLS ───
+function refreshData() {
+  data.trafficCounts = data.trafficCounts.map(c => Math.max(1, c + Math.floor(Math.random() * 6) - 2));
+  data.kpis = {
+    active: 800 + Math.floor(Math.random() * 100),
+    pending: 20 + Math.floor(Math.random() * 30),
+    verified: 8 + Math.floor(Math.random() * 10),
+    escalated: Math.floor(Math.random() * 6)
+  };
+  data.funnel = {
+    s1: 380 + Math.floor(Math.random() * 60),
+    s2: 260 + Math.floor(Math.random() * 60),
+    s3: 110 + Math.floor(Math.random() * 50)
+  };
+
+  document.getElementById('kpiActive').textContent = data.kpis.active;
+  document.getElementById('kpiPending').textContent = data.kpis.pending;
+  document.getElementById('kpiVerified').textContent = data.kpis.verified;
+  document.getElementById('kpiEscalated').textContent = data.kpis.escalated;
+  document.getElementById('funnelS1').textContent = data.funnel.s1;
+  document.getElementById('funnelS2').textContent = data.funnel.s2;
+  document.getElementById('funnelS3').textContent = data.funnel.s3;
+
+  renderTrafficBar();
+  updateSidebar();
+  showToast('Data refreshed with new simulated values');
+}
+
+function resetData() {
+  data = JSON.parse(JSON.stringify(defaultData));
+  document.getElementById('kpiActive').textContent = data.kpis.active;
+  document.getElementById('kpiPending').textContent = data.kpis.pending;
+  document.getElementById('kpiVerified').textContent = data.kpis.verified;
+  document.getElementById('kpiEscalated').textContent = data.kpis.escalated;
+  document.getElementById('funnelS1').textContent = data.funnel.s1;
+  document.getElementById('funnelS2').textContent = data.funnel.s2;
+  document.getElementById('funnelS3').textContent = data.funnel.s3;
+  renderTrafficBar();
+  renderLedger();
+  renderFeeChart();
+  renderSubscriptions();
+  renderStagnation();
+  renderPlanDist();
+  updateSidebar();
+  // Remove alert element if present
+  const alert = document.getElementById('stagnationAlert');
+  if (alert) alert.remove();
+  showToast('Reset to default values');
+}
+
+function toggleEmptyState() {
+  data.emptyMode = !data.emptyMode;
+  renderTrafficBar();
+  renderLedger();
+  renderFeeChart();
+  renderSubscriptions();
+  renderStagnation();
+  renderPlanDist();
+  updateSidebar();
+  const alert = document.getElementById('stagnationAlert');
+  if (alert) alert.remove();
+  showToast(data.emptyMode ? 'Empty states activated' : 'Live data restored');
+}
+
+// ─── TOAST ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── BOOT ───
+init();
+</script>
+</body>
+</html>
