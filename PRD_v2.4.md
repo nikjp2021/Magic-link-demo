@@ -1,236 +1,171 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD) ADDENDUM v2.4
 
-## Admin Operations Dashboard & Hidden Partner Fee Configurations
+## Admin Operations Dashboard & Complete Revenue Dashboard Engine
 
 | Document | Details |
 |----------|---------|
-| **Project** | Vestie Magic Link Architecture |
-| **Version** | 2.4 (Addendum) |
-| **Status** | Draft for Client Review |
+| **Project** | Vestie Mobile Application & Operational Command Center |
+| **Version** | 2.4 (Admin Operations & Complete Revenue Dashboard Engine) |
+| **Author** | Nikhil Tiwari (Product Manager) |
 | **Target Audience** | Anna (Operations Admin) & Radial Code (Dev Team) |
 
 ---
 
-## Sign-Off
+## Document Revisions
 
-| Role | Name | Date | Signature |
-|------|------|------|-----------|
-| Product Owner | Anna | TBD | TBD |
-| Lead Developer | Radial Code | TBD | TBD |
-| UX Consultant | Designer | TBD | TBD |
+| Date | Version | Author | Section Changed | Description of Changes |
+|------|---------|--------|-----------------|------------------------|
+| 23/05/2026 | 2.4.0 | Nikhil Tiwari | All Sections | Engineered complete specifications for app metrics tracking, financial calculation logs, subscription engines, and automated ledger matrices. |
+
+## Sign-Off & Approvals
+
+*By approving this addendum, the Client locks the administrative requirements, real-time dashboard data parameters, and system logging metrics. Radial Code is authorized to configure these fields directly within the existing Strapi backend architecture.*
+
+| Role | Name | Signature / Approval Status | Date |
+|------|------|----------------------------|------|
+| **Product Owner (Client)** | [Client Name] | *Awaiting Review* | **/**/2026 |
+| **Product Manager** | Nikhil Tiwari | Approved | 23/05/2026 |
+| **Development Lead** | Radial Code Team | *Awaiting Engineering Review* | **/**/2026 |
 
 ---
 
 ## Table of Contents
 
-1. [Admin Operations Dashboard (Modules A–E)](#1-admin-operations-dashboard-modules-a-e)
-   - [Module A: Live Traffic & Pipeline Monitor](#module-a-live-traffic--pipeline-monitor)
-   - [Module B: Fee & Ledger Reconciliation](#module-b-fee--ledger-reconciliation)
-   - [Module C: Subscription Status Grid](#module-c-subscription-status-grid)
-   - [Module D: Stagnation & Risk Alerts](#module-d-stagnation--risk-alerts)
-   - [Module E: Partner Export & CSV Extraction](#module-e-partner-export--csv-extraction)
-2. [Component Consolidation Matrix](#2-component-consolidation-matrix)
-3. [Use Case Specification Grid](#3-use-case-specification-grid)
-4. [User Stories](#4-user-stories)
-5. [Interactive Prototype Notes (admin.html)](#5-interactive-prototype-notes-adminhtml)
+1. [Executive Command Dashboard Layout (Anna's View)](#1-executive-command-dashboard-layout-annas-view)
+2. [Component Consolidation & Dynamic System Matrix](#2-component-consolidation--dynamic-system-matrix)
+3. [Comprehensive Use Case Specification Grid](#3-comprehensive-use-case-specification-grid)
+4. [MVP User Stories & Acceptance Criteria](#4-mvp-user-stories--acceptance-criteria)
+5. [Interactive HTML Command Dashboard Engine](#5-interactive-html-command-dashboard-engine)
 6. [Strapi Schema Extensions](#6-strapi-schema-extensions)
 7. [Implementation Notes for Radial Code](#7-implementation-notes-for-radial-code)
 8. [Hidden Partner Fee Configurations (Strapi Core Setup)](#8-hidden-partner-fee-configurations-strapi-core-setup)
-   - [8.1 The Private Fields Strategy](#81-the-private-fields-strategy-hidden-from-public)
-   - [8.2 Dynamic Data Fields Definition Matrix](#82-dynamic-data-fields-definition-matrix)
-   - [8.3 Fee Calculation Rules Engine](#83-fee-calculation-rules-engine)
-   - [8.4 Trigger-to-Fee Mapping](#84-trigger-to-fee-mapping)
-   - [8.5 Interactive Prototype (fee_config.html)](#85-interactive-prototype-fee_confightml)
 
 ---
 
-## 1. Admin Operations Dashboard (Modules A–E)
+## 1. Executive Command Dashboard Layout (Anna's View)
 
-### Overview
+To manage the entire real estate marketplace safely and track revenue effortlessly, the Admin Dashboard acts as Anna's **Business Command Center**. Instead of forcing developers to program complex visual graphs from scratch, Radial Code will configure these tracking modules using their existing **Strapi CMS engine infrastructure layout**.
 
-A standalone admin dashboard (`admin.html`) that replaces the "Admin Operations" section originally described in PRD v2.2. This dashboard is a **separate static page** (not merged into the Command Center) designed for Anna to monitor, reconcile, and manage the entire partner ecosystem at a glance.
+When Anna logs into the backend website, the home command screen presents four clear, automated informational summary blocks:
 
-**Core Philosophy:** Admin-only session — no partner tiles, no Magic Link forms, no mobile simulation. Pure operational data views with simulation controls on the right sidebar.
-
----
-
-### Module A: Live Traffic & Pipeline Monitor
-
-**Purpose:** Provide Anna with a real-time (simulated) overview of how many partners are active, what engagement stages they're in, and the health of the overall pipeline.
-
-**UI Components:**
-- **KPI Bar** — 4 stat cards at the top of the dashboard:
-  - **Active Referrals** — Total open referral files currently in the system (simulated: 847)
-  - **Pending Verifications** — Partners who received a Magic Link but haven't submitted yet (simulated: 34)
-  - **Verified Today** — Successful submissions in the last 24h (simulated: 12)
-  - **Escalated** — Files flagged for manual admin review due to expiry or mismatch (simulated: 3)
-- **Traffic Timeline** — A segmented bar chart showing referral volume by partner role for the current week. Segments: Broker (32), Lawyer (28), Inspector (18), Tax (12), Agent (22), Valuer (8), Surveyor (5), Strata (6), FinPlanner (4), Insurance (3), Settlement (7), Conveyancer (2).
-  - Each segment is a `<div>` with a color matching the partner's tag color, proportional width by count, with hover tooltip showing role + count.
-- **Pipeline Funnel** — A 3-stage visual funnel showing the number of partners at each milestone stage across all roles:
-  - Stage 1 (Initiated): 412
-  - Stage 2 (In Progress): 298
-  - Stage 3 (Completed): 137
-
-**States:**
-- **Default:** Shows the simulated data above with no live backend connection.
-- **Empty:** If no referrals exist, display an empty-state illustration with text "No active referrals yet. Partner activity will appear here once Magic Links are issued."
-
----
-
-### Module B: Fee & Ledger Reconciliation
-
-**Purpose:** Show Anna an aggregated financial view of all fees incurred, paid, and pending across the partner ecosystem.
-
-**UI Components:**
-- **Financial KPI Bar** — 3 stat cards:
-  - **Total Invoiced (MTD):** $12,450 AUD
-  - **Total Collected:** $9,830 AUD
-  - **Outstanding:** $2,620 AUD
-- **Transaction Ledger Table** — Full-width sortable table with columns:
-  - Referral ID, Partner Name, Role, Fee Type, Amount, Status, Date
-  - Simulated rows (min 5) showing a mix of Flat Fee and Percentage billing types
-  - Status badges: `Paid` (green), `Pending` (yellow), `Overdue` (red)
-- **Fee Distribution Chart** — A visual breakdown (simple stacked bar or horizontal bars) of MTD fees by partner role, so Anna can see which roles generate the most revenue.
-
-**States:**
-- **Default:** Populated with simulated ledger data.
-- **Empty:** "No transactions recorded this period. Fees will appear once partners complete milestones."
-- **Loading:** A brief skeleton loader while "fetching" data.
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        VESTIE MASTER SYSTEM COMMAND CENTER                             │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│  📊 MODULE A: APP TRAFFIC & PERFORMANCE                                                 │
+│  ├── Total App Store Downloads:  [ 12,450 ]                                            │
+│  ├── Live Users Active Right Now: [ 340 ]                                              │
+│  └── Compliance Verified Users:  [ 8,920 ] ◄─── (Captured with Signed Timestamps)     │
+│                                                                                        │
+│  💰 MODULE B: AUTOMATED REFERRAL CASH LEDGER                                           │
+│  ├── Total Fees Earned (Paid):   [ $24,500 AUD ]                                       │
+│  ├── Outstanding Fees Invoiced:  [ $12,300 AUD ]                                       │
+│  └── Reverse Partner Fees Owed:  [ $1,170 AUD ]  ◄─── (15% Kickback Rule Ledger)       │
+│                                                                                        │
+│  💎 MODULE C: SUBSCRIPTION & SYSTEM MONETIZATION                                       │
+│  ├── Total Active Free Tier Users: [ 8,500 ]                                           │
+│  ├── Active Premium Subscribers:   [ 420 ]     ◄─── (Future Tier Deployment)           │
+│  └── Total Monthly Subscription MRR: [ $4,158 AUD ]                                     │
+│                                                                                        │
+│  🚀 GLOBAL ADMINISTRATIVE ACTIONS                                                     │
+│  └── [ 🧾 EXPORT MASTER TRANSACTION ACCOUNTING CSV ]   [ 🚨 VIEW 7-DAY STAGNATE DEALS ] │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-### Module C: Subscription Status Grid
+## 2. Component Consolidation & Dynamic System Matrix
 
-**Purpose:** Give Anna a bird's-eye view of every partner's subscription tier, renewal date, and account status in one scrollable grid.
+The matrix below maps the raw client feedback tracking requirements and transaction metrics into streamlined back-end system calculations.
 
-**UI Components:**
-- **Grid Table** with columns:
-  - Partner Name, Role, Plan Tier (Free / Starter / Pro / Enterprise), Renewal Date, Status (Active / Expiring / Expired / Suspended)
-  - Simulated 12 rows (one per partner role)
-  - Row color coding: green tint for Active, yellow for Expiring, red for Expired/Suspended
-- **Plan Distribution Summary** — A small stat row above the grid:
-  - Free: 3 | Starter: 4 | Pro: 4 | Enterprise: 1
-
-**States:**
-- **Default:** Grid populated with 12 simulated partner records.
-- **Empty:** "No partners subscribed yet. Subscription data will populate after partner onboarding."
+| Target Analytics Metric | Proposed Implementation Strategy | Strategic Business Rationale (Why) | Code & Data Efficiency | Admin UI/UX Benefit |
+|-------------------------|--------------------------------|--------------------------------------|------------------------|----------------------|
+| **App Growth Metrics** *(Downloads & Live Users)* | **System API Ping Counter Hooks:** The mobile application tracks app initialization events. Downloads are populated from App Store/Google Play analytics tracking scripts, and concurrent active users are incremented via a 60-second database heartbeat loop. | Gives Anna absolute visibility into user adoption trends and active system load patterns without manual counts. | High execution speed. Uses clean data counters instead of complex monitoring infrastructure. | Real-time traffic visualization showing server stability and marketing reach. |
+| **Automated Referral Accounting** *(Receivables & Payables)* | **Relational Stored Revenue Ledgers:** The engine monitors row entries within the append-only `referral_records` database list. Total Earned filters for rows marked `fee_paid == true`, Outstanding filters for `fee_paid == false`, and Reverse Fees aggregate `reverse_referral_amount`. | Eliminates human bookkeeping mistakes and manual accounting updates. Fees are system-locked at the moment of trigger. | Zero manual database query delays. Pre-computes math balances on record creation. | Clean, structured transparency showing exactly who owes Vestie money and what Vestie owes back to partners. |
+| **Subscription Invoicing** *(Monetization Tracking)* | **System User Schema Extension Toggles:** Add `subscription_tier` (Enum: Free/Premium), `billing_cycle` (Enum: Monthly/Annual), and `stripe_customer_id` (Text Field) directly onto the core user profile row configuration inside Strapi. | Establishes the infrastructure framework to scale and turn on subscription tiers instantly without rewriting application database layouts post-launch. | Integrates directly into existing authentication tables without slowing database read paths. | Simplifies user monitoring, tracking customer growth rates, and calculating recurring revenue metrics. |
+| **Deal Stagnation Tracking** *(7-Day Operational Breaker)* | **Automated Chronological Date Hooks:** A system background rule runs daily to evaluate the difference between the current system date and the latest entry inside a record's `status_history` array. If the delta is > 7 Days, trigger a critical alert row flag. | Protects user experience by automatically highlighting transactions that have stalled in a partner's pipeline. | Low overhead loop. Runs as a lightweight automated database pass once every 24 hours. | Immediate proactive management. Anna sees precisely which external partners require prompt follow-ups. |
 
 ---
 
-### Module D: Stagnation & Risk Alerts
+## 3. Comprehensive Use Case Specification Grid
 
-**Purpose:** Surface partners or referral files that have stalled — no Magic Link activity, expired tokens, or incomplete stages.
+```
+       [Strapi Backend Core: Extension User Table Schema]
+ ─────────────────────────────────────────────────────────────
+  Collection Identifier: core_user_profiles
+ ─────────────────────────────────────────────────────────────
+  ├── Field: user_uuid            [DataType: UUID, Constraints: Unique PK]
+  ├── Field: compliance_signed    [DataType: Boolean, Default: False]
+  ├── Field: compliance_timestamp [DataType: DateTime, Nullable: True]
+  ├── Field: subscription_tier    [DataType: Enumeration, Options: Free, Premium]
+  └── Field: monthly_billing_rate [DataType: Decimal, Currency: AUD, Default: 0.00]
+```
 
-**UI Components:**
-- **Risk Summary Cards** — 3 cards:
-  - **Stalled Referrals:** Referral files with no partner activity for 7+ days (simulated: 18)
-  - **Expired Tokens:** Magic Link tokens that reached their 7-day expiry without submission (simulated: 7)
-  - **Incomplete Stage 1:** Partners who opened a Magic Link but never completed the first stage (simulated: 11)
-- **Stagnation Table** — Detailed list with columns:
-  - Referral ID, Partner, Role, Current Stage, Days Inactive, Risk Level (Low / Medium / High)
-  - Risk levels: High = 14+ days inactive (red), Medium = 7–13 days (yellow), Low = <7 days (green)
-  - Simulated 5 rows covering various risk levels
-
-**States:**
-- **Default:** Shows stagnation data.
-- **Empty:** "No stagnation alerts. All partner workflows are progressing normally."
-- **Alert State:** An edge case where a single partner accounts for multiple stalled referrals — show "3 stalled referrals from [Partner Name] — recommend direct outreach."
-
----
-
-### Module E: Partner Export & CSV Extraction
-
-**Purpose:** Allow Anna to export any of the above data views to a CSV file that can be opened in Excel or imported into accounting software (Xero, MYOB).
-
-**UI Components:**
-- **Export Buttons** — One per module (A–D) labeled "Export CSV" placed at the top-right of each panel header
-- **CSV Generation** — JavaScript function that reads the current table data and triggers a download via `Blob` + `URL.createObjectURL`
-- **Export Log** — A small terminal/log area in the sidebar that records each export event with timestamp
-
-**States:**
-- **Default:** Export buttons active and clickable.
-- **Empty Module:** If the table is empty, the export button is disabled with a tooltip "No data to export."
-- **Download Success:** Toast notification "CSV exported: [module]_[timestamp].csv"
+| S No | Module | Use Case / Screen | User Role | Functional Description | Visuals |
+|-------|--------|-------------------|-----------|------------------------|---------|
+| **4.1** | Analytics | Traffic Operations Center | System Admin | Displays live system usage metrics: Total Platform Downloads, Active Live Users (60-second ping logs), and total Compliance Verified Accounts. | `[Admin Analytics Frame 1]` |
+| **4.2** | FinTech | Automated Cash Ledger | System Admin | Aggregates and calculates absolute financial tracking categories: Fees Earned (Settled transactions), Outstanding Fees Invoiced (Pending collections), and Reverse Referral Payables due back to partners. | `[Admin Ledger Frame 2]` |
+| **4.3** | Premium | Monetization Monitor | System Admin | Tracks core subscription data arrays: Total active free accounts, active premium tier subscribers, and live running Monthly Recurring Revenue (MRR) formulas. | `[Admin Subscription View]` |
+| **4.4** | Operations | Stagnation Alert Matrix | System Admin | Automatically flags deals stuck in the pipeline. If a record has had no updates for more than 7 days, it appends a red exclamation point next to the entry row. | `[Admin Alerts Workspace]` |
+| **4.5** | FinTech | One-Click Ledger Export | System Admin | A master button at the top of the workspace. Clicking it dynamically downloads a filtered spreadsheet layout (`.csv`) containing all core matching entries for offline reconciliation. | `[Admin Export Component]` |
 
 ---
 
-## 2. Component Consolidation Matrix
+## 4. MVP User Stories & Acceptance Criteria
 
-This table maps each admin module to its type, the data source it depends on, and its corresponding Strapi entity.
+### Use Story ID: US-ADM-004 (Automated Financial Accounting Module)
 
-| # | Module Name | Component Type | Data Source | Strapi Entity |
-|---|-------------|---------------|-------------|---------------|
-| A | Live Traffic & Pipeline Monitor | KPI Cards + Charts | Aggregated referral counts | `vestie_referrals` with partner join |
-| B | Fee & Ledger Reconciliation | Financial Table + Charts | Fee calculation engine output | `vestie_invoices` computed from partner billing fields |
-| C | Subscription Status Grid | Table with color-coded rows | Partner subscription records | `vestie_partners.plan_tier` |
-| D | Stagnation & Risk Alerts | Cards + Alert Table | Magic Link activity timestamps | `vestie_magic_links` + `vestie_audit_log` |
-| E | Partner Export & CSV Extraction | Button + Blob download | All of the above | Dynamic CSV serialization |
+- **As an:** Executive Platform Super-Administrator (Anna),
+- **I want to:** View an automatically calculated ledger showing collected revenue, outstanding invoices, and reverse partner fees inside my Strapi command dashboard,
+- **So that I can:** Monitor the platform's cash pipelines in real-time without running manual calculator checks.
 
----
+**Test Rule / Acceptance Criteria:**
+- **GIVEN** Anna is viewing the master administrative ledger workspace,
+- **WHEN** an external partner clicks their secure link and updates a deal status to a fee-triggering milestone,
+- **THEN** the backend engine must instantly pull the calculation rules from that partner's private profile, update the `referral_records` database row, recalculate the master summary balances, and display the update on the dashboard page within < 2 seconds.
 
-## 3. Use Case Specification Grid
+### Use Story ID: US-ADM-005 (Automated Deal Stagnation Module)
 
-| ID | Use Case | Primary Actor | Trigger | Precondition | Postcondition |
-|----|----------|---------------|---------|--------------|---------------|
-| UC-ADM-01 | View pipeline traffic | Anna | Opens admin dashboard | Valid admin session | Dashboard renders with simulated stats |
-| UC-ADM-02 | Reconcile fee ledger | Anna | Clicks Module B panel | Fees exist for current period | Ledger displays with correct totals |
-| UC-ADM-03 | Check subscription status | Anna | Clicks Module C panel | Partners exist in system | Status grid loads with tier info |
-| UC-ADM-04 | Identify stalled referrals | Anna | Clicks Module D panel | Stagnation data exists | Risk alerts display sorted by severity |
-| UC-ADM-05 | Export ledger to CSV | Anna | Clicks "Export CSV" on Module B | Ledger has data rows | CSV file downloads; event logged |
-| UC-ADM-06 | Export stagnation report | Anna | Clicks "Export CSV" on Module D | Stagnation table has rows | CSV file downloads; event logged |
-| UC-ADM-07 | Simulate partner fee config | Anna / Demo | Changes dropdown in fee_config.html | fee_config.html loaded | Ledger, phone view, terminal update in real time |
+- **As an:** Executive Platform Super-Administrator (Anna),
+- **I want to:** See a prominent visual alert flag next to any transaction row that has sat with zero status modifications for more than 7 consecutive days,
+- **So that I can:** Immediately contact that specific partner and ensure our co-buying users aren't left stranded.
+
+**Test Rule / Acceptance Criteria:**
+- **GIVEN** the background system validation loop is running its 24-hour analysis pass,
+- **WHEN** a record's latest `status_history` update timestamp is calculated to be older than 7 days from the current date,
+- **THEN** the system must toggle that record's alert property status to `true` and inject a red notification badge next to the entry row inside the admin workspace table view.
 
 ---
 
-## 4. User Stories
+## 5. Interactive HTML Command Dashboard Engine
 
-### US-ADM-004: Accounting Fee Reconciliation View
+The `admin.html` file implements a **Live Operational Simulator**, combining app growth tracking, live user log-ins, compliance signature captures, recurring subscription revenue, and hidden partner fee calculations on a single interface page.
 
-> **As an** operations administrator (Anna),
-> **I want** to see a live reconciliation dashboard that displays all fees invoiced, collected, and outstanding,
-> **so that** I can track revenue flow and identify unpaid balances without logging into accounting software.
+### How to open and run the prototype
 
-**Acceptance Criteria:**
-- Dashboard shows MTD totals for invoiced, collected, and outstanding fees
-- Transaction ledger displays individual fee items with partner name, role, fee type, amount, and status
-- Fee distribution chart breaks down revenue by partner role
-- Each table/section has an Export CSV button
-- All data is simulated (no live backend) but structured as real API responses would be
+Open `admin.html` in any standard web browser (Chrome, Safari, Edge). It runs instantly with zero external requirements.
 
-### US-ADM-005: Partner Stagnation Monitoring
+### Layout
 
-> **As an** operations administrator (Anna),
-> **I want** to view a stagnation report showing which partners have stalled workflows or expired Magic Links,
-> **so that** I can proactively reach out and keep the pipeline moving.
+| Component | Description |
+|-----------|-------------|
+| **Header** | Vestie brand, navigation links, "Export Accounting CSV" button, Admin Session badge |
+| **Module A — App Growth Metrics** | 3 KPI cards: App Store Downloads (14,350), Concurrent Active Users (420), Compliance Verified Profiles (9,410) |
+| **Module B — Revenue & Ledger** | 3 KPI cards: Referral Fees Earned ($24,500), Outstanding Receivables ($12,300), Partner Payables — Reverse Owed ($1,170 with 15% kickback) |
+| **Module C — Subscriptions** | 3 KPI cards: Free Tier (8,990), Premium Subscribers (420), MRR ($4,158) |
+| **Module D/E — Transaction Table** | Referral pipeline with stagnation alerts (red badge for 7+ days inactive) and Click-to-Pay fee settlement |
+| **Sidebar** | Simulation Controller with Simulate App Install, Simulate Active Concurrent Ping, Convert Free User to Premium, and System Operation Log Feed |
 
-**Acceptance Criteria:**
-- Dashboard shows count of stalled referrals, expired tokens, and incomplete Stage 1 items
-- Detailed stagnation table lists referral ID, partner, role, current stage, days inactive, and risk level
-- Risk levels are color-coded (red/yellow/green)
-- Export CSV button available for stagnation data
-- Empty state shown when no stagnation exists
+### Interactions
 
----
-
-## 5. Interactive Prototype Notes (admin.html)
-
-A standalone file `admin.html` implements all five modules (A–E) in a single-page dashboard layout:
-
-**Layout:**
-- Full-width dark-themed dashboard (consistent with `index.html` and `demo.html`)
-- **Left column (main):** 5 stacked panel cards for Modules A–E
-- **Right sidebar (sticky):** Simulation controller with:
-  - "Refresh Data" button (re-shuffles simulated values for demo effect)
-  - "Reset to Defaults" button
-  - Export log showing last 5 CSV exports
-- **Global header:** Vestie Admin badge, "Operations Dashboard" title, session indicator
-
-**Technical Notes:**
-- All data is client-side simulated — no fetch calls to any backend
-- CSV export uses `Blob` + `URL.createObjectURL` with `text/csv` MIME type
-- Charts are pure CSS/HTML (no Chart.js or external libraries) — segmented bars and colored divs
-- Responsive breakpoints match the existing codebase at 1024px, 768px, 480px
-- Zero external dependencies — runs entirely offline in any browser
+| Button | Effect |
+|--------|--------|
+| Simulate App Install & Signup | Increments downloads (+1), free users (+1), compliance (+1) |
+| Simulate Active Concurrent Ping | Bumps active users by a random amount (5–29) |
+| Convert Free User to Premium | Moves one free user to premium, adds $9.90 MRR |
+| Click any table row (pending fee) | Settles the referral: adjusts earned/outstanding/reverse KPIs |
+| Export Accounting CSV | Generates and downloads a `.csv` file of all transaction rows |
 
 ---
 
@@ -257,13 +192,25 @@ Extended `vestie_referrals` collection:
 | `risk_level` | Enumeration | No | `Low` | Low, Medium, High |
 | `assigned_partner` | Relation | Yes | — | Many-to-one to `vestie_partners` |
 
+Extended `core_user_profiles` collection:
+
+| Field Name | Strapi Type | Required | Default | Notes |
+|------------|-------------|----------|---------|-------|
+| `user_uuid` | UUID | Yes | — | Unique primary key |
+| `compliance_signed` | Boolean | Yes | `False` | Whether user completed compliance check |
+| `compliance_timestamp` | DateTime | No | — | When compliance was signed |
+| `subscription_tier` | Enumeration | Yes | `Free` | Options: Free, Premium |
+| `monthly_billing_rate` | Decimal | Yes | `0.00` | AUD, per subscription tier |
+
 ---
 
 ## 7. Implementation Notes for Radial Code
 
 **Priority:** Modules A and B are the highest priority — they demonstrate the most business value to Anna. Modules D and C are medium priority. Module E (Export) is a utility feature that should be built last but is trivial to implement.
 
-**Simulation Strategy:** All data is hardcoded in JavaScript arrays/objects. The "Refresh Data" button randomizes values within realistic ranges to demonstrate dynamic behavior. No backend integration is required for the prototype.
+**Simulation Strategy:** All data is hardcoded in JavaScript arrays/objects. The sidebar buttons trigger state changes to demonstrate dynamic behavior. No backend integration is required for the prototype.
+
+**15% Kickback Rule:** Reverse Partner Fees are calculated as 15% of the referral fee value. This is stored as a calculated field in the `referral_records` table, not hardcoded in the UI.
 
 **CSS Architecture:** All admin components use the same CSS variables (`--bg-primary`, `--bg-secondary`, etc.) defined in `index.html`. The `admin.html` file redeclares these variables at the root level for standalone use.
 
