@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie — Post-Payment Paystub & Financial Hub Demo</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #1A1D27;
+  --bg-card: #22263A;
+  --bg-hover: #2A2F45;
+  --gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  --text-primary: #F0F2F5;
+  --text-secondary: #9CA3B8;
+  --text-muted: #6B7280;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --blue: #3B82F6;
+  --border: #2D3148;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
+.container { max-width: 1360px; width: 100%; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 28px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 44px; height: 44px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff; }
+.brand-text { font-size: 1.5rem; font-weight: 800; }
+.brand-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.master-grid { display: grid; grid-template-columns: 380px 1fr; gap: 28px; align-items: start; }
+.phone-frame { background: #22252A; border-radius: 44px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); height: 740px; border: 3px solid #3A3F47; position: relative; }
+.phone-notch { width: 110px; height: 18px; background: #22252A; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 10; }
+.phone-screen { background: #F7FAFC; border-radius: 34px; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; position: relative; color: #2D3748; }
+.phone-screen::-webkit-scrollbar { width: 4px; }
+.phone-screen::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 4px; }
+.phone-header { background: #FFFFFF; padding: 24px 16px 12px; border-bottom: 1px solid #E2E8F0; text-align: center; font-weight: 700; font-size: 0.85rem; }
+.phone-body { padding: 16px; flex-grow: 1; }
+.control-panel { display: flex; flex-direction: column; gap: 20px; }
+.panel-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.panel-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.step-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.step-dot { flex: 1; text-align: center; padding: 8px 6px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; background: var(--bg-card); color: var(--text-muted); transition: all 0.3s; }
+.step-dot.active { background: rgba(255,107,107,0.15); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
+.step-dot.done { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+
+.app-card { background: #FFFFFF; border-radius: 12px; padding: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; margin-bottom: 14px; }
+.app-card .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; }
+.app-card .label { color: #718096; }
+.app-card .value { font-weight: 700; }
+.receipt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px dashed #EDF2F7; padding-bottom: 8px; }
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.badge-pending { background: #FEF3C7; color: #D97706; }
+.badge-success { background: #D1FAE5; color: #059669; }
+.share-row { border-top: 1px dashed #CBD5E0; padding-top: 8px; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+.share-row .amt { color: #FF6B6B; font-weight: 800; font-size: 1.1rem; }
+.paystub-border { border-top: 4px solid var(--green); }
+.green-text { color: var(--green); }
+
+.btn-primary { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; background: var(--gradient); color: #fff; transition: all 0.2s; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; background: #718096; color: #fff; transition: all 0.2s; }
+.btn-secondary:hover { opacity: 0.9; }
+
+.state-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; padding: 10px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+.email-preview { background: #F7FAFC; border: 1px dashed #CBD5E0; border-radius: 10px; padding: 14px; font-size: 0.75rem; color: #718096; line-height: 1.4; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+.email-preview.has-content { text-align: left; display: block; }
+.email-preview .email-subject { font-weight: 700; color: #2D3748; border-bottom: 1px solid #EDF2F7; padding-bottom: 4px; margin-bottom: 6px; }
+.email-preview .email-body { color: #718096; font-size: 0.72rem; }
+.terminal-box { background: #0A0C12; color: #48BB78; border-radius: 10px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; line-height: 1.5; }
+.terminal-box::-webkit-scrollbar { width: 4px; }
+.terminal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.history-item { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s; }
+.history-item:hover { background: #F7FAFC; }
+.history-item .h-title { font-size: 0.82rem; font-weight: 700; }
+.history-item .h-ref { font-size: 0.7rem; color: #718096; margin-top: 2px; }
+.history-item .h-amt { font-size: 0.85rem; font-weight: 800; color: var(--green); }
+@media (max-width: 900px) { .master-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-icon">V</div>
+      <div class="brand-text"><span>Vestie</span> Post-Payment Engine</div>
+    </div>
+    <div>
+      <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:20px;">&#9664; Back</a>
+    </div>
+  </div>
+
+  <div class="master-grid">
+
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header" id="phoneHeader">Checkout: Split Cost Processing</div>
+        <div class="phone-body" id="phoneBody"></div>
+      </div>
+    </div>
+
+    <div class="control-panel">
+
+      <div class="panel-card">
+        <div class="panel-title"> Post-Payment Cycle</div>
+        <div class="step-row">
+          <div class="step-dot active" id="step1">1. Checkout</div>
+          <div class="step-dot" id="step2">2. Paystub</div>
+          <div class="step-dot" id="step3">3. Financial Hub</div>
+        </div>
+        <div class="state-desc" id="stateDesc"><strong>Step 1:</strong> Checkout — awaiting payment to trigger the post-payment cycle</div>
+        <button class="btn-primary" id="actionBtn" onclick="handleAction()">Simulate In-App Payment</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title"> Email Dispatch Preview</div>
+        <div class="email-preview" id="emailPreview"><em>No outgoing transaction mail in queue.</em></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title"> System Log</div>
+        <div class="terminal-box" id="terminalLog">
+          <div>[SYSTEM] Post-Payment Engine v1.0 initialized</div>
+          <div>[READY] Awaiting payment callback...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+let step = 1;
+
+function renderCheckout() {
+  document.getElementById('phoneHeader').textContent = 'Checkout: Split Cost Processing';
+  document.getElementById('phoneBody').innerHTML = `
+    <div class="app-card">
+      <div class="receipt-header">
+        <span style="font-weight:800;font-size:0.9rem;">Co-Ownership Document Fee</span>
+        <span class="badge badge-pending">Unpaid</span>
+      </div>
+      <div class="row"><span class="label">Total Fixed Cost:</span><span class="value">$600.00 AUD</span></div>
+      <div class="share-row"><span style="font-weight:700;">Your 50% Share Owed:</span><span class="amt">$300.00 AUD</span></div>
+      <button class="btn-primary" style="margin-top:12px;" onclick="handleAction()">Process In-App Checkout</button>
+    </div>
+  `;
+  document.getElementById('stateDesc').innerHTML = '<strong>Step 1:</strong> Checkout — user sees 50% split with Pay button';
+  document.getElementById('actionBtn').textContent = 'Simulate In-App Payment';
+  document.getElementById('emailPreview').className = 'email-preview';
+  document.getElementById('emailPreview').innerHTML = '<em>No outgoing transaction mail in queue.</em>';
+  setSteps(1);
+}
+
+function renderPaystub() {
+  document.getElementById('phoneHeader').textContent = 'Digital Paystub Receipt';
+  document.getElementById('phoneBody').innerHTML = `
+    <div class="app-card paystub-border">
+      <div class="receipt-header">
+        <span style="font-weight:800;font-size:0.9rem;color:var(--green);">VESTIE OFFICIAL PAYSTUB</span>
+        <span class="badge badge-success">Paid</span>
+      </div>
+      <div class="row"><span class="label">Receipt ID:</span><strong>REC-2026-90481</strong></div>
+      <div class="row"><span class="label">Bank Auth Code:</span><span style="font-family:monospace;font-weight:700;">STRP_849321_OK</span></div>
+      <div class="row"><span class="label">Service Settled:</span><strong>Co-Owner Agreement Setup</strong></div>
+      <div class="row"><span class="label">Gross Parent Cost:</span><span>$600.00 AUD</span></div>
+      <div class="share-row"><span style="font-weight:700;">Your 50% Share Paid:</span><span style="color:var(--green);font-weight:800;font-size:1.15rem;">$300.00 AUD</span></div>
+    </div>
+    <p style="font-size:0.75rem;color:#718096;text-align:center;line-height:1.3;">Receipt filed to your Financial Hub. An email copy has been sent.</p>
+    <button class="btn-secondary" style="margin-top:12px;" onclick="renderHub()">View My Finances</button>
+  `;
+  document.getElementById('stateDesc').innerHTML = '<strong>Step 2:</strong> Paystub — on-screen receipt shown, email dispatched, record filed';
+  document.getElementById('actionBtn').textContent = 'Return to Checkout';
+  document.getElementById('emailPreview').className = 'email-preview has-content';
+  document.getElementById('emailPreview').innerHTML = `
+    <div class="email-subject">Subject: Your Vestie Payment Receipt Confirmation</div>
+    <div class="email-body">
+      <strong>To:</strong> user_profile_493@vestie.com.au<br>
+      Hi John, your 50% split payment of <strong>$300.00 AUD</strong> for Co-Owner Agreement Setup has cleared. Your itemized paystub PDF is attached.
+    </div>
+  `;
+  setSteps(2);
+}
+
+function renderHub() {
+  document.getElementById('phoneHeader').textContent = 'My Finances (Financial Link)';
+  document.getElementById('phoneBody').innerHTML = `
+    <p style="font-size:0.75rem;color:#718096;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Settled Transactions</p>
+    <div class="history-item" onclick="renderPaystub()">
+      <div>
+        <div class="h-title">Co-Owner Legal Setup Fee</div>
+        <div class="h-ref">Ref: REC-2026-90481</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="h-amt">$300.00</div>
+        <span class="badge badge-success">View Paystub</span>
+      </div>
+    </div>
+  `;
+  document.getElementById('stateDesc').innerHTML = '<strong>Step 3:</strong> Financial Hub — permanent history folder in user profile. Tap a record to view its paystub.';
+  document.getElementById('actionBtn').textContent = 'Reset Demo';
+  setSteps(3);
+}
+
+function handleAction() {
+  if (step === 1) { renderPaystub(); step = 2; log('Payment Callback: Gateway approved. Paystub displayed, email dispatched, record filed.'); }
+  else if (step === 2) { renderHub(); step = 3; log('Navigation: User opened Financial Hub from paystub screen.'); }
+  else { renderCheckout(); step = 1; log('Reset: Demo cleared to initial checkout state.'); }
+}
+
+function setSteps(s) {
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('step' + i);
+    if (i < s) el.className = 'step-dot done';
+    else if (i === s) el.className = 'step-dot active';
+    else el.className = 'step-dot';
+  }
+}
+
+function log(msg) {
+  const t = document.getElementById('terminalLog');
+  const time = new Date().toLocaleTimeString();
+  t.innerHTML += '<div><span style="color:#6B7280;">[' + time + ']</span> ' + msg + '</div>';
+  t.scrollTop = t.scrollHeight;
+}
+
+renderCheckout();
+step = 1;
+log('READY: Checkout screen loaded — awaiting user payment.');
+</script>
+</body>
+</html>

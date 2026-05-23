@@ -15,7 +15,8 @@ Interactive HTML prototype demonstrating a **single-template, multi-role Magic L
 | `admin.html` | Admin Operations Dashboard — pipeline traffic, fee ledger, subscription grid, stagnation alerts, and CSV export (Modules A–E) |
 | `fee_config.html` | Partner Fee Configuration Engine — interactive split-pane prototype demonstrating hidden Strapi profile fields driving automatic fee calculation |
 | `invoice_demo.html` | Invoice Template Demo — Template A (User Split Card) and Template B (Commission Statement) with toggle, payment, and verification simulation |
-| `PRD.md` | Consolidated product requirements document — Magic Link system, admin dashboard, fee config, invoice templates, Strapi schema, user stories |
+| `paystub_demo.html` | Post-Payment Engine — checkout, on-screen paystub, automated email dispatch, and Financial Hub (3-step cycle) |
+| `PRD.md` | Consolidated product requirements document — Magic Link system, admin dashboard, fee config, invoice templates, post-payment flow, Strapi schema, user stories |
 
 ## How to Run
 

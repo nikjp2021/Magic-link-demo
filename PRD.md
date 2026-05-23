@@ -2,7 +2,7 @@
 
 **Project:** Vestie — Property Co-Buying Platform
 **Author:** Nikhil Tiwari
-**Latest Version:** 2.5 (23/05/2026)
+**Latest Version:** 2.6 (23/05/2026)
 
 ## 1. Overview
 
@@ -140,7 +140,56 @@ Once verified, the row is frozen — Anna exports it to Xero at end of month. No
 
 Both streams write to the same `invoice_records` collection. The `invoice_type` field distinguishes them (`User_Split` vs `Partner_Commission`).
 
-## 6. Strapi Schema Reference
+## 6. Post-Payment Flow
+
+When a co-buyer pays their 50% share, the system triggers a 3-step cycle automatically — no extra builds needed.
+
+### 6.1 The 3-Step Cycle
+
+```
+Payment Gateway Success Callback
+        │
+        ▼
+┌───────────────────┐
+│ Step 1: Paystub   │  The checkout card morphs into an itemised receipt showing the paid amount,
+│ (On-Screen)       │  transaction reference ID, and co-buyer contribution status — all within the
+│                   │  same screen slot.
+└────────┬──────────┘
+         │
+         ▼
+┌───────────────────┐
+│ Step 2: Email     │  A professional confirmation email fires to the user's inbox containing
+│ (Automated)       │  a downloadable PDF copy of the exact paystub.
+└────────┬──────────┘
+         │
+         ▼
+┌───────────────────┐
+│ Step 3: Hub       │  The paystub is filed inside a new "My Finances" section in the user's
+│ (Financial Link)  │  profile. Users can revisit past transactions anytime.
+└───────────────────┘
+```
+
+All three steps use the **Unified Dynamic Renderer Component** — no standalone layouts.
+
+### 6.2 `user_paystubs` Schema
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `paystub_uuid` | UUID | Primary key |
+| `linked_invoice_id` | Relation | Links to `invoice_records` |
+| `clear_timestamp` | DateTime | Exact payment time |
+| `transaction_ref` | String | Bank/Stripe processor code |
+| `vault_file_path` | Media | Private PDF link |
+
+### 6.3 Use Cases
+
+| # | Module | Screen | Role | Description |
+|---|--------|--------|------|-------------|
+| 7.1 | FinTech | Post-Payment Paystub | Mobile User | After payment clears, show itemised receipt with asset details, pricing, split, bank transaction number, and green verification stamp |
+| 7.2 | Communication | Automated Receipt Email | System Engine | Background transactional email bundling receipt variables sent to user's verified inbox |
+| 7.3 | FinTech | Financial Link Directory | Mobile User | "My Finances" tab in profile menu listing all past transactions and billing statements |
+
+## 7. Strapi Schema Reference
 
 ### 6.1 `vestie_partners`
 
@@ -199,7 +248,7 @@ Both streams write to the same `invoice_records` collection. The `invoice_type` 
 | `individual_share` | Decimal | AUD (50% for user splits) |
 | `invoice_status` | Enum | Unpaid or Paid |
 
-### 6.6 `invoice_templates`
+### 7.6 `invoice_templates`
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -208,7 +257,17 @@ Both streams write to the same `invoice_records` collection. The `invoice_type` 
 | `split_ratio` | Decimal | Default 0.5 (50/50) |
 | `payment_methods` | JSON | Apple Pay, Google Pay, Card |
 
-## 7. User Stories
+### 7.7 `user_paystubs`
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `paystub_uuid` | UUID | Primary key |
+| `linked_invoice_id` | Relation | Links to `invoice_records` |
+| `clear_timestamp` | DateTime | Exact payment time |
+| `transaction_ref` | String | Bank/Stripe processor code |
+| `vault_file_path` | Media | Private PDF link |
+
+## 8. User Stories
 
 ### US-ADM-004 (Automated Financial Accounting)
 *As Anna, I want to see an auto-calculated ledger (earned, outstanding, reverse fees) so I don't run manual checks.*
@@ -234,7 +293,39 @@ Both streams write to the same `invoice_records` collection. The `invoice_type` 
 *As Anna, I want the partner commission displayed as a locked statement row I can verify, so I know exactly who to bill.*
 - **AC:** Template B shows partner name, computed commission, invoice UUID, and a Verify & Lock button. After verification, the row freezes and appears on the admin ledger.
 
-## 8. Interactive Prototypes
+### US-FIN-010 (On-Screen Paystub & Email Automation)
+*As a co-buyer, I want to see a payment receipt on-screen and receive an email confirmation the moment my payment clears.*
+- **AC:** When the banking gateway returns `Success 200`, the checkout screen instantly transitions to an itemised paystub card, and the background email engine fires a confirmation with payment breakdown to the user's verified inbox.
+
+### US-FIN-011 (The Financial Link Repository)
+*As a co-buyer, I want a permanent "My Finances" folder in my profile to review all past split invoices and paystubs.*
+- **AC:** When the user navigates to their profile and taps "My Finances", the UI queries the `user_paystubs` collection, fetches all settled records linked to their account, and displays them in a scannable history list.
+
+### US-ADM-004 (Automated Financial Accounting)
+*As Anna, I want to see an auto-calculated ledger (earned, outstanding, reverse fees) so I don't run manual checks.*
+- **AC:** When a partner submits their Magic Link at a fee-triggering milestone, the system pulls that partner's profile rules, updates `referral_records`, recalculates balances, and displays the update in <2 seconds.
+
+### US-ADM-005 (Deal Stagnation Alerts)
+*As Anna, I want red alert flags on deals inactive for 7+ days so I can follow up with partners.*
+- **AC:** A daily background pass checks `status_history` timestamps. If delta >7 days, the record's alert flag flips to true and a red badge appears on the row.
+
+### US-FIN-006 (User Shared Cost Split)
+*As a co-buyer, I want to see my 50% split and pay it in-app instead of manual bank transfers.*
+- **AC:** When a shared-cost milestone unlocks, the app shows `Total $600 → Your Share $300` with a Pay button. Payment state is isolated per user. On success, the user's row flips to `Paid`.
+
+### US-FIN-007 (Partner Commission Recording)
+*As Anna, I want the system to lock a static commission row the moment a partner hits their trigger milestone, so I can export to Xero without recalculation errors.*
+- **AC:** On Magic Link submission at trigger milestone, the engine computes the fee, writes a locked `Unpaid` row to `invoice_records`, and displays it on the admin ledger.
+
+### US-INV-008 (User Split Card Template)
+*As a co-buyer, I want a clear inline card on my Property Path showing the split amount with one-tap payment options.*
+- **AC:** The Template A card shows property address, total cost, 50% split, individual share, and Apple Pay / Google Pay / Credit Card buttons. States: unpaid (buttons active) → paid (success checkmark).
+
+### US-INV-009 (Partner Commission Statement Template)
+*As Anna, I want the partner commission displayed as a locked statement row I can verify, so I know exactly who to bill.*
+- **AC:** Template B shows partner name, computed commission, invoice UUID, and a Verify & Lock button. After verification, the row freezes and appears on the admin ledger.
+
+## 9. Interactive Prototypes
 
 | File | Purpose | How to Open |
 |------|---------|-------------|
@@ -243,10 +334,11 @@ Both streams write to the same `invoice_records` collection. The `invoice_type` 
 | `admin.html` | Admin Dashboard — Modules A–E, simulators, CSV export | Click Admin link in header |
 | `fee_config.html` | Fee Config Engine — hidden Strapi fields driving auto-calculation | Click Fee Config link in header |
 | `invoice_demo.html` | Invoice Templates — Template A (Split Card) and Template B (Commission Statement) toggle | Click Invoice Demo tile in index.html |
+| `paystub_demo.html` | Post-Payment Engine — checkout, on-screen paystub, email dispatch, and Financial Hub (3-step cycle) | Click Paystub & Hub tile in index.html |
 
 All files run in any browser with zero dependencies.
 
-## 9. Implementation Notes
+## 10. Implementation Notes
 
 - **Priority:** Modules A & B first (most business value), then C & D, then E (CSV export).
 - **15% Kickback:** Reverse partner fees = 15% of referral fee. Stored as calculated field in `referral_records`, not hardcoded in UI.
@@ -262,3 +354,4 @@ All files run in any browser with zero dependencies.
 | 22/05/2026 | 2.2 | Magic Link system: 12-role matrix, 36 stage views, 8 field types, Command Center, 7-day security |
 | 23/05/2026 | 2.4 | Admin Dashboard (Modules A–E), Hidden Fee Configurations, two-stream Invoice Generation |
 | 23/05/2026 | 2.5 | Dynamic Invoice Templates: Template A (User Split Card) and Template B (Commission Statement), `invoice_templates` schema, interactive prototype |
+| 23/05/2026 | 2.6 | Post-Payment Flow: 3-step cycle (paystub, email, Financial Hub), `user_paystubs` schema, US-FIN-010/011, interactive prototype |

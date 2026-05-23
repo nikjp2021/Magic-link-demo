@@ -150,10 +150,10 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
   <!-- Admin & Config Section -->
   <div class="section-header" style="margin-top:8px;">
     <span class="section-title"> Operations &amp; Configuration <span style="font-size:0.8rem;color:var(--text-muted);font-weight:400;">— Admin tools for Anna and fee setup</span></span>
-    <span class="section-badge">3 Dashboards</span>
+    <span class="section-badge">4 Dashboards</span>
   </div>
 
-  <div class="partner-grid" style="grid-template-columns:repeat(3,1fr);">
+  <div class="partner-grid" style="grid-template-columns:repeat(4,1fr);">
     <div class="partner-tile" onclick="window.open('admin.html','_blank')" style="border-color:rgba(99,102,241,0.3);">
       <div class="partner-tag" style="background:rgba(99,102,241,0.15);color:#818CF8;"> Admin</div>
       <div class="partner-icon">&#128202;</div>
@@ -173,6 +173,13 @@ body { background: var(--bg-primary); color: var(--text-primary); min-height: 10
       <div class="partner-icon">&#128196;</div>
       <div class="partner-name">Invoice Template Demo</div>
       <div class="partner-desc">Template A (User Split Card) and Template B (Commission Statement) — toggle, pay, and verify in real-time.</div>
+      <div class="partner-stages"><div class="stage-dot active"></div><div class="stage-dot active"></div><div class="stage-dot active"></div></div>
+    </div>
+    <div class="partner-tile" onclick="window.open('paystub_demo.html','_blank')" style="border-color:rgba(59,130,246,0.3);">
+      <div class="partner-tag" style="background:rgba(59,130,246,0.15);color:#60A5FA;"> Paystub</div>
+      <div class="partner-icon">&#128179;</div>
+      <div class="partner-name">Paystub &amp; Financial Hub</div>
+      <div class="partner-desc">3-step post-payment cycle — checkout, on-screen paystub, email dispatch, and permanent Financial Link folder.</div>
       <div class="partner-stages"><div class="stage-dot active"></div><div class="stage-dot active"></div><div class="stage-dot active"></div></div>
     </div>
   </div>
