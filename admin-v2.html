@@ -460,6 +460,115 @@ body {
   pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
+
+/* User cards */
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  padding: 12px 18px;
+}
+.user-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.user-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+.user-card.pending { border-left: 3px solid #E8A838; }
+.user-card.suspended { border-left: 3px solid var(--red); }
+.user-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.user-card-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent); color: var(--text-on-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.user-card-name { font-weight: 600; font-size: 14px; line-height: 1.3; flex: 1; }
+.user-card-row { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.user-card-actions { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-light); }
+.user-card-deal { font-size: 11px; color: var(--accent); margin-top: 4px; }
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+.status-dot.verified, .status-dot.active, .status-dot.complete { background: #2E7D32; }
+.status-dot.pending { background: #E8A838; }
+.status-dot.suspended { background: var(--red); }
+
+/* Filter pills */
+.filter-pills {
+  display: flex; gap: 4px; align-items: center;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+.pill.active { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
+.pill-sep { width: 1px; height: 20px; background: var(--border); margin: 0 6px; }
+
+/* View toggle */
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.view-toggle button {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.1s;
+  font-family: inherit;
+}
+.view-toggle button.active { background: var(--accent); color: var(--text-on-accent); }
+.view-toggle button:not(:last-child) { border-right: 1px solid var(--border); }
+.view-toggle button:hover:not(.active) { background: var(--bg-hover); }
+
+/* Sortable table headers */
+.data-table th.sortable { cursor: pointer; user-select: none; }
+.data-table th.sortable:hover { color: var(--accent); }
+.data-table th .sort-arrow { font-size: 10px; margin-left: 2px; color: var(--text-muted); }
+.data-table th.sort-active .sort-arrow { color: var(--accent); }
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 14px 0;
+}
+.pagination button {
+  min-width: 32px; height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.1s;
+  font-family: inherit;
+}
+.pagination button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.pagination button:disabled { opacity: 0.4; cursor: default; }
+.pagination button.active { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
+
 @media (max-width: 1200px) {
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .widget-grid { grid-template-columns: repeat(2, 1fr); }
@@ -552,6 +661,7 @@ body {
       <input type="text" id="globalSearch" placeholder="Search users, deals, messages..." autocomplete="off">
     </div>
     <div class="header-actions">
+      <a href="admin.html" style="color:var(--text-secondary);text-decoration:none;font-size:12px;font-weight:600;padding:6px 12px;border:1px solid var(--border);border-radius:20px;transition:all 0.15s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-secondary)';this.style.borderColor='var(--border)'">← V1 Dashboard</a>
       <button class="header-btn" title="Notifications">🔔<span class="dot"></span></button>
       <button class="header-btn" title="Help">❓</button>
       <div class="admin-avatar" title="Anna Chen — System Admin">AC</div>
@@ -804,6 +914,11 @@ DB.users.forEach(u => userMap[u.id] = u);
 //  STATE
 // ═══════════════════════════════════════════════════════════════
 let currentTab = 'overview';
+let userViewMode = 'card';
+let userFilters = { role: '', status: '' };
+let userSort = { key: '', dir: 'asc' };
+let userPage = 1;
+const usersPerPage = 15;
 
 function $(id) { return document.getElementById(id); }
 
@@ -861,20 +976,55 @@ function closeModal() {
 }
 
 function userRow(u) {
-  return '<tr onclick="showUserDrawer(\'' + u.id + '\')"'
-    + '<td style="display:flex;align-items:center;gap:8px;">' + avatar(u.name) + ' <span style="font-weight:600;">' + u.name + '</span></td>'
+  var roleIcon = u.role === 'local_student' ? '\uD83C\uDF93' : (u.role === 'foreign_student' ? '\uD83C\uDF0D' : '\uD83D\uDCBC');
+  return '<tr onclick="showUserDrawer(\'' + u.id + '\')">'
+    + '<td><span class="status-dot ' + u.status + '" style="display:inline-block;margin-right:8px;vertical-align:middle;"></span>' + u.name + '</td>'
     + '<td>' + u.email + '</td>'
-    + '<td>' + u.roleLabel + '</td>'
+    + '<td>' + roleIcon + ' ' + u.roleLabel + '</td>'
     + '<td>' + badge(u.status) + '</td>'
-    + '<td>' + u.budget + '</td>'
     + '<td>' + u.location + '</td>'
     + '<td>' + u.created + '</td>'
-    + '</tr>';
+    + '<td><button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();showUserDrawer(\'' + u.id + '\')">View</button>'
+    + (u.status === 'suspended'
+      ? '<button class="btn btn-sm btn-primary" style="margin-left:4px;" onclick="event.stopPropagation();toggleUserStatus(\'' + u.id + '\')">\u2705 Reinstate</button>'
+      : '<button class="btn btn-sm btn-danger" style="margin-left:4px;" onclick="event.stopPropagation();toggleUserStatus(\'' + u.id + '\')">\u26D4 ' + (u.status === 'pending' ? 'Reject' : 'Suspend') + '</button>')
+    + '</td></tr>';
+}
+
+function userCard(u) {
+  var roleIcon = u.role === 'local_student' ? '\uD83C\uDF93' : (u.role === 'foreign_student' ? '\uD83C\uDF0D' : '\uD83D\uDCBC');
+  var deal = u.dealId ? DB.deals.find(function(d) { return d.id === u.dealId; }) : null;
+  var dealHtml = deal ? '<div class="user-card-deal">\uD83D\uDCCB ' + deal.id.toUpperCase() + ' \u00B7 ' + DB.stageLabels[deal.stage] + '</div>' : '';
+  return '<div class="user-card ' + u.status + '" onclick="showUserDrawer(\'' + u.id + '\')">'
+    + '<div class="user-card-header">'
+    + '<span class="status-dot ' + u.status + '"></span>'
+    + '<div class="user-card-avatar">' + u.name.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase() + '</div>'
+    + '<div class="user-card-name">' + u.name + '</div>'
+    + '</div>'
+    + '<div class="user-card-row">' + roleIcon + ' ' + u.roleLabel + '</div>'
+    + '<div class="user-card-row">\uD83D\uDCCD ' + u.location + (u.budget ? ' \u00B7 ' + u.budget : '') + '</div>'
+    + '<div>' + badge(u.status) + '</div>'
+    + dealHtml
+    + '<div class="user-card-actions">'
+    + '<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();showUserDrawer(\'' + u.id + '\')">\uD83D\uDC41 View</button>'
+    + (u.status === 'suspended'
+      ? '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();toggleUserStatus(\'' + u.id + '\')">\u2705 Reinstate</button>'
+      : '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();toggleUserStatus(\'' + u.id + '\')">\u26D4 ' + (u.status === 'pending' ? 'Reject' : 'Suspend') + '</button>')
+    + '</div></div>';
+}
+
+function expiresSoon(dateStr) {
+  if (!dateStr) return false;
+  var d = new Date(dateStr);
+  var now = new Date();
+  var diff = (d - now) / (1000 * 60 * 60 * 24);
+  return diff >= 0 && diff <= 30;
 }
 
 function docRow(d) {
   var uploader = d.uploadedBy === 'partner' ? 'Partner' : ((userMap[d.uploadedBy] || {}).name || d.uploadedBy);
-  return '<tr><td style="font-weight:600;">' + d.name + '</td><td>' + d.type + '</td><td>' + d.size + '</td><td>' + uploader + '</td><td>' + (d.verified ? badge('verified') : badge('pending')) + '</td><td style="color:' + (d.expiresAt ? 'var(--text-secondary)' : 'var(--text-muted)') + ';">' + (d.expiresAt || 'N/A') + '</td><td><button class="btn btn-sm btn-secondary" onclick="showToast(\'Preview: ' + d.name + '\',\'\uD83D\uDCC4\')">View</button></td></tr>';
+  var expColor = expiresSoon(d.expiresAt) ? 'var(--red)' : (d.expiresAt ? 'var(--text-secondary)' : 'var(--text-muted)');
+  return '<tr onclick="showDocDrawer(\'' + d.id + '\')" style="cursor:pointer;"><td style="font-weight:600;">' + d.name + '</td><td>' + d.type + '</td><td>' + d.size + '</td><td>' + uploader + '</td><td>' + (d.verified ? badge('verified') : badge('pending')) + '</td><td style="color:' + expColor + ';">' + (d.expiresAt || 'N/A') + (expiresSoon(d.expiresAt) ? ' \u26A0' : '') + '</td><td><button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();showToast(\'Preview: ' + d.name + '\',\'\uD83D\uDCC4\')">View</button></td></tr>';
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -941,15 +1091,41 @@ Tabs.overview = function() {
 };
 
 Tabs.users = function() {
-  return '<div class="table-wrap">'
-    + '<div class="table-header"><div class="table-title">\uD83D\uDC65 All Users <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.users.length + ')</span></div><div class="table-actions"><button class="btn btn-sm btn-primary" onclick="showToast(\'Invite link copied\',\'\uD83D\uDCCB\')">+ Invite User</button><button class="btn btn-sm btn-secondary" onclick="showToast(\'CSV exported\',\'\uD83D\uDCC4\')">Export</button></div></div>'
-    + '<div class="filter-bar">'
-    + '<input type="text" id="userSearch" placeholder="Search by name or email..." oninput="filterUsers()">'
-    + '<select id="userRoleFilter" onchange="filterUsers()"><option value="">All Roles</option><option value="local_student">Local Student</option><option value="foreign_student">Foreign Student</option><option value="local_professional">Local Professional</option></select>'
-    + '<select id="userStatusFilter" onchange="filterUsers()"><option value="">All Status</option><option value="verified">Verified</option><option value="pending">Pending</option><option value="active">Active</option><option value="suspended">Suspended</option></select>'
+  var rolePills = [
+    { key: '', label: '\uD83D\uDC65 All' },
+    { key: 'local_student', label: '\uD83C\uDF93 Local Student' },
+    { key: 'foreign_student', label: '\uD83C\uDF0D Foreign Student' },
+    { key: 'local_professional', label: '\uD83D\uDCBC Professional' }
+  ];
+  var statusPills = [
+    { key: '', label: 'All' },
+    { key: 'pending', label: '\u23F3 Pending (' + DB.users.filter(function(u){return u.status==='pending';}).length + ')' },
+    { key: 'suspended', label: '\u26D4 Suspended (' + DB.users.filter(function(u){return u.status==='suspended';}).length + ')' }
+  ];
+  var pillHtml = '<div class="filter-pills">';
+  rolePills.forEach(function(p) {
+    pillHtml += '<span class="pill' + (userFilters.role === p.key ? ' active' : '') + '" data-filter-type="role" data-filter-value="' + p.key + '" onclick="setUserFilter(this)">' + p.label + '</span>';
+  });
+  pillHtml += '<span class="pill-sep"></span>';
+  statusPills.forEach(function(p) {
+    pillHtml += '<span class="pill' + (userFilters.status === p.key ? ' active' : '') + '" data-filter-type="status" data-filter-value="' + p.key + '" onclick="setUserFilter(this)">' + p.label + '</span>';
+  });
+  pillHtml += '</div>';
+
+  var headerHtml = '<div class="table-header"><div class="table-title">\uD83D\uDC65 Users <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.users.length + ')</span></div><div class="table-actions">'
+    + '<div class="view-toggle">'
+    + '<button data-view="card" class="' + (userViewMode === 'card' ? 'active' : '') + '" onclick="toggleUserView(\'card\')">\u25A6 Cards</button>'
+    + '<button data-view="table" class="' + (userViewMode === 'table' ? 'active' : '') + '" onclick="toggleUserView(\'table\')">\u2630 Table</button>'
     + '</div>'
-    + '<table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Budget</th><th>Location</th><th>Joined</th></tr></thead>'
-    + '<tbody id="userTableBody">' + DB.users.map(userRow).join('') + '</tbody></table></div>';
+    + '<button class="btn btn-sm btn-primary" onclick="showToast(\'Invite link copied\',\'\uD83D\uDCCB\')">+ Invite User</button>'
+    + '<button class="btn btn-sm btn-secondary" onclick="showToast(\'CSV exported\',\'\uD83D\uDCC4\')">Export</button>'
+    + '</div></div>';
+
+  var searchHtml = '<div class="filter-bar">'
+    + '<input type="text" id="userSearch" placeholder="Search by name or email..." oninput="filterUsers()">'
+    + '</div>';
+
+  return '<div class="table-wrap">' + headerHtml + pillHtml + searchHtml + '<div id="userResults"></div></div>';
 };
 
 Tabs.partners = function() {
@@ -1030,8 +1206,39 @@ Tabs.listings = function() {
 };
 
 Tabs.documents = function() {
-  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCC4 Document Repository <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.documents.length + ')</span></div></div>'
-    + '<div class="filter-bar"><select id="docTypeFilter" onchange="filterDocuments()"><option value="">All Types</option><option>ID Verification</option><option>Bank Statement</option><option>Inspection Report</option><option>Contract</option><option>Settlement</option><option>Visa</option></select><select id="docStatusFilter" onchange="filterDocuments()"><option value="">All Status</option><option value="verified">Verified</option><option value="pending">Pending</option></select></div>'
+  var uploaderOpts = ['<option value="">All Uploaders</option>'];
+  var seenUploaders = {};
+  DB.documents.forEach(function(d) {
+    var val = d.uploadedBy;
+    if (!seenUploaders[val]) {
+      seenUploaders[val] = true;
+      var label = d.uploadedBy === 'partner' ? 'Partner' : ((userMap[d.uploadedBy] || {}).name || d.uploadedBy);
+      uploaderOpts.push('<option value="' + val + '">' + label + '</option>');
+    }
+  });
+
+  var dealOpts = ['<option value="">All Deals</option>'];
+  var seenDeals = {};
+  DB.documents.forEach(function(d) {
+    if (d.dealId && !seenDeals[d.dealId]) {
+      seenDeals[d.dealId] = true;
+      var deal = DB.deals.find(function(x) { return x.id === d.dealId; });
+      if (deal) {
+        var pair = deal.pair.map(function(pid) { return (userMap[pid] || {}).name || pid; }).join(' + ');
+        dealOpts.push('<option value="' + d.dealId + '">' + pair + '</option>');
+      }
+    }
+  });
+
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCC4 Document Repository</div><div class="table-actions"><span id="docCount" style="font-size:13px;color:var(--text-muted);">Showing ' + DB.documents.length + ' of ' + DB.documents.length + '</span></div></div>'
+    + '<div class="filter-bar">'
+    + '<input type="text" id="docSearch" placeholder="Search by name, type, or uploader..." oninput="filterDocuments()">'
+    + '<select id="docTypeFilter" onchange="filterDocuments()"><option value="">All Types</option><option>ID Verification</option><option>Visa</option><option>Bank Statement</option><option>Tax Return</option><option>Income Proof</option><option>Inspection Report</option><option>Contract</option><option>Settlement</option><option>Agreement</option></select>'
+    + '<select id="docStatusFilter" onchange="filterDocuments()"><option value="">All Status</option><option value="verified">Verified</option><option value="pending">Pending</option><option value="expiring">Expiring Soon</option></select>'
+    + '<select id="docUploaderFilter" onchange="filterDocuments()">' + uploaderOpts.join('') + '</select>'
+    + '<select id="docDealFilter" onchange="filterDocuments()">' + dealOpts.join('') + '</select>'
+    + '<button class="btn btn-sm btn-secondary" id="docClearBtn" style="display:none" onclick="clearDocFilters()">\u2716 Clear</button>'
+    + '</div>'
     + '<table class="data-table"><thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Uploaded By</th><th>Verified</th><th>Expires</th><th>Action</th></tr></thead><tbody id="docTableBody"></tbody></table></div>';
 };
 
@@ -1125,30 +1332,243 @@ function switchTab(tab) {
 //  USER FILTER
 // ═══════════════════════════════════════════════════════════════
 function filterUsers() {
+  renderUserResults();
+}
+
+function getFilteredUsers() {
   var q = ($('userSearch') ? $('userSearch').value : '').toLowerCase();
-  var role = ($('userRoleFilter') ? $('userRoleFilter').value : '');
-  var status = ($('userStatusFilter') ? $('userStatusFilter').value : '');
   var filtered = DB.users.filter(function(u) {
     if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
-    if (role && u.role !== role) return false;
-    if (status && u.status !== status) return false;
+    if (userFilters.role && u.role !== userFilters.role) return false;
+    if (userFilters.status && u.status !== userFilters.status) return false;
     return true;
   });
-  var tbody = $('userTableBody');
-  if (tbody) tbody.innerHTML = filtered.map(userRow).join('');
+  if (userSort.key) {
+    filtered.sort(function(a, b) {
+      var av = a[userSort.key];
+      var bv = b[userSort.key];
+      if (typeof av === 'string') av = av.toLowerCase();
+      if (typeof bv === 'string') bv = bv.toLowerCase();
+      if (av < bv) return userSort.dir === 'asc' ? -1 : 1;
+      if (av > bv) return userSort.dir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+  return filtered;
+}
+
+function paginateUsers(arr) {
+  var total = arr.length;
+  var pages = Math.ceil(total / usersPerPage) || 1;
+  if (userPage > pages) userPage = pages;
+  var start = (userPage - 1) * usersPerPage;
+  return { items: arr.slice(start, start + usersPerPage), total: total, page: userPage, pages: pages, start: start + 1, end: Math.min(start + usersPerPage, total) };
+}
+
+function renderCards(p) {
+  if (!p.total) return '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:14px;">\uD83D\uDC64 No users match these filters</div>';
+  return '<div class="user-grid">' + p.items.map(userCard).join('') + '</div>';
+}
+
+function renderTable(p) {
+  if (!p.total) return '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:14px;">\uD83D\uDC64 No users match these filters</div>';
+  var sortIcon = function(key) {
+    if (userSort.key !== key) return '';
+    return userSort.dir === 'asc' ? ' \u25B2' : ' \u25BC';
+  };
+  var th = function(label, key) {
+    var cls = userSort.key === key ? ' sort-active' : '';
+    return '<th class="sortable' + cls + '" onclick="setUserSort(\'' + key + '\')">' + label + '<span class="sort-arrow">' + sortIcon(key) + '</span></th>';
+  };
+  return '<table class="data-table"><thead><tr>'
+    + th('Name', 'name')
+    + th('Email', 'email')
+    + '<th>Role</th>'
+    + th('Status', 'status')
+    + th('Location', 'location')
+    + th('Joined', 'created')
+    + '<th>Action</th>'
+    + '</tr></thead><tbody>' + p.items.map(userRow).join('') + '</tbody></table>';
+}
+
+function renderPagination(p) {
+  if (p.pages <= 1) return '';
+  var btns = [];
+  btns.push('<button ' + (p.page <= 1 ? 'disabled' : 'onclick="setUserPage(' + (p.page - 1) + ')"') + '>\u25C0 Prev</button>');
+  for (var i = 1; i <= p.pages; i++) {
+    btns.push('<button class="' + (i === p.page ? 'active' : '') + '" onclick="setUserPage(' + i + ')">' + i + '</button>');
+  }
+  btns.push('<button ' + (p.page >= p.pages ? 'disabled' : 'onclick="setUserPage(' + (p.page + 1) + ')"') + '>Next \u25B6</button>');
+  return '<div class="pagination">' + btns.join('') + '</div>';
+}
+
+function renderUserResults() {
+  var filtered = getFilteredUsers();
+  var p = paginateUsers(filtered);
+  var container = $('userResults');
+  if (!container) return;
+  if (userViewMode === 'card') {
+    container.innerHTML = renderCards(p) + renderPagination(p);
+  } else {
+    container.innerHTML = renderTable(p) + renderPagination(p);
+  }
+  var headerTitle = document.querySelector('.table-title');
+  if (headerTitle) {
+    headerTitle.innerHTML = '\uD83D\uDC65 Users <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.users.length + ')</span>';
+  }
+}
+
+function setUserFilter(el) {
+  var type = el.dataset.filterType;
+  var value = el.dataset.filterValue;
+  if (userFilters[type] === value) value = '';
+  userFilters[type] = value;
+  userPage = 1;
+  document.querySelectorAll('.pill[data-filter-type="' + type + '"]').forEach(function(p) {
+    p.classList.toggle('active', p.dataset.filterValue === userFilters[type]);
+  });
+  renderUserResults();
+}
+
+function setUserSort(key) {
+  if (userSort.key === key) {
+    userSort.dir = userSort.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    userSort.key = key;
+    userSort.dir = 'asc';
+  }
+  userPage = 1;
+  renderUserResults();
+}
+
+function setUserPage(page) {
+  userPage = page;
+  renderUserResults();
+}
+
+function toggleUserView(mode) {
+  userViewMode = mode;
+  document.querySelectorAll('.view-toggle button').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.view === mode);
+  });
+  renderUserResults();
+}
+
+function toggleUserStatus(userId) {
+  var u = DB.users.find(function(x) { return x.id === userId; });
+  if (!u) return;
+  if (u.status === 'suspended') {
+    u.status = 'verified';
+  } else {
+    u.status = 'suspended';
+  }
+  renderUserResults();
 }
 
 function filterDocuments() {
+  var q = ($('docSearch') ? $('docSearch').value : '').toLowerCase();
   var type = ($('docTypeFilter') ? $('docTypeFilter').value : '');
   var status = ($('docStatusFilter') ? $('docStatusFilter').value : '');
+  var uploader = ($('docUploaderFilter') ? $('docUploaderFilter').value : '');
+  var deal = ($('docDealFilter') ? $('docDealFilter').value : '');
+
   var filtered = DB.documents.filter(function(d) {
+    var uploaderName = d.uploadedBy === 'partner' ? 'Partner' : ((userMap[d.uploadedBy] || {}).name || '');
+    if (q && !d.name.toLowerCase().includes(q) && !d.type.toLowerCase().includes(q) && !uploaderName.toLowerCase().includes(q)) return false;
     if (type && d.type !== type) return false;
     if (status === 'verified' && !d.verified) return false;
     if (status === 'pending' && d.verified) return false;
+    if (status === 'expiring' && (!d.expiresAt || !expiresSoon(d.expiresAt))) return false;
+    if (uploader && d.uploadedBy !== uploader) return false;
+    if (deal && d.dealId !== deal) return false;
     return true;
   });
+
   var tbody = $('docTableBody');
   if (tbody) tbody.innerHTML = filtered.map(docRow).join('');
+
+  var countEl = $('docCount');
+  if (countEl) countEl.textContent = 'Showing ' + filtered.length + ' of ' + DB.documents.length;
+
+  var clearBtn = $('docClearBtn');
+  if (clearBtn) {
+    var hasFilters = q || type || status || uploader || deal;
+    clearBtn.style.display = hasFilters ? 'inline-flex' : 'none';
+  }
+}
+
+function clearDocFilters() {
+  ['docSearch','docTypeFilter','docStatusFilter','docUploaderFilter','docDealFilter'].forEach(function(id) {
+    var el = $(id);
+    if (el) el.value = '';
+  });
+  filterDocuments();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DOC DRAWER
+// ═══════════════════════════════════════════════════════════════
+
+function showDocDrawer(docId) {
+  var d = DB.documents.find(function(x) { return x.id === docId; });
+  if (!d) return;
+
+  var u = d.uploadedBy === 'partner' ? null : userMap[d.uploadedBy];
+  var uploaderName = u ? u.name : 'Partner';
+  var deal = d.dealId ? DB.deals.find(function(x) { return x.id === d.dealId; }) : null;
+  var isExpiring = d.expiresAt && expiresSoon(d.expiresAt);
+
+  var html = '<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">'
+    + '<div style="font-size:32px;">\uD83D\uDCC4</div>'
+    + '<div><div style="font-size:18px;font-weight:700;">' + d.name + '</div><div style="color:var(--text-secondary);font-size:13px;">' + d.type + ' \u00B7 ' + d.size + '</div></div></div>'
+
+    + '<div class="drawer-section"><div class="drawer-section-label">Uploader</div>'
+    + '<div style="display:flex;align-items:center;gap:10px;">'
+    + (u ? avatar(u.name, 36) : '<div style="font-size:24px;">\uD83E\uDD1D</div>')
+    + '<div><div style="font-weight:600;">' + uploaderName + '</div>'
+    + (u ? '<div style="font-size:12px;color:var(--text-secondary);">' + u.email + '</div>' : '')
+    + '</div></div></div>'
+
+    + '<div class="drawer-section"><div class="drawer-section-label">Verification</div>'
+    + '<div style="display:flex;align-items:center;gap:10px;">'
+    + (d.verified ? '<span class="badge badge-green" style="font-size:13px;padding:4px 12px;">\u2705 Verified</span>' : '<span class="badge badge-yellow" style="font-size:13px;padding:4px 12px;">\u23F3 Pending</span>')
+    + (d.verified ? '' : '<button class="btn btn-sm btn-primary" onclick="verifyDoc(\'' + d.id + '\')">Verify Now</button>')
+    + '</div></div>'
+
+    + '<div class="drawer-section"><div class="drawer-section-label">Expiry</div>'
+    + '<div style="font-size:13px;' + (isExpiring ? 'color:var(--red);font-weight:600;' : '') + '">'
+    + (d.expiresAt ? d.expiresAt + (isExpiring ? ' \u2014 <span style="color:var(--red);">Expiring within 30 days</span>' : '') : '<span style="color:var(--text-muted);">No expiry date</span>')
+    + '</div></div>';
+
+  if (deal) {
+    var pair = deal.pair.map(function(pid) { return (userMap[pid] || {}).name || pid; }).join(' + ');
+    html += '<div class="drawer-section"><div class="drawer-section-label">Linked Deal</div>'
+      + '<div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="closeDrawer();setTimeout(function(){showDealModal(\'' + d.dealId + '\')},300)">'
+      + '<span style="font-size:18px;">\uD83D\uDCCB</span>'
+      + '<div><div style="font-weight:600;">' + d.dealId.toUpperCase() + '</div><div style="font-size:12px;color:var(--text-secondary);">' + pair + ' \u00B7 ' + DB.stageLabels[deal.stage] + '</div></div>'
+      + '<span style="margin-left:auto;color:var(--accent);font-size:12px;">View Deal \u2192</span></div></div>';
+  }
+
+  html += '<div style="display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">'
+    + '<button class="btn btn-sm btn-primary" onclick="showToast(\'Downloading ' + d.name + '\',\'\uD83D\uDCE5\')">Download</button>'
+    + (d.verified ? '<button class="btn btn-sm btn-secondary" onclick="unverifyDoc(\'' + d.id + '\')">Mark Unverified</button>' : '')
+    + '</div>';
+
+  openDrawer(d.name, html);
+}
+
+function verifyDoc(docId) {
+  var d = DB.documents.find(function(x) { return x.id === docId; });
+  if (d) { d.verified = true; showToast(d.name + ' verified', '\u2705'); logAudit('Document verified', docId + ' \u2014 ' + d.name, 'users'); }
+  closeDrawer();
+  filterDocuments();
+}
+
+function unverifyDoc(docId) {
+  var d = DB.documents.find(function(x) { return x.id === docId; });
+  if (d) { d.verified = false; showToast(d.name + ' marked unverified', '\u26D4'); logAudit('Document unverified', docId + ' \u2014 ' + d.name, 'users'); }
+  closeDrawer();
+  filterDocuments();
 }
 
 // ═══════════════════════════════════════════════════════════════
