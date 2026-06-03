@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestie — Admin Dashboard v2</title>
+<style>
+:root {
+  --bg-page: #FAF8F5;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #F5F0EB;
+  --bg-hover: #F0EAE3;
+  --bg-active: #EBE3DA;
+  --bg-input: #FFFFFF;
+  --accent: #C4735B;
+  --accent-hover: #B0604A;
+  --accent-light: rgba(196, 115, 91, 0.1);
+  --accent-glow: rgba(196, 115, 91, 0.18);
+  --text-primary: #2D2D2D;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-on-accent: #FFFFFF;
+  --border: #E5DDD3;
+  --border-light: #F0EBE3;
+  --green: #4CAF50;
+  --green-bg: rgba(76, 175, 80, 0.1);
+  --red: #E53935;
+  --red-bg: rgba(229, 57, 53, 0.1);
+  --yellow: #E6A817;
+  --yellow-bg: rgba(230, 168, 23, 0.1);
+  --blue: #42A5F5;
+  --blue-bg: rgba(66, 165, 245, 0.1);
+  --purple: #AB47BC;
+  --purple-bg: rgba(171, 71, 188, 0.1);
+  --shadow: 0 1px 3px rgba(45,45,45,0.06), 0 1px 2px rgba(45,45,45,0.04);
+  --shadow-md: 0 4px 12px rgba(45,45,45,0.08);
+  --shadow-lg: 0 10px 30px rgba(45,45,45,0.12);
+  --radius: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --sidebar-width: 220px;
+  --header-height: 60px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  display: flex;
+  overflow: hidden;
+}
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-logo {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  min-height: var(--header-height);
+}
+.sidebar-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-on-accent); font-weight: 800; font-size: 14px;
+}
+.sidebar-logo-text {
+  font-size: 15px; font-weight: 700; color: var(--text-primary);
+}
+.sidebar-logo-text span { color: var(--accent); }
+.nav-section { padding: 12px 0 4px; }
+.nav-section-label {
+  padding: 4px 18px 6px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-muted);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 18px;
+  margin: 1px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 600;
+}
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-notif {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.header {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+.hamburger {
+  display: none;
+  background: none; border: none;
+  font-size: 20px; cursor: pointer;
+  padding: 4px; color: var(--text-secondary);
+}
+.header-search { flex: 1; max-width: 360px; position: relative; }
+.header-search input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.header-search input:focus { border-color: var(--accent); }
+.header-search .search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 14px;
+}
+.header-actions {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: auto;
+}
+.header-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  color: var(--text-secondary);
+  position: relative;
+  transition: all 0.15s;
+}
+.header-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.header-btn .dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red);
+  border: 2px solid var(--bg-card);
+}
+.admin-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px;
+  cursor: pointer;
+}
+.view-container { flex: 1; overflow-y: auto; padding: 24px; }
+.alert-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.alert-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.alert-pill:hover { opacity: 0.85; }
+.alert-pill.red { background: var(--red-bg); color: var(--red); }
+.alert-pill.yellow { background: var(--yellow-bg); color: #8B6914; }
+.alert-pill.green { background: var(--green-bg); color: var(--green); }
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.kpi-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.kpi-value { font-size: 26px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+.kpi-value .kpi-unit { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+.kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.kpi-sub .trend-up { color: var(--green); }
+.kpi-sub .trend-down { color: var(--red); }
+.widget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+.widget-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.widget-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+.widget-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.widget-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.widget-icon { font-size: 18px; }
+.widget-stats { display: flex; gap: 16px; }
+.widget-stat-value { font-size: 20px; font-weight: 800; }
+.widget-stat-label { font-size: 11px; color: var(--text-muted); }
+.widget-alert { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 6px; }
+.table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.table-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.table-title { font-size: 14px; font-weight: 700; }
+.table-actions { display: flex; gap: 8px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border);
+}
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-light); }
+.data-table tbody tr:hover td { background: var(--bg-hover); cursor: pointer; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-yellow { background: var(--yellow-bg); color: #8B6914; }
+.badge-blue { background: var(--blue-bg); color: #1565C0; }
+.badge-purple { background: var(--purple-bg); color: #7B1FA2; }
+.badge-gray { background: var(--bg-hover); color: var(--text-muted); }
+.badge-accent { background: var(--accent-light); color: var(--accent); }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: var(--text-on-accent); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg-hover); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover { background: #C62828; }
+.filter-bar {
+  display: flex; gap: 10px; align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.filter-bar input, .filter-bar select {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  background: var(--bg-input);
+  outline: none;
+  color: var(--text-primary);
+}
+.filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); }
+.filter-bar input { flex: 1; min-width: 160px; }
+.kanban { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; min-height: 400px; }
+.kanban-col {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+.kanban-col-header {
+  padding: 10px 12px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kanban-col-count {
+  background: var(--bg-sidebar);
+  padding: 1px 7px; border-radius: 8px;
+  font-size: 11px;
+}
+.kanban-body { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.kanban-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kanban-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+.kanban-card.stagnant { border-left: 3px solid var(--red); }
+.kanban-card-pair { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.kanban-card-days { font-size: 11px; color: var(--text-muted); }
+.kanban-card-badges { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.drawer-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(45,45,45,0.3);
+  z-index: 200;
+  opacity: 0; visibility: hidden;
+  transition: all 0.2s;
+}
+.drawer-overlay.open { opacity: 1; visibility: visible; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 480px; max-width: 100vw;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.drawer.open { transform: translateX(0); }
+.drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.drawer-title { font-size: 16px; font-weight: 700; }
+.drawer-close {
+  width: 32px; height: 32px;
+  border: none; background: none;
+  font-size: 20px; cursor: pointer;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 20px; }
+.drawer-section { margin-bottom: 20px; }
+.drawer-section-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.drawer-field { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+.drawer-field-label { color: var(--text-secondary); }
+.drawer-field-value { font-weight: 600; }
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(45,45,45,0.35);
+  z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: all 0.2s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 540px; max-width: 92vw;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-title { font-size: 16px; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px;
+  border: none; background: none;
+  font-size: 20px; cursor: pointer;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  display: flex; gap: 8px; justify-content: flex-end;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+.chat-view { display: flex; flex-direction: column; height: 100%; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.chat-bubble.left { align-self: flex-start; background: var(--bg-page); border: 1px solid var(--border); }
+.chat-bubble.right { align-self: flex-end; background: var(--accent-light); border: 1px solid rgba(196,115,91,0.2); }
+.chat-bubble .chat-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.chat-bubble.flagged { border-color: var(--red); background: var(--red-bg); }
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 400;
+  opacity: 0; transform: translateY(16px);
+  transition: all 0.25s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+@media (max-width: 1200px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .widget-grid { grid-template-columns: repeat(2, 1fr); }
+  .kanban { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); transition: transform 0.25s; z-index: 101; }
+  .sidebar.open { transform: translateX(0); }
+  .hamburger { display: block; }
+  .kanban { grid-template-columns: repeat(2, 1fr); }
+  .drawer { width: 100vw; }
+}
+@media (max-width: 640px) {
+  .kpi-row { grid-template-columns: 1fr; }
+  .widget-grid { grid-template-columns: 1fr; }
+  .kanban { grid-template-columns: 1fr; }
+  .view-container { padding: 16px; }
+  .header { padding: 0 16px; }
+  .header-search { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">V</div>
+    <div class="sidebar-logo-text"><span>Vestie</span> Admin</div>
+  </div>
+  <nav>
+    <div class="nav-item active" data-tab="overview">
+      <span class="nav-icon">📊</span> Overview
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">People</div>
+      <div class="nav-item" data-tab="users">
+        <span class="nav-icon">👥</span> Users
+      </div>
+      <div class="nav-item" data-tab="partners">
+        <span class="nav-icon">🤝</span> Partners
+      </div>
+      <div class="nav-item" data-tab="trust">
+        <span class="nav-icon">🛡️</span> Trust & Safety
+        <span class="nav-notif">1</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <div class="nav-item" data-tab="deals">
+        <span class="nav-icon">📋</span> Deals
+        <span class="nav-notif">2</span>
+      </div>
+      <div class="nav-item" data-tab="messages">
+        <span class="nav-icon">💬</span> Messages
+        <span class="nav-notif">1</span>
+      </div>
+      <div class="nav-item" data-tab="agreements">
+        <span class="nav-icon">📝</span> Agreements
+      </div>
+      <div class="nav-item" data-tab="listings">
+        <span class="nav-icon">🏠</span> Listings
+        <span class="nav-notif">3</span>
+      </div>
+      <div class="nav-item" data-tab="documents">
+        <span class="nav-icon">📄</span> Documents
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Finance & Admin</div>
+      <div class="nav-item" data-tab="billing">
+        <span class="nav-icon">💰</span> Billing
+      </div>
+      <div class="nav-item" data-tab="notifications">
+        <span class="nav-icon">🔔</span> Notifications
+      </div>
+      <div class="nav-item" data-tab="settings">
+        <span class="nav-icon">⚙️</span> Settings
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="header">
+    <button class="hamburger" id="hamburger">☰</button>
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="globalSearch" placeholder="Search users, deals, messages..." autocomplete="off">
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" title="Notifications">🔔<span class="dot"></span></button>
+      <button class="header-btn" title="Help">❓</button>
+      <div class="admin-avatar" title="Anna Chen — System Admin">AC</div>
+    </div>
+  </header>
+  <div class="view-container" id="viewContainer"></div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawerTitle">Details</div>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Modal</div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastText">Done</span>
+</div>
+
+<script>
+
+// ═══════════════════════════════════════════════════════════════
+//  MOCK DATA
+// ═══════════════════════════════════════════════════════════════
+
+const DB = {
+  stageLabels: ['Match', 'Financing', 'Agreement', 'Find Property', 'Offer', 'Settlement'],
+
+  users: [
+    { id:'u1', name:'Aisha Tanaka', email:'aisha.t@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$500k\u2013$750k', location:'Sydney', goal:'Live-in', timeline:'6\u201312mo', created:'2026-05-15', avatar:'AT', dealId:'d1', phone:'+61 411 111 111' },
+    { id:'u2', name:'Kenji Watanabe', email:'kenji.w@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$600k\u2013$800k', location:'Sydney', goal:'Invest', timeline:'6\u201312mo', created:'2026-05-16', avatar:'KW', dealId:'d1', phone:'+61 411 111 112' },
+    { id:'u3', name:'Emma Chen', email:'emma.c@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'verified', budget:'$400k\u2013$600k', location:'Melbourne', goal:'Live-in', timeline:'3\u20136mo', created:'2026-05-18', avatar:'EC', dealId:'d2', phone:'+61 411 111 113' },
+    { id:'u4', name:'Yuki Mori', email:'yuki.m@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$700k\u2013$900k', location:'Melbourne', goal:'Either', timeline:'6\u201312mo', created:'2026-05-19', avatar:'YM', dealId:'d2', phone:'+61 411 111 114' },
+    { id:'u5', name:"Liam O'Brien", email:'liam.o@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'pending', budget:'$500k\u2013$700k', location:'Brisbane', goal:'Live-in', timeline:'12mo+', created:'2026-05-22', avatar:'LO', dealId:'d3', phone:'+61 411 111 115' },
+    { id:'u6', name:'Sakura Ito', email:'sakura.i@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$300k\u2013$500k', location:'Brisbane', goal:'Invest', timeline:'6\u201312mo', created:'2026-05-22', avatar:'SI', dealId:'d3', phone:'+61 411 111 116' },
+    { id:'u7', name:'James Miller', email:'james.m@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'verified', budget:'$600k\u2013$800k', location:'Sydney', goal:'Either', timeline:'3\u20136mo', created:'2026-05-23', avatar:'JM', dealId:'d4', phone:'+61 411 111 117' },
+    { id:'u8', name:'Ryo Yamamoto', email:'ryo.y@vestie.com', role:'local_professional', roleLabel:'Local Professional', status:'verified', budget:'$800k\u2013$1.2M', location:'Sydney', goal:'Invest', timeline:'3\u20136mo', created:'2026-05-24', avatar:'RY', dealId:'d4', phone:'+61 411 111 118' },
+    { id:'u9', name:'Mei Lin', email:'mei.l@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'suspended', budget:'$400k\u2013$600k', location:'Melbourne', goal:'Live-in', timeline:'6\u201312mo', created:'2026-05-25', avatar:'ML', dealId:null, phone:'+61 411 111 119' },
+    { id:'u10', name:'Hiro Nakamura', email:'hiro.n@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$450k\u2013$650k', location:'Melbourne', goal:'Live-in', timeline:'3\u20136mo', created:'2026-05-26', avatar:'HN', dealId:'d5', phone:'+61 411 111 120' },
+    { id:'u11', name:'Sophia Patel', email:'sophia.p@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'verified', budget:'$500k\u2013$700k', location:'Brisbane', goal:'Either', timeline:'6\u201312mo', created:'2026-05-27', avatar:'SP', dealId:'d5', phone:'+61 411 111 121' },
+    { id:'u12', name:'Daiki Sato', email:'daiki.s@vestie.com', role:'local_professional', roleLabel:'Local Professional', status:'verified', budget:'$750k\u2013$1M', location:'Sydney', goal:'Invest', timeline:'12mo+', created:'2026-05-28', avatar:'DS', dealId:'d6', phone:'+61 411 111 122' },
+    { id:'u13', name:'Nina Johansson', email:'nina.j@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'pending', budget:'$400k\u2013$600k', location:'Sydney', goal:'Live-in', timeline:'3\u20136mo', created:'2026-05-29', avatar:'NJ', dealId:'d6', phone:'+61 411 111 123' },
+    { id:'u14', name:'Taro Fujimoto', email:'taro.f@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$350k\u2013$550k', location:'Melbourne', goal:'Live-in', timeline:'6\u201312mo', created:'2026-05-30', avatar:'TF', dealId:'d7', phone:'+61 411 111 124' },
+    { id:'u15', name:'Zara Ahmed', email:'zara.a@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'verified', budget:'$500k\u2013$750k', location:'Melbourne', goal:'Either', timeline:'6\u201312mo', created:'2026-05-31', avatar:'ZA', dealId:'d7', phone:'+61 411 111 125' },
+    { id:'u16', name:'Kaito Yoshida', email:'kaito.y@vestie.com', role:'local_professional', roleLabel:'Local Professional', status:'verified', budget:'$800k\u2013$1.1M', location:'Brisbane', goal:'Invest', timeline:'12mo+', created:'2026-06-01', avatar:'KY', dealId:'d8', phone:'+61 411 111 126' },
+    { id:'u17', name:'Olivia Brown', email:'olivia.b@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'verified', budget:'$450k\u2013$650k', location:'Brisbane', goal:'Live-in', timeline:'3\u20136mo', created:'2026-06-01', avatar:'OB', dealId:'d9', phone:'+61 411 111 127' },
+    { id:'u18', name:'Hana Suzuki', email:'hana.s@vestie.com', role:'local_student', roleLabel:'Local Student', status:'verified', budget:'$300k\u2013$450k', location:'Sydney', goal:'Invest', timeline:'6\u201312mo', created:'2026-06-02', avatar:'HS', dealId:'d10', phone:'+61 411 111 128' },
+    { id:'u19', name:'Marcus Kim', email:'marcus.k@vestie.com', role:'foreign_student', roleLabel:'Foreign Student', status:'active', budget:'$550k\u2013$750k', location:'Sydney', goal:'Either', timeline:'6\u201312mo', created:'2026-06-02', avatar:'MK', dealId:null, phone:'+61 411 111 129' },
+    { id:'u20', name:'Akiko Nishimura', email:'akiko.n@vestie.com', role:'local_professional', roleLabel:'Local Professional', status:'active', budget:'$700k\u2013$950k', location:'Melbourne', goal:'Invest', timeline:'12mo+', created:'2026-06-03', avatar:'AN', dealId:null, phone:'+61 411 111 130' },
+  ],
+
+  deals: [
+    { id:'d1', stage:0, daysInStage:3, pair:['u1','u2'], stagnant:false, partners:['Financial Planner','Insurance Broker'] },
+    { id:'d2', stage:0, daysInStage:8, pair:['u3','u4'], stagnant:true, partners:['Mortgage Broker'] },
+    { id:'d3', stage:1, daysInStage:5, pair:['u5','u6'], stagnant:false, partners:['Mortgage Broker','Property Valuer'] },
+    { id:'d4', stage:1, daysInStage:2, pair:['u7','u8'], stagnant:false, partners:['Financial Planner'] },
+    { id:'d5', stage:2, daysInStage:4, pair:['u10','u11'], stagnant:false, partners:['Property Lawyer','Tax Specialist'] },
+    { id:'d6', stage:2, daysInStage:12, pair:['u12','u13'], stagnant:true, partners:['Property Lawyer'] },
+    { id:'d7', stage:3, daysInStage:6, pair:['u14','u15'], stagnant:false, partners:['Real Estate Agent','Building Inspector'] },
+    { id:'d8', stage:3, daysInStage:3, pair:['u16','u9'], stagnant:false, partners:['Real Estate Agent'] },
+    { id:'d9', stage:4, daysInStage:7, pair:['u17','u18'], stagnant:false, partners:['Settlement Agent','Mortgage Broker'] },
+    { id:'d10', stage:4, daysInStage:2, pair:['u18','u11'], stagnant:false, partners:['Licensed Conveyancer'] },
+    { id:'d11', stage:5, daysInStage:1, pair:['u19','u20'], stagnant:false, partners:['Settlement Agent','Property Lawyer'] },
+  ],
+
+  conversations: [
+    { id:'c1', dealId:'d1', participants:['u1','u2'], flagged:false, adminReviewed:true,
+      messages:[
+        { from:'u1', text:'Hey Kenji! Excited to start this journey together.', ts:'2026-06-01 09:15' },
+        { from:'u2', text:'Hey Aisha! Same here. Have you looked at the financing options yet?', ts:'2026-06-01 10:30' },
+        { from:'u1', text:'Not yet, I was hoping we could review them together this weekend?', ts:'2026-06-01 11:00' },
+        { from:'u2', text:'Sounds good! Saturday afternoon work for you?', ts:'2026-06-01 14:20' },
+      ]},
+    { id:'c2', dealId:'d2', participants:['u3','u4'], flagged:true, adminReviewed:false,
+      messages:[
+        { from:'u3', text:'Hey Yuki, just checking in on the budget discussion.', ts:'2026-05-30 10:00' },
+        { from:'u4', text:"I told you already, I'm not comfortable with your numbers.", ts:'2026-05-30 11:15' },
+        { from:'u3', text:'Can we talk about it? I think there is a middle ground.', ts:'2026-05-31 09:00' },
+        { from:'u4', text:"Stop pushing. I said what I said.", ts:'2026-05-31 09:30', flagged:true },
+        { from:'u3', text:"That's not fair, Yuki. We are supposed to be partners.", ts:'2026-05-31 10:00' },
+        { from:'u4', text:'Whatever. Talk to Anna if you have a problem.', ts:'2026-05-31 10:05' },
+      ]},
+    { id:'c3', dealId:'d3', participants:['u5','u6'], flagged:false, adminReviewed:false,
+      messages:[
+        { from:'u5', text:'Hi Sakura! I am Liam, looks like we matched!', ts:'2026-06-02 08:00' },
+        { from:'u6', text:'Hi Liam! Yes, excited! Your budget range looks close to mine.', ts:'2026-06-02 09:30' },
+        { from:'u5', text:'Great! Want to grab coffee this week and discuss?', ts:'2026-06-02 10:00' },
+        { from:'u6', text:'Sure! How about Thursday at 3pm?', ts:'2026-06-02 11:20' },
+      ]},
+    { id:'c4', dealId:'d5', participants:['u10','u11'], flagged:false, adminReviewed:true,
+      messages:[
+        { from:'u10', text:'Hi Sophia! We need to review the co-ownership agreement.', ts:'2026-05-28 14:00' },
+        { from:'u11', text:"Yes, I've received the draft from the lawyer. Looks good overall.", ts:'2026-05-28 15:30' },
+        { from:'u10', text:'Great! One thing I wanted to discuss \u2014 the exit clause.', ts:'2026-05-29 09:00' },
+      ]},
+    { id:'c5', dealId:'d6', participants:['u12','u13'], flagged:false, adminReviewed:false,
+      messages:[
+        { from:'u12', text:'Nina, have you heard back from the lawyer?', ts:'2026-05-25 11:00' },
+        { from:'u13', text:'Not yet. I sent a follow-up yesterday.', ts:'2026-05-26 09:00' },
+        { from:'u12', text:'This is taking too long. Should we escalate to Anna?', ts:'2026-05-28 10:00' },
+      ]},
+    { id:'c6', dealId:'d7', participants:['u14','u15'], flagged:false, adminReviewed:false,
+      messages:[
+        { from:'u14', text:'Zara! We found a property! 45 Park Ave, check it out.', ts:'2026-06-01 09:00' },
+        { from:'u15', text:'Oh wow, that looks perfect! Let us schedule a viewing.', ts:'2026-06-01 10:15' },
+        { from:'u14', text:'Done! Saturday 11am. The agent will meet us there.', ts:'2026-06-01 11:30' },
+      ]},
+  ],
+
+  agreements: [
+    { id:'a1', dealId:'d1', status:'not_started', envelopeId:null, signedBy:[], sentAt:null, completedAt:null },
+    { id:'a2', dealId:'d2', status:'not_started', envelopeId:null, signedBy:[], sentAt:null, completedAt:null },
+    { id:'a3', dealId:'d3', status:'not_started', envelopeId:null, signedBy:[], sentAt:null, completedAt:null },
+    { id:'a4', dealId:'d4', status:'not_started', envelopeId:null, signedBy:[], sentAt:null, completedAt:null },
+    { id:'a5', dealId:'d5', status:'sent', envelopeId:'ENV-D5F3A2', signedBy:['u10'], sentAt:'2026-05-30 10:00', completedAt:null },
+    { id:'a6', dealId:'d6', status:'sent', envelopeId:'ENV-B7C1E9', signedBy:[], sentAt:'2026-05-28 14:00', completedAt:null },
+    { id:'a7', dealId:'d7', status:'draft', envelopeId:null, signedBy:[], sentAt:null, completedAt:null },
+    { id:'a8', dealId:'d8', status:'complete', envelopeId:'ENV-9A2D4F', signedBy:['u16','u9'], sentAt:'2026-05-20 09:00', completedAt:'2026-05-22 15:30' },
+  ],
+
+  listings: [
+    { id:'l1', brokerName:'Michael Chen', company:'Chen Realty', address:'12 Smith St, Surry Hills NSW 2010', type:'Apartment', bedrooms:2, bathrooms:1, price:750000, status:'pending', photos:4, submittedAt:'2026-05-28', reason:null },
+    { id:'l2', brokerName:'Sarah Williams', company:'Williams Property Group', address:'45 Park Ave, Burwood NSW 2134', type:'Townhouse', bedrooms:3, bathrooms:2, price:950000, status:'pending', photos:6, submittedAt:'2026-05-30', reason:null },
+    { id:'l3', brokerName:'Takashi Mori', company:'Mori Realty', address:'78 Oak Lane, Chatswood NSW 2067', type:'House', bedrooms:4, bathrooms:2, price:1200000, status:'pending', photos:3, submittedAt:'2026-06-01', reason:null },
+    { id:'l4', brokerName:'Emma White', company:'White & Co', address:'90 Beach Rd, Bondi NSW 2026', type:'Apartment', bedrooms:2, bathrooms:1, price:820000, status:'live', photos:8, submittedAt:'2026-05-25', reason:null },
+    { id:'l5', brokerName:'James Kim', company:'Kim Property Advisors', address:'15 Station St, Hornsby NSW 2077', type:'Duplex', bedrooms:3, bathrooms:2, price:680000, status:'rejected', photos:2, submittedAt:'2026-05-20', reason:'Photos too low quality, please upload high-res images' },
+    { id:'l6', brokerName:'Lisa Chen', company:'Chen Realty', address:'8 Harbour Rd, Darling Harbour NSW 2000', type:'Apartment', bedrooms:2, bathrooms:1, price:1100000, status:'live', photos:10, submittedAt:'2026-05-22', reason:null },
+  ],
+
+  documents: [
+    { id:'doc1', dealId:'d1', type:'ID Verification', name:'aisha_passport.pdf', uploadedBy:'u1', verified:true, expiresAt:'2027-05-15', size:'2.4 MB' },
+    { id:'doc2', dealId:'d1', type:'ID Verification', name:'kenji_drivers_license.pdf', uploadedBy:'u2', verified:true, expiresAt:'2028-03-22', size:'1.8 MB' },
+    { id:'doc3', dealId:'d2', type:'Visa', name:'emma_student_visa.pdf', uploadedBy:'u3', verified:true, expiresAt:'2026-09-30', size:'3.1 MB' },
+    { id:'doc4', dealId:'d2', type:'ID Verification', name:'yuki_id_card.pdf', uploadedBy:'u4', verified:false, expiresAt:null, size:'1.2 MB' },
+    { id:'doc5', dealId:'d3', type:'Bank Statement', name:'liam_bank_statement_q2.pdf', uploadedBy:'u5', verified:true, expiresAt:null, size:'4.5 MB' },
+    { id:'doc6', dealId:'d3', type:'ID Verification', name:'sakura_my_number_card.pdf', uploadedBy:'u6', verified:true, expiresAt:'2029-01-10', size:'0.9 MB' },
+    { id:'doc7', dealId:'d4', type:'Bank Statement', name:'james_commbank_statement.pdf', uploadedBy:'u7', verified:true, expiresAt:null, size:'5.2 MB' },
+    { id:'doc8', dealId:'d4', type:'Tax Return', name:'ryo_tax_return_2025.pdf', uploadedBy:'u8', verified:true, expiresAt:null, size:'6.8 MB' },
+    { id:'doc9', dealId:'d5', type:'Income Proof', name:'hiro_pay_slips.pdf', uploadedBy:'u10', verified:true, expiresAt:null, size:'3.4 MB' },
+    { id:'doc10', dealId:'d5', type:'ID Verification', name:'sophia_passport.pdf', uploadedBy:'u11', verified:false, expiresAt:null, size:'2.1 MB' },
+    { id:'doc11', dealId:'d7', type:'Inspection Report', name:'building_inspection_45_park.pdf', uploadedBy:'partner', verified:true, expiresAt:null, size:'8.2 MB' },
+    { id:'doc12', dealId:'d8', type:'Contract', name:'purchase_contract_90_beach_rd.pdf', uploadedBy:'partner', verified:true, expiresAt:null, size:'12.5 MB' },
+    { id:'doc13', dealId:'d9', type:'Settlement', name:'settlement_statement_d9.pdf', uploadedBy:'partner', verified:true, expiresAt:null, size:'4.7 MB' },
+    { id:'doc14', dealId:'d10', type:'ID Verification', name:'marcus_visa_document.pdf', uploadedBy:'u19', verified:false, expiresAt:null, size:'1.5 MB' },
+    { id:'doc15', dealId:'d6', type:'Agreement', name:'co_ownership_agreement_draft.pdf', uploadedBy:'partner', verified:false, expiresAt:null, size:'7.3 MB' },
+  ],
+
+  partners: [
+    { id:'p1', name:'Alex Thompson', company:'Horizon Finance', role:'Mortgage Broker', subscription:'active', deals:3, totalFees:5400, phone:'+61 400 111 001', email:'alex@horizonfinance.com' },
+    { id:'p2', name:'Yuko Tanaka', company:'Tanaka Legal', role:'Property Lawyer', subscription:'active', deals:2, totalFees:1800, phone:'+61 400 111 002', email:'yuko@tanakalegal.com' },
+    { id:'p3', name:'David Chen', company:'Chen & Associates', role:'Building Inspector', subscription:'active', deals:3, totalFees:900, phone:'+61 400 111 003', email:'david@chenassociates.com' },
+    { id:'p4', name:'Maya Singh', company:'Singh Tax Advisory', role:'Tax Specialist', subscription:'premium', deals:2, totalFees:1200, phone:'+61 400 111 004', email:'maya@singhtax.com' },
+    { id:'p5', name:'Jack Wilson', company:'Wilson Property Group', role:'Real Estate Agent', subscription:'active', deals:4, totalFees:3200, phone:'+61 400 111 005', email:'jack@wilsonproperty.com' },
+    { id:'p6', name:'Naoki Sato', company:'Sato Valuations', role:'Property Valuer', subscription:'expiring', deals:1, totalFees:450, phone:'+61 400 111 006', email:'naoki@satovaluations.com' },
+    { id:'p7', name:'Rachel Kim', company:'Kim Settlement Services', role:'Settlement Agent', subscription:'active', deals:2, totalFees:1600, phone:'+61 400 111 007', email:'rachel@kimsettlements.com' },
+    { id:'p8', name:'Takeshi Fuji', company:'Fuji Insurance', role:'Insurance Broker', subscription:'suspended', deals:0, totalFees:0, phone:'+61 400 111 008', email:'takeshi@fujiinsure.com' },
+  ],
+
+  billing: {
+    downloads: 14350,
+    active: 420,
+    compliance: 9410,
+    earned: 24500,
+    outstanding: 12300,
+    reverse: 1170,
+    freeUsers: 8990,
+    premiumUsers: 420,
+    mrr: 4158,
+    pendingSplits: 2,
+    splitInvoices: [
+      { pair:'Pair-601 (Emma/Oliver)', service:'Co-ownership Agreement Setup', total:600, shareA:300, shareB:300, paidA:true, paidB:false },
+      { pair:'Pair-602 (Liam/Sophia)', service:'Property Valuation Fee', total:400, shareA:200, shareB:200, paidA:false, paidB:false },
+      { pair:'Pair-603 (Noah/Isabella)', service:'Legal Document Review', total:500, shareA:250, shareB:250, paidA:true, paidB:true },
+    ],
+    referrals: [
+      { ref:'INV-2026-0001', type:'Partner_Commission', pair:'Pair-493 (John/Sam)', partner:'Apex Tax Specialists', milestone:'Report Delivered', stagnant:false, days:0, value:120, reverse:18, paid:false },
+      { ref:'INV-2026-0002', type:'Partner_Commission', pair:'Pair-512 (Anna/Lucy)', partner:'Zenith Home Loans', milestone:'Pre-Approval Issued', stagnant:true, days:9, value:1800, reverse:270, paid:false },
+      { ref:'INV-2026-0003', type:'Partner_Commission', pair:'Pair-519 (Mark/Dave)', partner:'Vanguard Conveyancing', milestone:'Contract Exchanged', stagnant:false, days:0, value:300, reverse:45, paid:true },
+    ]
+  },
+
+  notifications: [
+    { id:'n1', template:'Welcome \u2014 Quick Path', to:'aisha.t@vestie.com', subject:'Welcome to Vestie, Aisha!', sentAt:'2026-05-15 09:32', status:'delivered', dealId:null },
+    { id:'n2', template:'Welcome \u2014 Detail Path', to:'kenji.w@vestie.com', subject:"You're all set, Kenji!", sentAt:'2026-05-16 10:15', status:'delivered', dealId:null },
+    { id:'n3', template:'Match Confirmed', to:'emma.c@vestie.com', subject:"You've matched with Yuki!", sentAt:'2026-05-19 14:00', status:'delivered', dealId:'d2' },
+    { id:'n4', template:'Match Confirmed', to:'yuki.m@vestie.com', subject:"You've matched with Emma!", sentAt:'2026-05-19 14:00', status:'delivered', dealId:'d2' },
+    { id:'n5', template:'Signup Incomplete', to:'liam.o@vestie.com', subject:'Finish setting up your Vestie profile', sentAt:'2026-05-23 08:00', status:'delivered', dealId:null },
+    { id:'n6', template:'Support Ticket Received', to:'zara.a@vestie.com', subject:'We received your ticket (VST-1001)', sentAt:'2026-05-25 16:45', status:'delivered', dealId:null },
+    { id:'n7', template:'Support Ticket \u2014 New', to:'anna@vestie.com', subject:'[Vestie Support] New ticket: Payment issue', sentAt:'2026-05-25 16:45', status:'delivered', dealId:null },
+    { id:'n8', template:'Magic Link \u2014 Partner', to:'alex@horizonfinance.com', subject:'Vestie \u2014 Document request for Deal D4', sentAt:'2026-05-26 11:00', status:'delivered', dealId:'d4' },
+    { id:'n9', template:'Broker \u2014 Listing Approved', to:'michael@chenrealty.com', subject:'Your listing is live on Vestie!', sentAt:'2026-05-22 09:00', status:'delivered', dealId:null },
+    { id:'n10', template:'Broker \u2014 Listing Rejected', to:'james@kimproperty.com', subject:'Your listing needs changes', sentAt:'2026-05-21 14:00', status:'delivered', dealId:null },
+    { id:'n11', template:'Finance Ready', to:'hiro.n@vestie.com', subject:"You're both financially ready!", sentAt:'2026-05-28 11:00', status:'delivered', dealId:'d5' },
+    { id:'n12', template:'Finance Ready', to:'sophia.p@vestie.com', subject:"You're both financially ready!", sentAt:'2026-05-28 11:00', status:'delivered', dealId:'d5' },
+    { id:'n13', template:'Offer Confirmed', to:'taro.f@vestie.com', subject:'Your offer has been confirmed', sentAt:'2026-06-01 15:00', status:'delivered', dealId:'d7' },
+    { id:'n14', template:'Settlement Complete', to:'zara.a@vestie.com', subject:"Congratulations \u2014 you're co-owners!", sentAt:'2026-05-22 16:00', status:'delivered', dealId:'d8' },
+    { id:'n15', template:'Agent Invitation', to:'newbroker@example.com', subject:"You're invited to Vestie Agent Portal", sentAt:'2026-06-01 10:00', status:'delivered', dealId:null },
+    { id:'n16', template:'Stagnation Alert (Admin)', to:'anna@vestie.com', subject:'[Alert] Deal D2 is stuck on Match', sentAt:'2026-05-27 08:00', status:'delivered', dealId:'d2' },
+    { id:'n17', template:'Stagnation Alert (Admin)', to:'anna@vestie.com', subject:'[Alert] Deal D6 is stuck on Agreement', sentAt:'2026-06-01 08:00', status:'delivered', dealId:'d6' },
+    { id:'n18', template:'Welcome \u2014 Quick Path', to:'marcus.k@vestie.com', subject:'Welcome to Vestie, Marcus!', sentAt:'2026-06-02 14:00', status:'delivered', dealId:null },
+    { id:'n19', template:'Welcome \u2014 Detail Path', to:'akiko.n@vestie.com', subject:"You're all set, Akiko!", sentAt:'2026-06-03 09:00', status:'pending', dealId:null },
+    { id:'n20', template:'Signup Incomplete', to:'nina.j@vestie.com', subject:'Finish setting up your Vestie profile', sentAt:'2026-06-01 08:00', status:'failed', dealId:null },
+  ],
+
+  flags: [
+    { id:'f1', type:'message_report', reporterId:'u3', targetId:'u4', reason:'Inappropriate language in chat', description:'Yuki told Emma aggressive tone. Emma reported.', status:'open', createdAt:'2026-06-01 10:30', dealId:'d2' },
+    { id:'f2', type:'verification_failure', reporterId:'system', targetId:'u9', reason:'ID verification failed twice', description:'Mei Lin submitted passport image that failed OCR check on two attempts.', status:'open', createdAt:'2026-05-30 14:00', dealId:null },
+    { id:'f3', type:'suspicious_activity', reporterId:'system', targetId:'u19', reason:'Duplicate account detection', description:'Marcus Kim registered with similar profile to existing user (same IP range).', status:'reviewed', createdAt:'2026-06-02 11:00', dealId:null },
+    { id:'f4', type:'partner_report', reporterId:'u10', targetId:'p1', reason:'Partner not responding', description:'Hiro Nakamura reports Alex Thompson (Mortgage Broker) not returning calls for 5 days.', status:'open', createdAt:'2026-06-03 09:00', dealId:'d5' },
+  ],
+
+  audit: [
+    { id:'aud1', ts:'2026-06-03 09:32', admin:'Anna', action:'Listing approved', detail:'l1 \u2014 12 Smith St (Chen Realty)', module:'listings' },
+    { id:'aud2', ts:'2026-06-03 09:15', admin:'Anna', action:'User verified', detail:'u13 \u2014 Nina Johansson', module:'users' },
+    { id:'aud3', ts:'2026-06-03 08:45', admin:'Anna', action:'Stagnation alert reviewed', detail:'d2 \u2014 Emma/Yuki pair \u2014 sent follow-up email', module:'deals' },
+    { id:'aud4', ts:'2026-06-02 16:30', admin:'Anna', action:'Commission marked paid', detail:'INV-2026-0003 \u2014 Vanguard Conveyancing \u2014 $300', module:'billing' },
+    { id:'aud5', ts:'2026-06-02 14:00', admin:'Anna', action:'Flag reviewed', detail:'f3 \u2014 Marcus Kim duplicate account \u2014 cleared', module:'trust' },
+    { id:'aud6', ts:'2026-06-02 11:00', admin:'Anna', action:'Magic link re-issued', detail:'d6 \u2014 Property Lawyer \u2014 re-sent expired link', module:'deals' },
+    { id:'aud7', ts:'2026-06-02 09:20', admin:'Anna', action:'Content updated', detail:'FAQ page \u2014 added 3 new entries', module:'settings' },
+    { id:'aud8', ts:'2026-06-01 15:00', admin:'System', action:'Deal advanced', detail:'d7 \u2014 Moved to Offer stage', module:'deals' },
+    { id:'aud9', ts:'2026-06-01 14:30', admin:'Anna', action:'User suspended', detail:'u9 \u2014 Mei Lin \u2014 flagged for review', module:'users' },
+    { id:'aud10', ts:'2026-05-31 10:00', admin:'Anna', action:'Listing rejected', detail:'l5 \u2014 15 Station St \u2014 reason: photo quality', module:'listings' },
+    { id:'aud11', ts:'2026-05-30 09:00', admin:'System', action:'CSV exported', detail:'ledger_reconciliation_2026-05-30.csv', module:'billing' },
+    { id:'aud12', ts:'2026-05-29 16:00', admin:'Anna', action:'Support ticket closed', detail:'VST-1001 \u2014 Payment issue \u2014 resolved', module:'settings' },
+  ]
+};
+
+// User lookup map
+const userMap = {};
+DB.users.forEach(u => userMap[u.id] = u);
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let currentTab = 'overview';
+
+function $(id) { return document.getElementById(id); }
+
+function badge(status, labels) {
+  const map = labels || { verified:'green', active:'green', pending:'yellow', suspended:'red', open:'red', reviewed:'blue', closed:'gray', live:'green', rejected:'red', not_started:'gray', draft:'yellow', sent:'blue', complete:'green', delivered:'green', failed:'red', expiring:'yellow', premium:'purple' };
+  const cls = map[status] || 'gray';
+  const label = status.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+  return '<span class="badge badge-' + cls + '">' + label + '</span>';
+}
+
+function avatar(name, size) {
+  const initials = name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+  const s = size || 32;
+  return '<div style="width:' + s + 'px;height:' + s + 'px;border-radius:50%;background:var(--accent);color:var(--text-on-accent);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:' + Math.round(s*0.4) + 'px;flex-shrink:0;">' + initials + '</div>';
+}
+
+function showToast(msg, icon) {
+  const t = $('toast');
+  $('toastText').textContent = msg;
+  $('toastIcon').textContent = icon || '\u2705';
+  t.classList.add('show');
+  clearTimeout(t._hide);
+  t._hide = setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function logAudit(action, detail, module) {
+  DB.audit.unshift({
+    id:'aud' + Date.now(),
+    ts: new Date().toISOString().slice(0,16).replace('T',' '),
+    admin:'Anna', action: action, detail: detail, module: module
+  });
+}
+
+function openDrawer(title, html) {
+  $('drawerTitle').textContent = title;
+  $('drawerBody').innerHTML = html;
+  $('drawerOverlay').classList.add('open');
+  $('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  $('drawerOverlay').classList.remove('open');
+  $('drawer').classList.remove('open');
+}
+
+function openModal(title, bodyHtml, footerHtml) {
+  $('modalTitle').textContent = title;
+  $('modalBody').innerHTML = bodyHtml;
+  $('modalFooter').innerHTML = footerHtml || '';
+  $('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  $('modalOverlay').classList.remove('open');
+}
+
+function userRow(u) {
+  return '<tr onclick="showUserDrawer(\'' + u.id + '\')"'
+    + '<td style="display:flex;align-items:center;gap:8px;">' + avatar(u.name) + ' <span style="font-weight:600;">' + u.name + '</span></td>'
+    + '<td>' + u.email + '</td>'
+    + '<td>' + u.roleLabel + '</td>'
+    + '<td>' + badge(u.status) + '</td>'
+    + '<td>' + u.budget + '</td>'
+    + '<td>' + u.location + '</td>'
+    + '<td>' + u.created + '</td>'
+    + '</tr>';
+}
+
+function docRow(d) {
+  var uploader = d.uploadedBy === 'partner' ? 'Partner' : ((userMap[d.uploadedBy] || {}).name || d.uploadedBy);
+  return '<tr><td style="font-weight:600;">' + d.name + '</td><td>' + d.type + '</td><td>' + d.size + '</td><td>' + uploader + '</td><td>' + (d.verified ? badge('verified') : badge('pending')) + '</td><td style="color:' + (d.expiresAt ? 'var(--text-secondary)' : 'var(--text-muted)') + ';">' + (d.expiresAt || 'N/A') + '</td><td><button class="btn btn-sm btn-secondary" onclick="showToast(\'Preview: ' + d.name + '\',\'\uD83D\uDCC4\')">View</button></td></tr>';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TAB RENDERERS
+// ═══════════════════════════════════════════════════════════════
+var Tabs = {};
+
+Tabs.overview = function() {
+  var b = DB.billing;
+  var activeDeals = DB.deals.length;
+  var stagnantDeals = DB.deals.filter(function(d) { return d.stagnant; }).length;
+  var pendingListings = DB.listings.filter(function(l) { return l.status === 'pending'; }).length;
+  var flaggedMessages = DB.conversations.filter(function(c) { return c.flagged && !c.adminReviewed; }).length;
+  var openFlags = DB.flags.filter(function(f) { return f.status === 'open'; }).length;
+
+  var alerts = '';
+  if (stagnantDeals) alerts += '<div class="alert-pill red" onclick="switchTab(\'deals\')">\uD83D\uDD34 ' + stagnantDeals + ' Stagnant Deal' + (stagnantDeals > 1 ? 's' : '') + '</div>';
+  if (pendingListings) alerts += '<div class="alert-pill yellow" onclick="switchTab(\'listings\')">\uD83D\uDFE1 ' + pendingListings + ' Pending Approval' + (pendingListings > 1 ? 's' : '') + '</div>';
+  if (flaggedMessages) alerts += '<div class="alert-pill red" onclick="switchTab(\'messages\')">\uD83D\uDD34 ' + flaggedMessages + ' Flagged Message' + (flaggedMessages > 1 ? 's' : '') + '</div>';
+  if (openFlags) alerts += '<div class="alert-pill yellow" onclick="switchTab(\'trust\')">\uD83D\uDFE1 ' + openFlags + ' Open Flag' + (openFlags > 1 ? 's' : '') + '</div>';
+  if (!alerts) alerts = '<div class="alert-pill green">\u2705 All clear \u2014 no alerts</div>';
+
+  var newThisWeek = DB.users.filter(function(u) { return u.created >= '2026-06-01'; }).length;
+
+  return '<div class="alert-bar">' + alerts + '</div>'
+    + '<div class="kpi-row">'
+    + '<div class="kpi-card"><div class="kpi-label">Total Users</div><div class="kpi-value">' + DB.users.length + '<span class="kpi-unit"> / ' + b.compliance.toLocaleString() + ' verified</span></div><div class="kpi-sub"><span class="trend-up">+' + newThisWeek + '</span> this week</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Active Deals</div><div class="kpi-value">' + activeDeals + '</div><div class="kpi-sub">' + stagnantDeals + ' stagnant \u2014 <span class="trend-down">needs attention</span></div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value">$' + b.mrr.toLocaleString() + '<span class="kpi-unit"> MRR</span></div><div class="kpi-sub"><span class="trend-up">+$' + (b.premiumUsers * 9.9) + '</span> from ' + b.premiumUsers + ' premium</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Total Earnings</div><div class="kpi-value">$' + b.earned.toLocaleString() + '<span class="kpi-unit"> AUD</span></div><div class="kpi-sub">$' + b.outstanding.toLocaleString() + ' outstanding receivable</div></div>'
+    + '</div>'
+    + '<div class="widget-grid">'
+    + '<div class="widget-card" onclick="switchTab(\'users\')"><div class="widget-header"><span class="widget-title">\uD83D\uDC65 Users</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">' + DB.users.filter(function(u) { return u.status === 'verified' || u.status === 'active'; }).length + '</div><div class="widget-stat-label">Active</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.users.filter(function(u) { return u.status === 'pending'; }).length + '</div><div class="widget-stat-label">Pending</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.users.filter(function(u) { return u.status === 'suspended'; }).length + '</div><div class="widget-stat-label">Suspended</div></div></div></div>'
+    + '<div class="widget-card" onclick="switchTab(\'deals\')"><div class="widget-header"><span class="widget-title">\uD83D\uDCCB Deals</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">' + DB.deals.filter(function(d) { return d.stage < 2; }).length + '</div><div class="widget-stat-label">Early</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.deals.filter(function(d) { return d.stage >= 2 && d.stage < 4; }).length + '</div><div class="widget-stat-label">Mid</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.deals.filter(function(d) { return d.stage >= 4; }).length + '</div><div class="widget-stat-label">Late</div></div></div>'
+    + (stagnantDeals ? '<span class="widget-alert" style="background:var(--red-bg);color:var(--red);">\uD83D\uDD34 ' + stagnantDeals + ' stagnant</span>' : '') + '</div>'
+    + '<div class="widget-card" onclick="switchTab(\'messages\')"><div class="widget-header"><span class="widget-title">\uD83D\uDCAC Messages</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">' + DB.conversations.length + '</div><div class="widget-stat-label">Threads</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.conversations.filter(function(c) { return !c.adminReviewed; }).length + '</div><div class="widget-stat-label">Unreviewed</div></div></div>'
+    + (flaggedMessages ? '<span class="widget-alert" style="background:var(--red-bg);color:var(--red);">\uD83D\uDD34 ' + flaggedMessages + ' flagged</span>' : '') + '</div>'
+    + '<div class="widget-card" onclick="switchTab(\'listings\')"><div class="widget-header"><span class="widget-title">\uD83C\uDFE0 Listings</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">' + DB.listings.filter(function(l) { return l.status === 'live'; }).length + '</div><div class="widget-stat-label">Live</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + pendingListings + '</div><div class="widget-stat-label">Pending</div></div></div>'
+    + (pendingListings ? '<span class="widget-alert" style="background:var(--yellow-bg);color:#8B6914;">\uD83D\uDFE1 ' + pendingListings + ' to review</span>' : '') + '</div>'
+    + '<div class="widget-card" onclick="switchTab(\'billing\')"><div class="widget-header"><span class="widget-title">\uD83D\uDCB0 Billing</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">$' + b.earned.toLocaleString() + '</div><div class="widget-stat-label">Earned</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">$' + b.outstanding.toLocaleString() + '</div><div class="widget-stat-label">Outstanding</div></div></div></div>'
+    + '<div class="widget-card" onclick="switchTab(\'trust\')"><div class="widget-header"><span class="widget-title">\uD83D\uDEE1\uFE0F Trust & Safety</span><span class="widget-icon">\u2192</span></div>'
+    + '<div class="widget-stats"><div class="widget-stat"><div class="widget-stat-value">' + openFlags + '</div><div class="widget-stat-label">Open</div></div>'
+    + '<div class="widget-stat"><div class="widget-stat-value">' + DB.flags.length + '</div><div class="widget-stat-label">Total</div></div></div></div>'
+    + '</div>'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCCB Recent Activity</div><div class="table-actions"><button class="btn btn-sm btn-secondary" onclick="switchTab(\'deals\')">View All Deals</button></div></div>'
+    + '<table class="data-table"><thead><tr><th>Time</th><th>Action</th><th>Detail</th><th>Module</th></tr></thead><tbody>'
+    + DB.audit.slice(0, 8).map(function(a) {
+      var m = { users:'blue', deals:'green', billing:'yellow', listings:'purple', trust:'red', settings:'gray' };
+      return '<tr><td style="color:var(--text-muted);font-size:12px;">' + a.ts + '</td><td style="font-weight:600;">' + a.action + '</td><td>' + a.detail + '</td><td>' + badge(a.module, m) + '</td></tr>';
+    }).join('')
+    + '</tbody></table></div>';
+};
+
+Tabs.users = function() {
+  return '<div class="table-wrap">'
+    + '<div class="table-header"><div class="table-title">\uD83D\uDC65 All Users <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.users.length + ')</span></div><div class="table-actions"><button class="btn btn-sm btn-primary" onclick="showToast(\'Invite link copied\',\'\uD83D\uDCCB\')">+ Invite User</button><button class="btn btn-sm btn-secondary" onclick="showToast(\'CSV exported\',\'\uD83D\uDCC4\')">Export</button></div></div>'
+    + '<div class="filter-bar">'
+    + '<input type="text" id="userSearch" placeholder="Search by name or email..." oninput="filterUsers()">'
+    + '<select id="userRoleFilter" onchange="filterUsers()"><option value="">All Roles</option><option value="local_student">Local Student</option><option value="foreign_student">Foreign Student</option><option value="local_professional">Local Professional</option></select>'
+    + '<select id="userStatusFilter" onchange="filterUsers()"><option value="">All Status</option><option value="verified">Verified</option><option value="pending">Pending</option><option value="active">Active</option><option value="suspended">Suspended</option></select>'
+    + '</div>'
+    + '<table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Budget</th><th>Location</th><th>Joined</th></tr></thead>'
+    + '<tbody id="userTableBody">' + DB.users.map(userRow).join('') + '</tbody></table></div>';
+};
+
+Tabs.partners = function() {
+  var rows = DB.partners.map(function(p) {
+    var subBadge = p.subscription === 'premium' ? badge('premium', { premium:'purple', active:'green', expiring:'yellow', suspended:'red' }) : badge(p.subscription);
+    return '<tr><td style="display:flex;align-items:center;gap:8px;">' + avatar(p.name) + ' <span style="font-weight:600;">' + p.name + '</span></td><td>' + p.role + '</td><td>' + p.company + '</td><td>' + subBadge + '</td><td>' + p.deals + '</td><td style="font-weight:600;">$' + p.totalFees.toLocaleString() + '</td><td><button class="btn btn-sm btn-secondary" onclick="showToast(\'Email sent to ' + p.name + '\',\'\uD83D\uDCE7\')">Contact</button></td></tr>';
+  }).join('');
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83E\uDD1D Partner Directory <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.partners.length + ')</span></div><div class="table-actions"><button class="btn btn-sm btn-primary">+ Add Partner</button></div></div><table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Company</th><th>Subscription</th><th>Active Deals</th><th>Total Fees</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+};
+
+Tabs.trust = function() {
+  var typeLabels = { message_report:'Message Report', verification_failure:'Verification Failure', suspicious_activity:'Suspicious Activity', partner_report:'Partner Report' };
+  var rows = DB.flags.map(function(f) {
+    var targetName = (f.targetId && userMap[f.targetId]) ? userMap[f.targetId].name : f.targetId;
+    var reporterName = (f.reporterId && userMap[f.reporterId]) ? userMap[f.reporterId].name : 'System';
+    var btnHtml = f.status === 'open' ? '<button class="btn btn-sm btn-primary" onclick="resolveFlag(\'' + f.id + '\')">Resolve</button>' : '<span style="color:var(--text-muted);font-size:12px;">Closed</span>';
+    return '<tr><td style="font-weight:600;">' + (typeLabels[f.type] || f.type) + '</td><td>' + reporterName + '</td><td>' + targetName + '</td><td style="max-width:260px;white-space:normal;font-size:12px;color:var(--text-secondary);">' + f.reason + '</td><td>' + badge(f.status) + '</td><td>' + f.createdAt + '</td><td>' + btnHtml + '</td></tr>';
+  }).join('');
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDEE1\uFE0F Trust & Safety <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.flags.filter(function(f) { return f.status === 'open'; }).length + ' open)</span></div></div><table class="data-table"><thead><tr><th>Type</th><th>Reported By</th><th>Target</th><th>Reason</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+    + '<div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">'
+    + '<div class="kpi-card"><div class="kpi-label">Open Flags</div><div class="kpi-value" style="color:var(--red);">' + DB.flags.filter(function(f) { return f.status === 'open'; }).length + '</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Resolved</div><div class="kpi-value" style="color:var(--green);">' + DB.flags.filter(function(f) { return f.status === 'reviewed' || f.status === 'closed'; }).length + '</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Blocked Users</div><div class="kpi-value">' + DB.users.filter(function(u) { return u.status === 'suspended'; }).length + '</div></div></div>';
+};
+
+Tabs.deals = function() {
+  var cols = DB.stageLabels.map(function(label, si) {
+    var deals = DB.deals.filter(function(d) { return d.stage === si; });
+    var cards = deals.map(function(d) {
+      var u1 = userMap[d.pair[0]] || { name:'?' };
+      var u2 = userMap[d.pair[1]] || { name:'?' };
+      var stagnantClass = d.stagnant ? ' stagnant' : '';
+      var badges = d.partners.slice(0, 2).map(function(p) { return '<span class="badge badge-gray">' + p + '</span>'; }).join('');
+      return '<div class="kanban-card' + stagnantClass + '" onclick="showDealModal(\'' + d.id + '\')"><div class="kanban-card-pair">' + u1.name + ' + ' + u2.name + '</div><div class="kanban-card-days">' + d.daysInStage + 'd in stage</div><div class="kanban-card-badges">' + badges + '</div></div>';
+    }).join('') || '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px;">No deals</div>';
+    return '<div class="kanban-col"><div class="kanban-col-header"><span>' + label + '</span><span class="kanban-col-count">' + deals.length + '</span></div><div class="kanban-body">' + cards + '</div></div>';
+  }).join('');
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div style="font-size:16px;font-weight:700;">\uD83D\uDCCB Deal Pipeline</div><div style="display:flex;gap:8px;align-items:center;"><span style="font-size:12px;color:var(--text-muted);">' + DB.deals.length + ' active deals</span><button class="btn btn-sm btn-secondary" onclick="showToast(\'Pipeline refreshed\',\'\uD83D\uDD04\')">Refresh</button></div></div><div class="kanban">' + cols + '</div>';
+};
+
+Tabs.messages = function() {
+  var flagged = DB.conversations.filter(function(c) { return c.flagged; });
+  var threads = DB.conversations.map(function(c) {
+    var participants = c.participants.map(function(pid) { return (userMap[pid] || { name:pid }).name; }).join(' & ');
+    var lastMsg = c.messages[c.messages.length - 1];
+    var isFlagged = c.flagged;
+    var borderColor = isFlagged ? 'var(--red)' : 'var(--border)';
+    return '<div class="msg-thread" onclick="showConversation(\'' + c.id + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-card);border:1px solid ' + borderColor + ';border-radius:var(--radius);cursor:pointer;transition:all 0.15s;' + (isFlagged ? 'background:var(--red-bg);' : '') + '" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'' + borderColor + '\'">'
+    + '<div style="font-size:20px;">' + (isFlagged ? '\uD83D\uDD34' : '\uD83D\uDCAC') + '</div>'
+    + '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;">' + participants + '</div><div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + lastMsg.text + '</div></div>'
+    + '<div style="text-align:right;flex-shrink:0;"><div style="font-size:11px;color:var(--text-muted);">' + lastMsg.ts + '</div>' + (isFlagged ? '<span class="badge badge-red">Flagged</span>' : '') + '</div></div>';
+  }).join('');
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div style="font-size:16px;font-weight:700;">\uD83D\uDCAC Conversations <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.conversations.length + ')</span></div><div style="display:flex;gap:8px;"><button class="btn btn-sm btn-secondary" onclick="showToast(\'Report queue opened\',\'\uD83D\uDCCB\')">Report Queue (' + flagged.length + ')</button></div></div><div style="display:flex;flex-direction:column;gap:8px;">' + threads + '</div>';
+};
+
+Tabs.agreements = function() {
+  var rows = DB.agreements.map(function(a) {
+    var deal = DB.deals.find(function(d) { return d.id === a.dealId; });
+    var pair = deal ? deal.pair.map(function(pid) { return (userMap[pid] || { name:pid }).name; }).join(' + ') : '\u2014';
+    var signedByStr = a.signedBy.length > 0 ? a.signedBy.map(function(id) { return (userMap[id] || { name:id }).name; }).join(', ') : '<span style="color:var(--text-muted);">\u2014</span>';
+    var actionHtml = (a.status !== 'complete' && a.status !== 'not_started') ? '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();showToast(\'Reminder sent\',\'\uD83D\uDCE7\')">Remind</button>' : '<span style="color:var(--text-muted);font-size:12px;">\u2014</span>';
+    return '<tr onclick="showToast(\'Agreement ' + a.id + ' opened\',\'\uD83D\uDCDD\')"><td style="font-weight:600;">' + a.id.toUpperCase() + '</td><td>' + pair + '</td><td>' + badge(a.status) + '</td><td>' + (a.envelopeId || '<span style="color:var(--text-muted);">\u2014</span>') + '</td><td>' + signedByStr + '</td><td>' + (a.sentAt || '<span style="color:var(--text-muted);">\u2014</span>') + '</td><td>' + (a.status === 'complete' ? a.completedAt : '<span style="color:var(--text-muted);">\u2014</span>') + '</td><td>' + actionHtml + '</td></tr>';
+  }).join('');
+  var completeCount = DB.agreements.filter(function(a) { return a.status === 'complete'; }).length;
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCDD Co-Ownership Agreements</div><div class="table-actions"><span style="font-size:12px;color:var(--text-muted);">' + completeCount + '/' + DB.agreements.length + ' signed</span></div></div>'
+    + '<table class="data-table"><thead><tr><th>Agreement</th><th>Co-Buyers</th><th>Status</th><th>DocuSign Envelope</th><th>Signed By</th><th>Sent</th><th>Completed</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+};
+
+Tabs.listings = function() {
+  var statusMap = { pending:'yellow', live:'green', rejected:'red' };
+  var rows = DB.listings.map(function(l) {
+    return '<tr onclick="showListingModal(\'' + l.id + '\')"><td style="font-weight:600;">' + l.address + '</td><td>' + l.type + '</td><td>' + l.bedrooms + ' bed / ' + l.bathrooms + ' bath</td><td style="font-weight:600;">$' + l.price.toLocaleString() + '</td><td>' + l.brokerName + '</td><td>' + l.company + '</td><td>' + badge(l.status, statusMap) + '</td><td>' + l.submittedAt + '</td></tr>';
+  }).join('');
+  var live = DB.listings.filter(function(l) { return l.status === 'live'; }).length;
+  var rejected = DB.listings.filter(function(l) { return l.status === 'rejected'; }).length;
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83C\uDFE0 Broker Listings <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.listings.filter(function(l) { return l.status === 'pending'; }).length + ' pending)</span></div><div class="table-actions"><span style="font-size:12px;color:var(--text-muted);">' + live + ' live \u00B7 ' + rejected + ' rejected</span></div></div>'
+    + '<table class="data-table"><thead><tr><th>Address</th><th>Type</th><th>Specs</th><th>Price</th><th>Broker</th><th>Agency</th><th>Status</th><th>Submitted</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+};
+
+Tabs.documents = function() {
+  return '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCC4 Document Repository <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.documents.length + ')</span></div></div>'
+    + '<div class="filter-bar"><select id="docTypeFilter" onchange="filterDocuments()"><option value="">All Types</option><option>ID Verification</option><option>Bank Statement</option><option>Inspection Report</option><option>Contract</option><option>Settlement</option><option>Visa</option></select><select id="docStatusFilter" onchange="filterDocuments()"><option value="">All Status</option><option value="verified">Verified</option><option value="pending">Pending</option></select></div>'
+    + '<table class="data-table"><thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Uploaded By</th><th>Verified</th><th>Expires</th><th>Action</th></tr></thead><tbody id="docTableBody"></tbody></table></div>';
+};
+
+Tabs.billing = function() {
+  var b = DB.billing;
+  var splitRows = b.splitInvoices.map(function(s, i) {
+    var badgeA = s.paidA ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow" style="cursor:pointer;" onclick="event.stopPropagation();settleSplit(' + i + ')">Pending</span>';
+    var badgeB = s.paidB ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow" style="cursor:pointer;" onclick="event.stopPropagation();settleSplit(' + i + ')">Pending</span>';
+    return '<tr onclick="settleSplit(' + i + ')" style="cursor:pointer;"><td>' + s.pair + '</td><td>' + s.service + '</td><td>$' + s.total + '.00</td><td>$' + s.shareA + '.00</td><td>$' + s.shareB + '.00</td><td id="splitA' + i + '">' + badgeA + '</td><td id="splitB' + i + '">' + badgeB + '</td></tr>';
+  }).join('');
+  var refRows = b.referrals.map(function(r, i) {
+    var stagnBadge = r.paid ? '<span class="badge badge-green">Settled</span>' : (r.stagnant ? '<span class="badge badge-red">Stagnant ' + r.days + 'd</span>' : '<span class="badge badge-green">Active</span>');
+    var feeBadge = r.paid ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow" style="cursor:pointer;" onclick="event.stopPropagation();settleReferral(' + i + ')">Pending</span>';
+    return '<tr onclick="settleReferral(' + i + ')" style="cursor:pointer;"><td>' + r.ref + '</td><td>' + r.pair + '</td><td>' + r.partner + '</td><td>' + r.milestone + '</td><td>' + stagnBadge + '</td><td>$' + r.value + '</td><td id="feeStatus' + i + '">' + feeBadge + '</td></tr>';
+  }).join('');
+  return '<div class="kpi-row" style="margin-bottom:16px;">'
+    + '<div class="kpi-card"><div class="kpi-label">App Downloads</div><div class="kpi-value" id="bDownloads">' + b.downloads.toLocaleString() + '</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Active Users</div><div class="kpi-value" id="bActive">' + b.active + '</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">Fees Earned</div><div class="kpi-value" id="bEarned">$' + b.earned.toLocaleString() + '</div></div>'
+    + '<div class="kpi-card"><div class="kpi-label">MRR</div><div class="kpi-value" id="bMRR">$' + b.mrr + '</div></div></div>'
+    + '<div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">'
+    + '<div class="kpi-card" style="flex:1;min-width:120px;"><div class="kpi-label">Outstanding</div><div class="kpi-value" id="bOutstanding" style="font-size:20px;color:var(--red);">$' + b.outstanding.toLocaleString() + '</div></div>'
+    + '<div class="kpi-card" style="flex:1;min-width:120px;"><div class="kpi-label">Free / Premium</div><div class="kpi-value" style="font-size:20px;" id="bFreeUsers">' + b.freeUsers.toLocaleString() + ' / ' + b.premiumUsers + '</div></div>'
+    + '<div class="kpi-card" style="flex:1;min-width:120px;"><div class="kpi-label">Pending Splits</div><div class="kpi-value" style="font-size:20px;color:var(--yellow);" id="bPendingSplits">' + b.pendingSplits + '</div></div>'
+    + '<div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;"><button class="btn btn-sm btn-secondary" onclick="bumpDownloads()">\uD83D\uDCF1 +1 Download</button><button class="btn btn-sm btn-secondary" onclick="bumpActive()">\uD83D\uDCE1 + Traffic</button><button class="btn btn-sm btn-primary" onclick="exportCSV()">\uD83D\uDCE5 Export CSV</button></div></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCB0 Split Invoices (50/50)</div></div><table class="data-table"><thead><tr><th>Pair</th><th>Service</th><th>Total</th><th>User A</th><th>User B</th><th>A Status</th><th>B Status</th></tr></thead><tbody id="splitBody">' + splitRows + '</tbody></table></div>'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCC4 Partner Commissions</div></div><table class="data-table"><thead><tr><th>Invoice</th><th>Pair</th><th>Partner</th><th>Milestone</th><th>Stagnation</th><th>Value</th><th>Status</th></tr></thead><tbody id="refBody">' + refRows + '</tbody></table></div></div>';
+};
+
+Tabs.notifications = function() {
+  var rows = DB.notifications.map(function(n) {
+    return '<tr><td style="font-weight:600;font-size:12px;">' + n.template + '</td><td style="font-size:12px;">' + n.to + '</td><td>' + n.subject + '</td><td style="font-size:12px;color:var(--text-muted);">' + n.sentAt + '</td><td>' + badge(n.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="showToast(\'Resent\',\'\uD83D\uDCE7\')">Resend</button></td></tr>';
+  }).join('');
+  return '<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDD14 Email & Notification Log <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.notifications.length + ')</span></div></div><table class="data-table"><thead><tr><th>Template</th><th>To</th><th>Subject</th><th>Sent</th><th>Status</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDCE2 Broadcast</div></div>'
+    + '<div style="padding:16px;"><div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Target Audience</label><select style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--bg-input);"><option>All Users</option><option>Active Users</option><option>Pending Verification</option><option>All Partners</option></select></div>'
+    + '<div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Subject</label><input type="text" value="Important update from Vestie" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>'
+    + '<div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Message</label><textarea rows="4" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;resize:vertical;">We are excited to share some platform updates with you...</textarea></div>'
+    + '<button class="btn btn-primary" style="width:100%;" onclick="showToast(\'Broadcast sent\',\'\uD83D\uDCE8\')">Send Broadcast</button></div></div></div>';
+};
+
+Tabs.settings = function() {
+  var integrations = [
+    { name:'Stripe', status:'connected' },
+    { name:'SendGrid', status:'connected' },
+    { name:'DocuSign', status:'connected' },
+    { name:'Strapi CMS', status:'connected' },
+    { name:'Retool', status:'connected' },
+    { name:'Xero', status:'manual' },
+    { name:'Zapier', status:'connected' },
+    { name:'HubSpot', status:'disconnected' }
+  ];
+  var integRows = integrations.map(function(i) {
+    var badgeHtml = i.status === 'connected' ? '<span class="badge badge-green">\u25CF Connected</span>'
+      : i.status === 'manual' ? '<span class="badge badge-yellow">\u25CF Manual</span>'
+      : '<span class="badge badge-red">\u25CF Disconnected</span>';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">' + i.name + '</span>' + badgeHtml + '</div>';
+  }).join('');
+  var auditRows = DB.audit.map(function(a) {
+    var m = { users:'blue', deals:'green', billing:'yellow', listings:'purple', trust:'red', settings:'gray' };
+    return '<tr><td style="font-size:12px;color:var(--text-muted);">' + a.ts + '</td><td>' + a.admin + '</td><td style="font-weight:600;">' + a.action + '</td><td>' + a.detail + '</td><td>' + badge(a.module, m) + '</td></tr>';
+  }).join('');
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\u2699\uFE0F Content Management</div></div>'
+    + '<div style="padding:16px;"><div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">FAQs</span><button class="btn btn-sm btn-secondary" onclick="showToast(\'FAQ editor opened\',\'\uD83D\uDCDD\')">Edit (8 entries)</button></div></div>'
+    + '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">Terms & Conditions</span><button class="btn btn-sm btn-secondary" onclick="showToast(\'T&C editor opened\',\'\uD83D\uDCDD\')">Edit</button></div></div>'
+    + '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">Privacy Policy</span><button class="btn btn-sm btn-secondary" onclick="showToast(\'Privacy editor opened\',\'\uD83D\uDCDD\')">Edit</button></div></div>'
+    + '<div><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">Partner Directory</span><button class="btn btn-sm btn-secondary" onclick="showToast(\'Directory editor opened\',\'\uD83D\uDCDD\')">Edit</button></div></div></div></div>'
+    + '<div class="table-wrap"><div class="table-header"><div class="table-title">\uD83D\uDD0C Integration Status</div></div><div style="padding:16px;">' + integRows + '</div></div></div>'
+    + '<div class="table-wrap" style="margin-top:16px;"><div class="table-header"><div class="table-title">\uD83D\uDCCB Audit Log <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(' + DB.audit.length + ' entries)</span></div></div>'
+    + '<table class="data-table"><thead><tr><th>Timestamp</th><th>Admin</th><th>Action</th><th>Detail</th><th>Module</th></tr></thead><tbody>' + auditRows + '</tbody></table></div>';
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  ROUTER
+// ═══════════════════════════════════════════════════════════════
+function switchTab(tab) {
+  if (!Tabs[tab]) return;
+  currentTab = tab;
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  $('viewContainer').innerHTML = Tabs[tab]();
+  if (tab === 'documents') filterDocuments();
+  if (tab === 'users' && $('userSearch')) filterUsers();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  USER FILTER
+// ═══════════════════════════════════════════════════════════════
+function filterUsers() {
+  var q = ($('userSearch') ? $('userSearch').value : '').toLowerCase();
+  var role = ($('userRoleFilter') ? $('userRoleFilter').value : '');
+  var status = ($('userStatusFilter') ? $('userStatusFilter').value : '');
+  var filtered = DB.users.filter(function(u) {
+    if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
+    if (role && u.role !== role) return false;
+    if (status && u.status !== status) return false;
+    return true;
+  });
+  var tbody = $('userTableBody');
+  if (tbody) tbody.innerHTML = filtered.map(userRow).join('');
+}
+
+function filterDocuments() {
+  var type = ($('docTypeFilter') ? $('docTypeFilter').value : '');
+  var status = ($('docStatusFilter') ? $('docStatusFilter').value : '');
+  var filtered = DB.documents.filter(function(d) {
+    if (type && d.type !== type) return false;
+    if (status === 'verified' && !d.verified) return false;
+    if (status === 'pending' && d.verified) return false;
+    return true;
+  });
+  var tbody = $('docTableBody');
+  if (tbody) tbody.innerHTML = filtered.map(docRow).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  USER DRAWER
+// ═══════════════════════════════════════════════════════════════
+function showUserDrawer(userId) {
+  var u = userMap[userId];
+  if (!u) return;
+  var deal = DB.deals.find(function(d) { return d.id === u.dealId; });
+  var convos = DB.conversations.filter(function(c) { return c.participants.indexOf(userId) >= 0; });
+  var docs = DB.documents.filter(function(d) { return d.uploadedBy === userId; });
+  var flags = DB.flags.filter(function(f) { return f.targetId === userId || f.reporterId === userId; });
+
+  var html = '<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">'
+    + avatar(u.name, 48)
+    + '<div><div style="font-size:18px;font-weight:700;">' + u.name + '</div><div style="color:var(--text-secondary);font-size:13px;">' + u.email + '</div><div style="margin-top:4px;">' + badge(u.status) + ' <span class="badge badge-gray">' + u.roleLabel + '</span></div></div></div>'
+    + '<div class="drawer-section"><div class="drawer-section-label">Profile Details</div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Phone</span><span class="drawer-field-value">' + u.phone + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Budget</span><span class="drawer-field-value">' + u.budget + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Location</span><span class="drawer-field-value">' + u.location + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Goal</span><span class="drawer-field-value">' + u.goal + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Timeline</span><span class="drawer-field-value">' + u.timeline + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Joined</span><span class="drawer-field-value">' + u.created + '</span></div></div>';
+
+  if (deal) {
+    html += '<div class="drawer-section"><div class="drawer-section-label">Deal</div>'
+      + '<div class="drawer-field"><span class="drawer-field-label">Deal ID</span><span class="drawer-field-value">' + deal.id.toUpperCase() + '</span></div>'
+      + '<div class="drawer-field"><span class="drawer-field-label">Stage</span><span class="drawer-field-value">' + DB.stageLabels[deal.stage] + '</span></div>'
+      + '<div class="drawer-field"><span class="drawer-field-label">Partner</span><span class="drawer-field-value">' + deal.pair.filter(function(id) { return id !== userId; }).map(function(id) { return (userMap[id] || { name:id }).name; }).join(', ') + '</span></div></div>';
+  } else {
+    html += '<div class="drawer-section"><div class="drawer-section-label">Deal</div><div style="color:var(--text-muted);font-size:13px;">No active deal</div></div>';
+  }
+
+  if (convos.length) {
+    html += '<div class="drawer-section"><div class="drawer-section-label">Conversations (' + convos.length + ')</div>';
+    convos.forEach(function(c) {
+      var partner = c.participants.find(function(pid) { return pid !== userId; });
+      html += '<div style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:13px;"><span style="font-weight:600;">With ' + ((userMap[partner] || {}).name || partner) + '</span>' + (c.flagged ? '<span class="badge badge-red" style="margin-left:6px;">Flagged</span>' : '') + '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (docs.length) {
+    html += '<div class="drawer-section"><div class="drawer-section-label">Documents (' + docs.length + ')</div>';
+    docs.forEach(function(d) {
+      html += '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:1px solid var(--border-light);"><span>' + d.name + '</span>' + (d.verified ? badge('verified') : badge('pending')) + '</div>';
+    });
+    html += '</div>';
+  }
+
+  var suspendBtn = u.status !== 'suspended'
+    ? '<button class="btn btn-sm btn-danger" onclick="suspendUser(\'' + userId + '\')">Suspend User</button>'
+    : '<button class="btn btn-sm btn-primary" onclick="unsuspendUser(\'' + userId + '\')">Reinstate User</button>';
+
+  html += '<div style="display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">'
+    + suspendBtn
+    + '<button class="btn btn-sm btn-secondary" onclick="showToast(\'Email sent\',\'\uD83D\uDCE7\')">Send Email</button>'
+    + (deal ? '<button class="btn btn-sm btn-secondary" onclick="showTopicDealModal(\'' + deal.id + '\')">View Deal</button>' : '')
+    + '</div>';
+
+  openDrawer(u.name, html);
+}
+
+function suspendUser(id) {
+  var u = userMap[id];
+  if (u) { u.status = 'suspended'; showToast(u.name + ' suspended', '\u26D4'); logAudit('User suspended', id + ' \u2014 ' + u.name, 'users'); }
+  closeDrawer();
+  if (currentTab === 'users') switchTab('users');
+}
+
+function unsuspendUser(id) {
+  var u = userMap[id];
+  if (u) { u.status = 'active'; showToast(u.name + ' reinstated', '\u2705'); logAudit('User reinstated', id + ' \u2014 ' + u.name, 'users'); }
+  closeDrawer();
+  if (currentTab === 'users') switchTab('users');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DEAL MODAL
+// ═══════════════════════════════════════════════════════════════
+function showDealModal(dealId) {
+  var d = DB.deals.find(function(x) { return x.id === dealId; });
+  if (!d) return;
+  var u1 = userMap[d.pair[0]];
+  var u2 = userMap[d.pair[1]];
+  var conv = DB.conversations.find(function(c) { return c.dealId === dealId; });
+  var docs = DB.documents.filter(function(doc) { return doc.dealId === dealId; });
+
+  var body = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">Deal ' + dealId.toUpperCase() + '</div>'
+    + (d.stagnant ? '<span class="badge badge-red" style="font-size:13px;padding:4px 12px;">\uD83D\uDD34 Stagnant \u2014 ' + d.daysInStage + ' days</span>' : '<span class="badge badge-green" style="font-size:13px;padding:4px 12px;">\u25CF Active</span>') + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">'
+    + '<div class="kpi-card" style="cursor:pointer;" onclick="showUserDrawer(\'' + u1.id + '\')"><div class="kpi-label">Co-Buyer A</div><div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' + avatar(u1.name) + ' <span style="font-weight:600;">' + u1.name + '</span></div><div style="font-size:12px;color:var(--text-secondary);">' + u1.budget + ' \u00B7 ' + u1.location + '</div></div>'
+    + '<div class="kpi-card" style="cursor:pointer;" onclick="showUserDrawer(\'' + u2.id + '\')"><div class="kpi-label">Co-Buyer B</div><div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' + avatar(u2.name) + ' <span style="font-weight:600;">' + u2.name + '</span></div><div style="font-size:12px;color:var(--text-secondary);">' + u2.budget + ' \u00B7 ' + u2.location + '</div></div></div>'
+    + '<div class="drawer-section"><div class="drawer-section-label">Current Stage</div>'
+    + '<div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--accent-light);border-radius:var(--radius);"><span style="font-size:24px;">' + ['\uD83E\uDD1D','\uD83D\uDCB0','\uD83D\uDCDD','\uD83D\uDD0D','\uD83D\uDCD1','\u2705'][d.stage] + '</span>'
+    + '<div><div style="font-weight:700;">' + DB.stageLabels[d.stage] + '</div><div style="font-size:12px;color:var(--text-secondary);">' + d.daysInStage + ' days in stage' + (d.stagnant ? ' \u2014 <span style="color:var(--red);font-weight:600;">STAGNANT</span>' : '') + '</div></div></div></div>'
+    + '<div class="drawer-section"><div class="drawer-section-label">Partners Assigned</div><div style="display:flex;flex-wrap:wrap;gap:6px;">' + d.partners.map(function(p) { return '<span class="badge badge-gray" style="font-size:12px;padding:4px 10px;">' + p + '</span>'; }).join('') + '</div></div>';
+
+  if (conv) {
+    body += '<div class="drawer-section"><div class="drawer-section-label">Recent Messages</div>'
+      + conv.messages.slice(-3).map(function(m) {
+        return '<div style="padding:6px 0;font-size:12px;border-bottom:1px solid var(--border-light);"><span style="font-weight:600;">' + ((userMap[m.from] || {}).name || m.from) + ':</span> ' + m.text + (m.flagged ? '<span class="badge badge-red" style="margin-left:4px;">Flagged</span>' : '') + '</div>';
+      }).join('') + '</div>';
+  }
+
+  if (docs.length) {
+    body += '<div class="drawer-section"><div class="drawer-section-label">Documents (' + docs.length + ')</div>'
+      + docs.map(function(doc) {
+        return '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border-light);"><span>' + doc.name + '</span>' + (doc.verified ? badge('verified') : badge('pending')) + '</div>';
+      }).join('') + '</div>';
+  }
+
+  var footerBtns = '<button class="btn btn-secondary" onclick="showToast(\'Reminder sent\',\'\uD83D\uDCE7\')">Send Reminder</button>';
+  if (d.stage < 5) {
+    footerBtns += '<button class="btn btn-primary" onclick="advanceDeal(\'' + dealId + '\')">Advance to ' + DB.stageLabels[d.stage + 1] + '</button>';
+  }
+  footerBtns += '<button class="btn btn-secondary" onclick="closeModal()">Close</button>';
+
+  openModal('Deal ' + dealId.toUpperCase(), body, footerBtns);
+}
+
+function showTopicDealModal(dealId) {
+  closeDrawer();
+  setTimeout(function() { showDealModal(dealId); }, 300);
+}
+
+function advanceDeal(dealId) {
+  var d = DB.deals.find(function(x) { return x.id === dealId; });
+  if (!d || d.stage >= 5) return;
+  var oldStage = d.stage;
+  d.stage++;
+  d.daysInStage = 0;
+  d.stagnant = false;
+  showToast('Advanced to ' + DB.stageLabels[d.stage], '\uD83C\uDF89');
+  logAudit('Deal advanced', dealId.toUpperCase() + ' \u2014 ' + DB.stageLabels[oldStage] + ' \u2192 ' + DB.stageLabels[d.stage], 'deals');
+  closeModal();
+  switchTab('deals');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LISTING MODAL
+// ═══════════════════════════════════════════════════════════════
+function showListingModal(listingId) {
+  var l = DB.listings.find(function(x) { return x.id === listingId; });
+  if (!l) return;
+  var body = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">' + l.address + '</div>' + badge(l.status, { pending:'yellow', live:'green', rejected:'red' }) + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">'
+    + '<div class="drawer-field"><span class="drawer-field-label">Type</span><span class="drawer-field-value">' + l.type + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Price</span><span class="drawer-field-value">$' + l.price.toLocaleString() + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Bedrooms</span><span class="drawer-field-value">' + l.bedrooms + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Bathrooms</span><span class="drawer-field-value">' + l.bathrooms + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Broker</span><span class="drawer-field-value">' + l.brokerName + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Agency</span><span class="drawer-field-value">' + l.company + '</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Photos</span><span class="drawer-field-value">' + l.photos + ' images</span></div>'
+    + '<div class="drawer-field"><span class="drawer-field-label">Submitted</span><span class="drawer-field-value">' + l.submittedAt + '</span></div></div>'
+    + (l.reason ? '<div style="padding:12px;background:var(--red-bg);border-radius:var(--radius);margin-bottom:12px;"><div style="font-weight:600;color:var(--red);margin-bottom:4px;">Rejection Reason</div><div style="font-size:13px;">' + l.reason + '</div></div>' : '')
+    + '<div style="padding:12px;background:var(--bg-page);border-radius:var(--radius);"><div style="font-weight:600;margin-bottom:8px;">\uD83D\uDCF8 Property Photos</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">'
+    + Array.from({ length: Math.min(l.photos, 6) }, function() { return '<div style="aspect-ratio:4/3;background:var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:24px;">\uD83C\uDFE0</div>'; }).join('') + '</div></div>';
+
+  var footer = l.status === 'pending'
+    ? '<button class="btn btn-primary" onclick="approveListing(\'' + listingId + '\')">\u2713 Approve</button><button class="btn btn-danger" onclick="rejectListing(\'' + listingId + '\')">\u2715 Reject</button><button class="btn btn-secondary" onclick="closeModal()">Close</button>'
+    : '<button class="btn btn-secondary" onclick="closeModal()">Close</button>';
+
+  openModal('Listing: ' + l.brokerName, body, footer);
+}
+
+function approveListing(id) {
+  var l = DB.listings.find(function(x) { return x.id === id; });
+  if (l) { l.status = 'live'; showToast(l.address.split(',')[0] + ' approved', '\u2705'); logAudit('Listing approved', id + ' \u2014 ' + l.address + ' (' + l.company + ')', 'listings'); }
+  closeModal();
+  switchTab('listings');
+}
+
+function rejectListing(id) {
+  var l = DB.listings.find(function(x) { return x.id === id; });
+  var reason = prompt('Rejection reason:');
+  if (!reason) return;
+  if (l) { l.status = 'rejected'; l.reason = reason; showToast(l.address.split(',')[0] + ' rejected', '\u26D4'); logAudit('Listing rejected', id + ' \u2014 ' + l.address + ' \u2014 reason: ' + reason, 'listings'); }
+  closeModal();
+  switchTab('listings');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONVERSATION VIEW
+// ═══════════════════════════════════════════════════════════════
+function showConversation(convId) {
+  var c = DB.conversations.find(function(x) { return x.id === convId; });
+  if (!c) return;
+  var participants = c.participants.map(function(pid) { return (userMap[pid] || { name:pid }).name; }).join(' & ');
+
+  var body = '<div class="chat-view">'
+    + '<div style="display:flex;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:12px;">'
+    + '<div style="font-weight:700;flex:1;">' + participants + '</div>'
+    + (c.flagged ? '<span class="badge badge-red">Flagged</span>' : '')
+    + '<button class="btn btn-sm ' + (c.flagged ? 'btn-primary' : 'btn-secondary') + '" onclick="resolveFlag_conv(\'' + convId + '\')">' + (c.flagged ? '\u2713 Clear Flag' : 'Mark Reviewed') + '</button></div>'
+    + '<div class="chat-messages" style="max-height:400px;overflow-y:auto;">'
+    + c.messages.map(function(m) {
+      var isRight = m.from === c.participants[0];
+      return '<div class="chat-bubble ' + (isRight ? 'right' : 'left') + (m.flagged ? ' flagged' : '') + '"><div style="font-weight:600;font-size:12px;margin-bottom:2px;">' + ((userMap[m.from] || {}).name || m.from) + '</div><div>' + m.text + '</div><div class="chat-meta">' + m.ts + (m.flagged ? ' \u00B7 \uD83D\uDEA9 Reported' : '') + '</div></div>';
+    }).join('') + '</div>'
+    + '<div style="padding:12px 0;border-top:1px solid var(--border);display:flex;gap:8px;">'
+    + '<input type="text" placeholder="Reply as Anna..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;" onkeydown="if(event.key===\'Enter\'){showToast(\'Reply sent\',\'\uD83D\uDCE7\');this.value=\'\'}">'
+    + '<button class="btn btn-primary btn-sm" onclick="var i=this.previousElementSibling;showToast(\'Reply sent\',\'\uD83D\uDCE7\');i.value=\'\'">Send</button></div></div>';
+
+  openDrawer('\uD83D\uDCAC ' + participants, body);
+}
+
+function resolveFlag_conv(convId) {
+  var c = DB.conversations.find(function(x) { return x.id === convId; });
+  if (c) { c.adminReviewed = true; c.flagged = false; showToast('Flag resolved', '\u2705'); logAudit('Flag reviewed', 'Conversation ' + convId + ' \u2014 cleared', 'messages'); }
+  closeDrawer();
+  switchTab('messages');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TRUST FLAG RESOLVE
+// ═══════════════════════════════════════════════════════════════
+function resolveFlag(flagId) {
+  var f = DB.flags.find(function(x) { return x.id === flagId; });
+  if (f) { f.status = 'reviewed'; showToast('Flag resolved', '\u2705'); logAudit('Flag reviewed', flagId + ' \u2014 ' + f.reason, 'trust'); }
+  switchTab('trust');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BILLING ACTIONS
+// ═══════════════════════════════════════════════════════════════
+function settleSplit(idx) {
+  var b = DB.billing;
+  var s = b.splitInvoices[idx];
+  if (!s) return;
+  var changed = false;
+  if (!s.paidA) { s.paidA = true; changed = true; }
+  if (!s.paidB) { s.paidB = true; changed = true; }
+  if (!changed) return;
+  b.pendingSplits = b.splitInvoices.filter(function(x) { return !x.paidA || !x.paidB; }).length;
+  updateBillingUI();
+  showToast(s.pair.split(' ')[0] + ' split settled', '\uD83D\uDCB0');
+  logAudit('Split settled', s.pair + ' \u2014 ' + s.service + ' \u2014 $' + s.total, 'billing');
+}
+
+function settleReferral(idx) {
+  var b = DB.billing;
+  var r = b.referrals[idx];
+  if (!r || r.paid) return;
+  r.paid = true;
+  b.earned += r.value;
+  b.outstanding -= r.value;
+  b.reverse += r.reverse;
+  updateBillingUI();
+  showToast(r.ref + ' marked paid', '\uD83D\uDCB0');
+  logAudit('Commission marked paid', r.ref + ' \u2014 ' + r.partner + ' \u2014 $' + r.value, 'billing');
+}
+
+function updateBillingUI() {
+  var b = DB.billing;
+  var set = function(id, val) { var el = $(id); if (el) el.innerHTML = val; };
+  set('bDownloads', b.downloads.toLocaleString());
+  set('bActive', b.active);
+  set('bEarned', '$' + b.earned.toLocaleString());
+  set('bMRR', '$' + b.mrr);
+  set('bOutstanding', '$' + b.outstanding.toLocaleString());
+  set('bFreeUsers', b.freeUsers.toLocaleString() + ' / ' + b.premiumUsers);
+  set('bPendingSplits', b.pendingSplits);
+  b.splitInvoices.forEach(function(s, i) {
+    var aEl = $('splitA' + i), bEl = $('splitB' + i);
+    if (aEl) aEl.innerHTML = s.paidA ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow">Pending</span>';
+    if (bEl) bEl.innerHTML = s.paidB ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow">Pending</span>';
+  });
+  b.referrals.forEach(function(r, i) {
+    var el = $('feeStatus' + i);
+    if (el) el.innerHTML = r.paid ? '<span class="badge badge-green">Paid</span>' : '<span class="badge badge-yellow">Pending</span>';
+  });
+}
+
+function bumpDownloads() {
+  DB.billing.downloads++;
+  updateBillingUI();
+  showToast('+1 download', '\uD83D\uDCF1');
+  logAudit('Download simulated', 'App install +1', 'billing');
+}
+
+function bumpActive() {
+  var bump = Math.floor(Math.random() * 25) + 5;
+  DB.billing.active += bump;
+  updateBillingUI();
+  showToast('+' + bump + ' active users', '\uD83D\uDCE1');
+  logAudit('Traffic simulated', '+' + bump + ' concurrent users', 'billing');
+}
+
+function exportCSV() {
+  var b = DB.billing;
+  var ts = new Date().toISOString().slice(0,10);
+  var filename = 'vestie_ledger_' + ts + '.csv';
+  var rows1 = b.splitInvoices.map(function(s) { return [s.pair, s.service, '$' + s.total, s.paidA ? 'Paid' : 'Pending', s.paidB ? 'Paid' : 'Pending'].join(','); });
+  var rows2 = b.referrals.map(function(r) { return [r.ref, r.pair, r.partner, r.paid ? 'Paid' : 'Pending'].join(','); });
+  var csv = 'Stream 1 - User Splits\nPair,Service,Total,User A,User B\n' + rows1.join('\n') + '\n\nStream 2 - Commissions\nInvoice,Pair,Partner,Status\n' + rows2.join('\n');
+  var blob = new Blob([csv], { type:'text/csv' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('CSV exported: ' + filename, '\uD83D\uDCE5');
+  logAudit('CSV exported', filename, 'billing');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  // Sidebar nav click
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      var tab = this.dataset.tab;
+      if (tab) {
+        switchTab(tab);
+        // Close mobile sidebar
+        $('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  // Hamburger
+  $('hamburger').addEventListener('click', function() {
+    $('sidebar').classList.toggle('open');
+  });
+
+  // Drawer close
+  $('drawerClose').addEventListener('click', closeDrawer);
+  $('drawerOverlay').addEventListener('click', closeDrawer);
+
+  // Modal close
+  $('modalClose').addEventListener('click', closeModal);
+  $('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Keyboard: Escape closes drawer/modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeDrawer();
+    }
+  });
+
+  // Global search
+  $('globalSearch').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+      showToast('Searching for "' + this.value.trim() + '"', '\uD83D\uDD0D');
+    }
+  });
+
+  // Render default tab
+  switchTab('overview');
+});
+</script>
+</body>
+</html>
